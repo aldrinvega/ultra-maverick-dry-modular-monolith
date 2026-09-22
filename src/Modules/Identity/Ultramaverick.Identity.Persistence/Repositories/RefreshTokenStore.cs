@@ -44,10 +44,25 @@ namespace Ultramaverick.Identity.Persistence.Repositories
             var entity = await FindActiveAsync(presentedToken, ct);
             if (entity is null) return null;
 
-            entity.MarkConsumed();
-            _context.RefreshTokens.Add(RefreshToken.Create(entity.UserId, Hash(newToken), newExpiresAtUtc));
+            await using var transaction = await _context.Database.BeginTransactionAsync(ct);
 
+            // Conditional consume: the database decides the winner, so two concurrent
+            // rotations of the same token cannot both succeed.
+            var consumed = await _context.RefreshTokens
+                .Where(x => x.Id == entity.Id && x.ConsumedAtUtc == null && x.RevokedAtUtc == null)
+                .ExecuteUpdateAsync(
+                    setters => setters.SetProperty(x => x.ConsumedAtUtc, DateTime.UtcNow), ct);
+
+            if (consumed == 0)
+            {
+                await transaction.RollbackAsync(ct);
+                return null;
+            }
+
+            _context.RefreshTokens.Add(RefreshToken.Create(entity.UserId, Hash(newToken), newExpiresAtUtc));
             await _context.SaveChangesAsync(ct);
+
+            await transaction.CommitAsync(ct);
 
             return entity.UserId;
         }
