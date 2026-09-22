@@ -1,0 +1,17 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Ultramaverick.Api/Ultramaverick.Api.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Identity/">
+    <Project Path="src/Modules/Identity/Ultramaverick.Identity.Application/Ultramaverick.Identity.Application.csproj" />
+    <Project Path="src/Modules/Identity/Ultramaverick.Identity.Domain/Ultramaverick.Identity.Domain.csproj" />
+    <Project Path="src/Modules/Identity/Ultramaverick.Identity.Infrastructure/Ultramaverick.Identity.Infrastructure.csproj" />
+    <Project Path="src/Modules/Identity/Ultramaverick.Identity.Persistence/Ultramaverick.Identity.Persistence.csproj" />
+  </Folder>
+  <Folder Name="/test/">
+    <Project Path="tests/Ultramaverick.Api.AuthorizationTests/Ultramaverick.Api.AuthorizationTests.csproj" />
+    <Project Path="tests/Ultramaverick.Identity.IntegrationTests/Ultramaverick.Identity.IntegrationTests.csproj" />
+    <Project Path="tests/Ultramaverick.Identity.UnitTests/Ultramaverick.Identity.UnitTests.csproj" />
+  </Folder>
+</Solution>
