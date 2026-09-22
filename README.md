@@ -119,6 +119,69 @@ dotnet run --project src/Ultramaverick.Api
 
 The `http` launch profile listens on `http://localhost:5160`. The `https` profile uses `https://localhost:7244`.
 
+## Run with Docker
+
+Two containers: the API and SQL Server 2022. All configuration is supplied through environment variables, so nothing is baked into the image.
+
+### 1. Create your environment file
+
+```powershell
+Copy-Item .env.example .env
+# then edit .env and set MSSQL_SA_PASSWORD and JWT_KEY
+```
+
+Generate a JWT key if you need one:
+
+```powershell
+$rng = [System.Security.Cryptography.RandomNumberGenerator]::Create()
+$b = New-Object byte[] 64; $rng.GetBytes($b); [Convert]::ToBase64String($b)
+```
+
+### 2. Start SQL Server and the API
+
+```powershell
+docker compose up -d --build
+```
+
+- API: `http://localhost:5007`
+- SQL Server: `localhost:1433`
+
+The API waits for SQL Server's health check before starting.
+
+### 3. Create the schema and seed
+
+The API does **not** migrate or seed on startup, so run both once against the container.
+
+```powershell
+# Schema (EF Core migration)
+dotnet ef database update `
+  -p src/Modules/Identity/Ultramaverick.Identity.Persistence `
+  -s src/Ultramaverick.Api `
+  --connection "Server=localhost,1433;Database=ElixirDepotDry;User Id=sa;Password=<MSSQL_SA_PASSWORD>;TrustServerCertificate=True"
+
+# Baseline data: roles, departments, menus, modules, admin user
+docker cp docker/seed.sql ultramaverick.sqlserver:/tmp/seed.sql
+docker exec ultramaverick.sqlserver /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "<MSSQL_SA_PASSWORD>" -C -i /tmp/seed.sql
+```
+
+### 4. Log in
+
+```powershell
+curl -X POST http://localhost:5007/api/Login/authenticate `
+  -H "Content-Type: application/json" `
+  -d "{\"userName\":\"admin\",\"password\":\"Admin@123\"}"
+```
+
+### Useful commands
+
+```powershell
+docker compose logs -f api     # follow API logs
+docker compose down            # stop, keep the database volume
+docker compose down -v         # stop and delete the database volume
+```
+
+The `mssql-data` volume persists between runs. After `down -v` the schema and seed must be reapplied.
+
 ## Configuration
 
 | Setting | Where | Notes |

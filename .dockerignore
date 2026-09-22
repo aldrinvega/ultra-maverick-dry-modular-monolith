@@ -1,0 +1,22 @@
+# Git / tooling
+**/.git
+**/.github
+**/.vs
+**/.idea
+**/.vscode
+
+# Build output
+**/bin
+**/obj
+
+# Local secrets and overrides (never bake these into the image)
+**/.env
+**/.env.*
+!**/.env.example
+**/secrets.json
+**/*.user
+**/appsettings.*.local.json
+
+# Misc
+**/*.log
+**/Desktop.ini
