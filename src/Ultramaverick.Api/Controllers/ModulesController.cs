@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ultramaverick.Api.Authorization;
+using Ultramaverick.Api.Errors;
 using Ultramaverick.Identity.Application.Models;
 using Ultramaverick.Identity.Application.Queries.Modules;
 
@@ -59,10 +60,7 @@ namespace Ultramaverick.Api.Controllers
             => Ok(await _mediator.Send(new GetModulesQuery(page, pageSize, search, false), ct));
 
         [HttpGet("GetById/{id}")]
-        public async Task<ActionResult<ModuleDto>> GetById(int id, CancellationToken ct)
-        {
-            var result = await _mediator.Send(new GetModuleByIdQuery(id), ct);
-            return result.Succeeded ? Ok(result.Value) : NotFound(new { message = result.Error });
-        }
+        public async Task<IActionResult> GetById(int id, CancellationToken ct)
+            => (await _mediator.Send(new GetModuleByIdQuery(id), ct)).ToOkOrNotFound();
     }
 }

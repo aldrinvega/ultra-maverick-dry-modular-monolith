@@ -1,7 +1,9 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Ultramaverick.Api.Authorization;
+using Ultramaverick.Api.Errors;
 using Ultramaverick.Identity.Application;
 using Ultramaverick.Identity.Infrastructure;
 using Ultramaverick.Identity.Infrastructure.Options;
@@ -16,6 +18,21 @@ builder.Services.AddIdentityInfrastructure(builder.Configuration);
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+
+// Model-validation failures use the shared validation error shape.
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.InvalidModelStateResponseFactory = context =>
+    {
+        var errors = context.ModelState
+            .Where(e => e.Value is { Errors.Count: > 0 })
+            .SelectMany(e => e.Value!.Errors)
+            .Select(e => e.ErrorMessage)
+            .ToArray();
+
+        return new BadRequestObjectResult(new ApiValidationError(errors));
+    };
+});
 
 var jwt = builder.Configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>() ?? new JwtOptions();
 
@@ -59,6 +76,8 @@ builder.Services.AddAuthorization(options =>
 });
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 if (app.Environment.IsDevelopment())
     app.MapOpenApi();

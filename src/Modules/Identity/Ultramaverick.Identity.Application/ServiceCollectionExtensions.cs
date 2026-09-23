@@ -1,8 +1,7 @@
 ﻿using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Ultramaverick.Identity.Application.Behaviors;
 
 namespace Ultramaverick.Identity.Application
 {
@@ -10,8 +9,14 @@ namespace Ultramaverick.Identity.Application
     {
         public static IServiceCollection AddIdentityApplication(this IServiceCollection services)
         {
-            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(ServiceCollectionExtensions).Assembly));
+            services.AddMediatR(cfg =>
+                cfg.RegisterServicesFromAssembly(typeof(ServiceCollectionExtensions).Assembly));
+
             services.AddValidatorsFromAssembly(typeof(ServiceCollectionExtensions).Assembly);
+
+            // Run validators before handlers.
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+
             return services;
         }
     }
