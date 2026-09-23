@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ultramaverick.Api.Authorization;
+using Ultramaverick.Api.Errors;
 using Ultramaverick.Identity.Application.Commands.Roles;
 using Ultramaverick.Identity.Application.Models;
 using Ultramaverick.Identity.Application.Queries.Roles;
@@ -19,7 +20,6 @@ namespace Ultramaverick.Api.Controllers
 
         // ---------------------------------------------------------------- reads
 
-        /// <summary>All roles (active and inactive), paged.</summary>
         [HttpGet("GetAllRoles")]
         public async Task<ActionResult<PagedResult<RoleDto>>> GetAll(
             [FromQuery] int page = 1,
@@ -28,7 +28,6 @@ namespace Ultramaverick.Api.Controllers
             CancellationToken ct = default)
             => Ok(await _mediator.Send(new GetRolesQuery(page, pageSize, search, null), ct));
 
-        /// <summary>Roles filtered by active status, paged.</summary>
         [HttpGet("GetAllRolesWithPagination/{status}")]
         public async Task<ActionResult<PagedResult<RoleDto>>> GetPaged(
             bool status,
@@ -39,69 +38,41 @@ namespace Ultramaverick.Api.Controllers
             => Ok(await _mediator.Send(new GetRolesQuery(page, pageSize, search, status), ct));
 
         [HttpGet("GetbyId/{id}")]
-        public async Task<ActionResult<RoleDto>> GetById(int id, CancellationToken ct)
-        {
-            var result = await _mediator.Send(new GetRoleByIdQuery(id), ct);
-            return result.Succeeded ? Ok(result.Value) : NotFound(new { message = result.Error });
-        }
+        public async Task<IActionResult> GetById(int id, CancellationToken ct)
+            => (await _mediator.Send(new GetRoleByIdQuery(id), ct)).ToOkOrNotFound();
 
-        /// <summary>The modules currently granted to a role.</summary>
         [HttpGet("GetRoleModules/{id}")]
-        public async Task<ActionResult<IReadOnlyList<ModuleDto>>> GetModules(int id, CancellationToken ct)
-        {
-            var result = await _mediator.Send(new GetRoleModulesQuery(id), ct);
-            return result.Succeeded ? Ok(result.Value) : NotFound(new { message = result.Error });
-        }
+        public async Task<IActionResult> GetModules(int id, CancellationToken ct)
+            => (await _mediator.Send(new GetRoleModulesQuery(id), ct)).ToOkOrNotFound();
 
         // --------------------------------------------------------------- writes
 
         [HttpPost("AddNewRole")]
-        public async Task<ActionResult<int>> Create(
+        public async Task<IActionResult> Create(
             [FromBody] CreateRoleCommand command, CancellationToken ct)
-        {
-            var result = await _mediator.Send(command, ct);
-            return result.Succeeded ? Ok(result.Value) : BadRequest(new { message = result.Error });
-        }
+            => (await _mediator.Send(command, ct)).ToOk();
 
         [HttpPut("UpdateRole/{id}")]
         public async Task<IActionResult> Update(
             int id, [FromBody] UpdateRoleCommand command, CancellationToken ct)
-        {
-            if (id != command.RoleId)
-                return BadRequest(new { message = "Route id and body id must match." });
-
-            var result = await _mediator.Send(command, ct);
-            return result.Succeeded ? NoContent() : BadRequest(new { message = result.Error });
-        }
+            => id != command.RoleId
+                ? ResultExtensions.BadRequestError("Route id and body id must match.")
+                : (await _mediator.Send(command, ct)).ToNoContent();
 
         [HttpPut("InActiveRole/{id}")]
         public async Task<IActionResult> Deactivate(int id, CancellationToken ct)
-        {
-            var result = await _mediator.Send(new SetRoleActiveCommand(id, false), ct);
-            return result.Succeeded ? NoContent() : BadRequest(new { message = result.Error });
-        }
+            => (await _mediator.Send(new SetRoleActiveCommand(id, false), ct)).ToNoContent();
 
         [HttpPut("ActivateRole/{id}")]
         public async Task<IActionResult> Activate(int id, CancellationToken ct)
-        {
-            var result = await _mediator.Send(new SetRoleActiveCommand(id, true), ct);
-            return result.Succeeded ? NoContent() : BadRequest(new { message = result.Error });
-        }
+            => (await _mediator.Send(new SetRoleActiveCommand(id, true), ct)).ToNoContent();
 
-        /// <summary>Replaces a role's module grants with the supplied set (empty clears them).</summary>
         [HttpPost("TagandModules")]
         public async Task<IActionResult> Tag([FromBody] TagModulesCommand command, CancellationToken ct)
-        {
-            var result = await _mediator.Send(command, ct);
-            return result.Succeeded ? NoContent() : BadRequest(new { message = result.Error });
-        }
+            => (await _mediator.Send(command, ct)).ToNoContent();
 
-        /// <summary>Deactivates the listed grants, leaving other grants untouched.</summary>
         [HttpPut("UntagModule")]
         public async Task<IActionResult> Untag([FromBody] UntagModulesCommand command, CancellationToken ct)
-        {
-            var result = await _mediator.Send(command, ct);
-            return result.Succeeded ? NoContent() : BadRequest(new { message = result.Error });
-        }
+            => (await _mediator.Send(command, ct)).ToNoContent();
     }
 }

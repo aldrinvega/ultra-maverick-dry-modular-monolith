@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Ultramaverick.Api.Errors;
 using Ultramaverick.Identity.Application.Commands.Authentication;
 using Ultramaverick.Identity.Application.Models;
 
@@ -20,31 +21,18 @@ namespace Ultramaverick.Api.Controllers
         [HttpPost("authenticate")]
         public async Task<IActionResult> Authenticate(
             [FromBody] AuthenticateRequest request, CancellationToken ct)
-        {
-            var result = await _mediator.Send(
-                new AuthenticateCommand(request.UserName, request.Password), ct);
-
-            return result.Succeeded ? Ok(result.Value) : BadRequest(new { message = result.Error });
-        }
+            => (await _mediator.Send(new AuthenticateCommand(request.UserName, request.Password), ct)).ToOk();
 
         [AllowAnonymous]
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh(
             [FromBody] RefreshRequest request, CancellationToken ct)
-        {
-            var result = await _mediator.Send(new RefreshTokenCommand(request.RefreshToken), ct);
-
-            return result.Succeeded ? Ok(result.Value) : Unauthorized(new { message = result.Error });
-        }
+            => (await _mediator.Send(new RefreshTokenCommand(request.RefreshToken), ct)).ToOkOrUnauthorized();
 
         [AllowAnonymous]
         [HttpPost("revoke")]
         public async Task<IActionResult> Revoke(
             [FromBody] RefreshRequest request, CancellationToken ct)
-        {
-            var result = await _mediator.Send(new RevokeTokenCommand(request.RefreshToken), ct);
-
-            return result.Succeeded ? NoContent() : BadRequest(new { message = result.Error });
-        }
+            => (await _mediator.Send(new RevokeTokenCommand(request.RefreshToken), ct)).ToNoContent();
     }
 }

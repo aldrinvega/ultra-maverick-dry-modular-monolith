@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ultramaverick.Api.Authorization;
+using Ultramaverick.Api.Errors;
 using Ultramaverick.Identity.Application.Commands.Modules;
 using Ultramaverick.Identity.Application.Models;
 using Ultramaverick.Identity.Application.Queries.Modules;
@@ -62,45 +63,29 @@ namespace Ultramaverick.Api.Controllers
             => Ok(await _mediator.Send(new GetModulesQuery(page, pageSize, search, false), ct));
 
         [HttpGet("GetById/{id}")]
-        public async Task<ActionResult<ModuleDto>> GetById(int id, CancellationToken ct)
-        {
-            var result = await _mediator.Send(new GetModuleByIdQuery(id), ct);
-            return result.Succeeded ? Ok(result.Value) : NotFound(new { message = result.Error });
-        }
+        public async Task<IActionResult> GetById(int id, CancellationToken ct)
+            => (await _mediator.Send(new GetModuleByIdQuery(id), ct)).ToOkOrNotFound();
 
         // --------------------------------------------------------------- writes
 
         [HttpPost("AddNewModule")]
-        public async Task<ActionResult<int>> Create(
+        public async Task<IActionResult> Create(
             [FromBody] CreateModuleCommand command, CancellationToken ct)
-        {
-            var result = await _mediator.Send(command, ct);
-            return result.Succeeded ? Ok(result.Value) : BadRequest(new { message = result.Error });
-        }
+            => (await _mediator.Send(command, ct)).ToOk();
 
         [HttpPut("UpdateModule/{id}")]
         public async Task<IActionResult> Update(
             int id, [FromBody] UpdateModuleCommand command, CancellationToken ct)
-        {
-            if (id != command.ModuleId)
-                return BadRequest(new { message = "Route id and body id must match." });
-
-            var result = await _mediator.Send(command, ct);
-            return result.Succeeded ? NoContent() : BadRequest(new { message = result.Error });
-        }
+            => id != command.ModuleId
+                ? ResultExtensions.BadRequestError("Route id and body id must match.")
+                : (await _mediator.Send(command, ct)).ToNoContent();
 
         [HttpPut("InActiveModule/{id}")]
         public async Task<IActionResult> Deactivate(int id, CancellationToken ct)
-        {
-            var result = await _mediator.Send(new SetModuleActiveCommand(id, false), ct);
-            return result.Succeeded ? NoContent() : BadRequest(new { message = result.Error });
-        }
+            => (await _mediator.Send(new SetModuleActiveCommand(id, false), ct)).ToNoContent();
 
         [HttpPut("ActivateModule/{id}")]
         public async Task<IActionResult> Activate(int id, CancellationToken ct)
-        {
-            var result = await _mediator.Send(new SetModuleActiveCommand(id, true), ct);
-            return result.Succeeded ? NoContent() : BadRequest(new { message = result.Error });
-        }
+            => (await _mediator.Send(new SetModuleActiveCommand(id, true), ct)).ToNoContent();
     }
 }

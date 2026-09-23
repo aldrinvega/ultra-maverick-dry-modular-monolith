@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ultramaverick.Api.Authorization;
+using Ultramaverick.Api.Errors;
 using Ultramaverick.Identity.Application.Commands.Departments;
 using Ultramaverick.Identity.Application.Models;
 using Ultramaverick.Identity.Application.Queries.Departments;
@@ -57,45 +58,29 @@ namespace Ultramaverick.Api.Controllers
             => Ok(await _mediator.Send(new GetDepartmentsQuery(page, pageSize, search, status), ct));
 
         [HttpGet("GetAllDepartmentById/{id}")]
-        public async Task<ActionResult<DepartmentDto>> GetById(int id, CancellationToken ct)
-        {
-            var result = await _mediator.Send(new GetDepartmentByIdQuery(id), ct);
-            return result.Succeeded ? Ok(result.Value) : NotFound(new { message = result.Error });
-        }
+        public async Task<IActionResult> GetById(int id, CancellationToken ct)
+            => (await _mediator.Send(new GetDepartmentByIdQuery(id), ct)).ToOkOrNotFound();
 
         // --------------------------------------------------------------- writes
 
         [HttpPost("AddNewDepartment")]
-        public async Task<ActionResult<int>> Create(
+        public async Task<IActionResult> Create(
             [FromBody] CreateDepartmentCommand command, CancellationToken ct)
-        {
-            var result = await _mediator.Send(command, ct);
-            return result.Succeeded ? Ok(result.Value) : BadRequest(new { message = result.Error });
-        }
+            => (await _mediator.Send(command, ct)).ToOk();
 
         [HttpPut("UpdateDepartmentInfo/{id}")]
         public async Task<IActionResult> Update(
             int id, [FromBody] UpdateDepartmentCommand command, CancellationToken ct)
-        {
-            if (id != command.DepartmentId)
-                return BadRequest(new { message = "Route id and body id must match." });
-
-            var result = await _mediator.Send(command, ct);
-            return result.Succeeded ? NoContent() : BadRequest(new { message = result.Error });
-        }
+            => id != command.DepartmentId
+                ? ResultExtensions.BadRequestError("Route id and body id must match.")
+                : (await _mediator.Send(command, ct)).ToNoContent();
 
         [HttpPut("InActiveDepartment/{id}")]
         public async Task<IActionResult> Deactivate(int id, CancellationToken ct)
-        {
-            var result = await _mediator.Send(new SetDepartmentActiveCommand(id, false), ct);
-            return result.Succeeded ? NoContent() : BadRequest(new { message = result.Error });
-        }
+            => (await _mediator.Send(new SetDepartmentActiveCommand(id, false), ct)).ToNoContent();
 
         [HttpPut("ActivateDepartment/{id}")]
         public async Task<IActionResult> Activate(int id, CancellationToken ct)
-        {
-            var result = await _mediator.Send(new SetDepartmentActiveCommand(id, true), ct);
-            return result.Succeeded ? NoContent() : BadRequest(new { message = result.Error });
-        }
+            => (await _mediator.Send(new SetDepartmentActiveCommand(id, true), ct)).ToNoContent();
     }
 }
