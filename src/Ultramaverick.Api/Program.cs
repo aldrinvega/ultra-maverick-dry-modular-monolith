@@ -68,3 +68,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
+
+// Exposed so the authorization test project can host the application.
+public partial class Program { }
