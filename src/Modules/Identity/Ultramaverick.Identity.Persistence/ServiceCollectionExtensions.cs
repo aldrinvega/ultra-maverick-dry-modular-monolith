@@ -22,6 +22,9 @@ namespace Ultramaverick.Identity.Persistence
             services.AddScoped<IIdentityUnitOfWork, IdentityUnitOfWork>();
             services.AddScoped<IRefreshTokenStore, RefreshTokenStore>();
 
+            services.AddScoped<IOutboxStore, OutboxStore>();
+            services.AddScoped<IProcessedEventStore, ProcessedEventStore>();
+
             return services;
         }
     }
