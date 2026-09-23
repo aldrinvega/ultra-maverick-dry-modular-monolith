@@ -2,14 +2,15 @@
   "info": {
     "name": "Ultramaverick Dry - Identity",
     "_postman_id": "b7f2c1a4-3d6e-4a91-9c2b-7e5f0a1d8c34",
-    "description": "Identity module of the Ultramaverick Dry modular monolith.\n\nRun 'Authenticate (login)' first: it stores accessToken/refreshToken as collection variables. All Users requests use the Bearer token automatically.\n\nBase URL default is the http launch profile (http://localhost:5160). If you run the https profile, change baseUrl to https://localhost:7244.\n\nSeeded admin: admin / Admin@123",
+    "description": "Identity module of the Ultramaverick Dry modular monolith.\n\nRun 'Authenticate (login)' first: it stores accessToken/refreshToken as collection variables. All Users/Roles/Departments/Modules requests use the Bearer token automatically.\n\nBase URL default is the http launch profile (http://localhost:5160). For the https profile use https://localhost:7244.\n\nSeeded admin: admin / Admin@123",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
     { "key": "baseUrl", "value": "http://localhost:5160" },
     { "key": "accessToken", "value": "" },
     { "key": "refreshToken", "value": "" },
-    { "key": "userId", "value": "2" }
+    { "key": "userId", "value": "2" },
+    { "key": "roleId", "value": "4" }
   ],
   "item": [
     {
@@ -35,9 +36,7 @@
           ],
           "request": {
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"userName\": \"admin\",\n  \"password\": \"Admin@123\"\n}",
@@ -48,7 +47,59 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "Login", "authenticate"]
             },
-            "description": "Anonymous. Returns an access token (JWT with sub/name/role/modules claims), its expiry, and a refresh token. Wrong password returns 400 with a generic message."
+            "description": "Anonymous, rate limited (10/minute per client address). Returns accessToken, its expiry, and refreshToken. A missing user, wrong password, and inactive user all return the same generic message."
+          }
+        },
+        {
+          "name": "Refresh",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data && data.accessToken) {",
+                  "    pm.collectionVariables.set('accessToken', data.accessToken);",
+                  "    pm.collectionVariables.set('refreshToken', data.refreshToken);",
+                  "}",
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/Login/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "Login", "refresh"]
+            },
+            "description": "Anonymous. Single-use rotation: the presented token is consumed and a new access + refresh token pair is issued. Reusing a consumed or revoked token returns 401."
+          }
+        },
+        {
+          "name": "Revoke",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/Login/revoke",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "Login", "revoke"]
+            },
+            "description": "Anonymous (possession of the refresh token is the credential). Idempotent; returns 204."
           }
         }
       ]
@@ -60,9 +111,7 @@
           "name": "List users (active, paged)",
           "request": {
             "method": "GET",
-            "header": [
-              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
-            ],
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
             "url": {
               "raw": "{{baseUrl}}/api/User/GetAllUsersWithPagination/true?page=1&pageSize=20&search=",
               "host": ["{{baseUrl}}"],
@@ -72,17 +121,14 @@
                 { "key": "pageSize", "value": "20" },
                 { "key": "search", "value": "" }
               ]
-            },
-            "description": "Paged envelope: { items, page, pageSize, totalCount, totalPages }. status in the path is true/false for active/inactive."
+            }
           }
         },
         {
           "name": "List users (inactive, paged)",
           "request": {
             "method": "GET",
-            "header": [
-              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
-            ],
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
             "url": {
               "raw": "{{baseUrl}}/api/User/GetAllUsersWithPagination/false?page=1&pageSize=20&search=",
               "host": ["{{baseUrl}}"],
@@ -99,15 +145,12 @@
           "name": "Get user by id",
           "request": {
             "method": "GET",
-            "header": [
-              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
-            ],
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
             "url": {
               "raw": "{{baseUrl}}/api/User/GetById/{{userId}}",
               "host": ["{{baseUrl}}"],
               "path": ["api", "User", "GetById", "{{userId}}"]
-            },
-            "description": "Returns the UserDto (id, fullName, userName, roleId, roleName, departmentId, departmentName, isActive). 404 if not found."
+            }
           }
         },
         {
@@ -119,9 +162,7 @@
                 "type": "text/javascript",
                 "exec": [
                   "const id = pm.response.json();",
-                  "if (typeof id === 'number') {",
-                  "    pm.collectionVariables.set('userId', id);",
-                  "}",
+                  "if (typeof id === 'number') { pm.collectionVariables.set('userId', id); }",
                   "pm.test('200 OK', () => pm.response.to.have.status(200));"
                 ]
               }
@@ -142,8 +183,7 @@
               "raw": "{{baseUrl}}/api/User/AddNewUser",
               "host": ["{{baseUrl}}"],
               "path": ["api", "User", "AddNewUser"]
-            },
-            "description": "Password is hashed (PBKDF2) before storage; it is never returned. roleId 3 = Encoder, departmentId 1 = Warehouse. Returns the new user id and stores it in the userId collection variable."
+            }
           }
         },
         {
@@ -163,50 +203,188 @@
               "raw": "{{baseUrl}}/api/User/UpdateUserInfo/{{userId}}",
               "host": ["{{baseUrl}}"],
               "path": ["api", "User", "UpdateUserInfo", "{{userId}}"]
-            },
-            "description": "The route id and body userId must match, or it returns 400. Returns 204 on success."
+            }
           }
         },
         {
           "name": "Deactivate user",
           "request": {
             "method": "PUT",
-            "header": [
-              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
-            ],
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
             "url": {
               "raw": "{{baseUrl}}/api/User/InActiveUser/{{userId}}",
               "host": ["{{baseUrl}}"],
               "path": ["api", "User", "InActiveUser", "{{userId}}"]
-            },
-            "description": "Sets IsActive = false and raises UserChanged(Deactivated), which is written to Infrastructure.OutboxMessages."
+            }
           }
         },
         {
           "name": "Activate user",
           "request": {
             "method": "PUT",
-            "header": [
-              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
-            ],
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
             "url": {
               "raw": "{{baseUrl}}/api/User/ActivateUser/{{userId}}",
               "host": ["{{baseUrl}}"],
               "path": ["api", "User", "ActivateUser", "{{userId}}"]
-            },
-            "description": "Sets IsActive = true and raises UserChanged(Activated)."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Roles",
+      "item": [
+        {
+          "name": "List roles",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/Role/GetAllRoles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "Role", "GetAllRoles"]
+            }
           }
         },
         {
-          "name": "Get user by id (no token -> 401)",
+          "name": "Create role",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const id = pm.response.json();",
+                  "if (typeof id === 'number') { pm.collectionVariables.set('roleId', id); }",
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Auditor\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/Role/AddNewRole",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "Role", "AddNewRole"]
+            }
+          }
+        },
+        {
+          "name": "Tag modules on role",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roleId\": {{roleId}},\n  \"moduleIds\": [1, 2, 3]\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/Role/TagandModules",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "Role", "TagandModules"]
+            },
+            "description": "Replaces the role's module grants with the supplied set. An empty array clears them. Unknown module ids return 400."
+          }
+        },
+        {
+          "name": "Get role modules",
           "request": {
             "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
             "url": {
-              "raw": "{{baseUrl}}/api/User/GetById/1",
+              "raw": "{{baseUrl}}/api/Role/GetRoleModules/{{roleId}}",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "User", "GetById", "1"]
+              "path": ["api", "Role", "GetRoleModules", "{{roleId}}"]
+            }
+          }
+        },
+        {
+          "name": "Untag modules from role",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roleId\": {{roleId}},\n  \"moduleIds\": [3]\n}",
+              "options": { "raw": { "language": "json" } }
             },
-            "description": "Authorization check: without a bearer token this returns 401. With a token whose role lacks the Identity module it returns 403."
+            "url": {
+              "raw": "{{baseUrl}}/api/Role/UntagModule",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "Role", "UntagModule"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Departments",
+      "item": [
+        {
+          "name": "List departments",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/User/GetAllDepartments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "User", "GetAllDepartments"]
+            }
+          }
+        },
+        {
+          "name": "Create department",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Maintenance\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/User/AddNewDepartment",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "User", "AddNewDepartment"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Modules",
+      "item": [
+        {
+          "name": "List modules",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/Module/GetAllModules",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "Module", "GetAllModules"]
+            }
           }
         }
       ]
@@ -222,8 +400,7 @@
               "raw": "{{baseUrl}}/openapi/v1.json",
               "host": ["{{baseUrl}}"],
               "path": ["openapi", "v1.json"]
-            },
-            "description": "Available only when ASPNETCORE_ENVIRONMENT=Development."
+            }
           }
         }
       ]

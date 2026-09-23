@@ -8,6 +8,11 @@ namespace Ultramaverick.Identity.Application.Commands.Authentication
     {
         private const string InvalidCredentials = "Username or Password is incorrect!";
 
+        // A syntactically valid PBKDF2 hash used when the user does not exist, so the
+        // password is always verified and response timing does not reveal existence.
+        private const string DummyHash =
+            "PBKDF2;SHA256;210000;AAAAAAAAAAAAAAAAAAAAAA==;AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+
         private readonly IUserRepository _users;
         private readonly IRoleRepository _roles;
         private readonly IModuleRepository _modules;
@@ -35,10 +40,12 @@ namespace Ultramaverick.Identity.Application.Commands.Authentication
         {
             var user = await _users.GetByUserNameAsync(request.UserName.Trim(), ct);
 
-            if (user is null || !user.IsActive)
-                return Result<AuthenticateResponse>.Failure(InvalidCredentials);
+            // Always run the hash verification, even when the user is missing, so the
+            // response time does not reveal whether the account exists.
+            var encodedHash = user?.Password.Value ?? DummyHash;
+            var passwordOk = _hasher.Verify(request.Password, encodedHash);
 
-            if (!_hasher.Verify(request.Password, user.Password.Value))
+            if (user is null || !user.IsActive || !passwordOk)
                 return Result<AuthenticateResponse>.Failure(InvalidCredentials);
 
             var role = await _roles.GetByIdAsync(user.RoleId, ct);

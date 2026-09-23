@@ -13,5 +13,11 @@
 
         Task RevokeAsync(string token, CancellationToken ct);
         Task RevokeAllForUserAsync(int userId, CancellationToken ct);
+
+        /// <summary>
+        /// Deletes tokens that expired, or were consumed or revoked, before <paramref name="olderThanUtc"/>.
+        /// Returns the number of rows removed.
+        /// </summary>
+        Task<int> PruneAsync(DateTime olderThanUtc, CancellationToken ct);
     }
 }
