@@ -104,6 +104,15 @@ namespace Ultramaverick.Identity.Persistence.Repositories
                      && x.ExpiresAtUtc > now, ct);
         }
 
+        public async Task<int> PruneAsync(DateTime olderThanUtc, CancellationToken ct)
+        {
+            return await _context.RefreshTokens
+                .Where(x => x.ExpiresAtUtc < olderThanUtc
+                            || (x.ConsumedAtUtc != null && x.ConsumedAtUtc < olderThanUtc)
+                            || (x.RevokedAtUtc != null && x.RevokedAtUtc < olderThanUtc))
+                .ExecuteDeleteAsync(ct);
+        }
+
         private static string Hash(string token) =>
             Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(token)));
     }

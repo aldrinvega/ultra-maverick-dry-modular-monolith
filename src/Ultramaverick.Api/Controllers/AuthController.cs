@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Ultramaverick.Api.Errors;
 using Ultramaverick.Identity.Application.Commands.Authentication;
 using Ultramaverick.Identity.Application.Models;
@@ -16,6 +17,7 @@ namespace Ultramaverick.Api.Controllers
         public AuthController(IMediator mediator) => _mediator = mediator;
 
         [AllowAnonymous]
+        [EnableRateLimiting("login")]
         [HttpPost("authenticate")]
         public async Task<IActionResult> Authenticate(
             [FromBody] AuthenticateRequest request, CancellationToken ct)

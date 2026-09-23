@@ -3,13 +3,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ultramaverick.Api.Authorization;
 using Ultramaverick.Api.Errors;
+using Ultramaverick.Identity.Application.Commands.Departments;
 using Ultramaverick.Identity.Application.Models;
 using Ultramaverick.Identity.Application.Queries.Departments;
 
 namespace Ultramaverick.Api.Controllers
 {
     /// <summary>
-    /// Department read endpoints. They live under api/User because that is where the
+    /// Department endpoints. They live under api/User because that is where the
     /// legacy API exposed them; the route prefix is preserved deliberately.
     /// </summary>
     [ApiController]
@@ -20,6 +21,8 @@ namespace Ultramaverick.Api.Controllers
         private readonly IMediator _mediator;
 
         public DepartmentsController(IMediator mediator) => _mediator = mediator;
+
+        // ---------------------------------------------------------------- reads
 
         [HttpGet("GetAllDepartments")]
         public async Task<ActionResult<PagedResult<DepartmentDto>>> GetAll(
@@ -57,5 +60,27 @@ namespace Ultramaverick.Api.Controllers
         [HttpGet("GetAllDepartmentById/{id}")]
         public async Task<IActionResult> GetById(int id, CancellationToken ct)
             => (await _mediator.Send(new GetDepartmentByIdQuery(id), ct)).ToOkOrNotFound();
+
+        // --------------------------------------------------------------- writes
+
+        [HttpPost("AddNewDepartment")]
+        public async Task<IActionResult> Create(
+            [FromBody] CreateDepartmentCommand command, CancellationToken ct)
+            => (await _mediator.Send(command, ct)).ToOk();
+
+        [HttpPut("UpdateDepartmentInfo/{id}")]
+        public async Task<IActionResult> Update(
+            int id, [FromBody] UpdateDepartmentCommand command, CancellationToken ct)
+            => id != command.DepartmentId
+                ? ResultExtensions.BadRequestError("Route id and body id must match.")
+                : (await _mediator.Send(command, ct)).ToNoContent();
+
+        [HttpPut("InActiveDepartment/{id}")]
+        public async Task<IActionResult> Deactivate(int id, CancellationToken ct)
+            => (await _mediator.Send(new SetDepartmentActiveCommand(id, false), ct)).ToNoContent();
+
+        [HttpPut("ActivateDepartment/{id}")]
+        public async Task<IActionResult> Activate(int id, CancellationToken ct)
+            => (await _mediator.Send(new SetDepartmentActiveCommand(id, true), ct)).ToNoContent();
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ultramaverick.Api.Authorization;
 using Ultramaverick.Api.Errors;
+using Ultramaverick.Identity.Application.Commands.Modules;
 using Ultramaverick.Identity.Application.Models;
 using Ultramaverick.Identity.Application.Queries.Modules;
 
@@ -16,6 +17,8 @@ namespace Ultramaverick.Api.Controllers
         private readonly IMediator _mediator;
 
         public ModulesController(IMediator mediator) => _mediator = mediator;
+
+        // ---------------------------------------------------------------- reads
 
         [HttpGet("GetAllModules")]
         public async Task<ActionResult<PagedResult<ModuleDto>>> GetAll(
@@ -62,5 +65,27 @@ namespace Ultramaverick.Api.Controllers
         [HttpGet("GetById/{id}")]
         public async Task<IActionResult> GetById(int id, CancellationToken ct)
             => (await _mediator.Send(new GetModuleByIdQuery(id), ct)).ToOkOrNotFound();
+
+        // --------------------------------------------------------------- writes
+
+        [HttpPost("AddNewModule")]
+        public async Task<IActionResult> Create(
+            [FromBody] CreateModuleCommand command, CancellationToken ct)
+            => (await _mediator.Send(command, ct)).ToOk();
+
+        [HttpPut("UpdateModule/{id}")]
+        public async Task<IActionResult> Update(
+            int id, [FromBody] UpdateModuleCommand command, CancellationToken ct)
+            => id != command.ModuleId
+                ? ResultExtensions.BadRequestError("Route id and body id must match.")
+                : (await _mediator.Send(command, ct)).ToNoContent();
+
+        [HttpPut("InActiveModule/{id}")]
+        public async Task<IActionResult> Deactivate(int id, CancellationToken ct)
+            => (await _mediator.Send(new SetModuleActiveCommand(id, false), ct)).ToNoContent();
+
+        [HttpPut("ActivateModule/{id}")]
+        public async Task<IActionResult> Activate(int id, CancellationToken ct)
+            => (await _mediator.Send(new SetModuleActiveCommand(id, true), ct)).ToNoContent();
     }
 }
