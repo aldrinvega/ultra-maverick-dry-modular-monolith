@@ -56,6 +56,9 @@ public sealed class ModuleRepository : IModuleRepository
     public Task<int> CountAsync(string? search, bool? isActive, CancellationToken ct)
         => BuildQuery(search, isActive).CountAsync(ct);
 
+    public async Task AddAsync(Module module, CancellationToken ct)
+        => await _context.Modules.AddAsync(module, ct);
+
     private IQueryable<Module> BuildQuery(string? search, bool? isActive)
     {
         var query = _context.Modules.AsNoTracking();

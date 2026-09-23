@@ -18,6 +18,7 @@ namespace Ultramaverick.Identity.Persistence
         public DbSet<RoleModule> RoleModules => Set<RoleModule>();
         public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
         public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
+        public DbSet<ProcessedEvent> ProcessedEvents => Set<ProcessedEvent>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

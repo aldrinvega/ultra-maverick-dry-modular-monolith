@@ -13,5 +13,6 @@ namespace Ultramaverick.Identity.Application.Abstractions
 
         Task<IReadOnlyList<Module>> ListAsync(string? search, bool? isActive, int skip, int take, CancellationToken ct);
         Task<int> CountAsync(string? search, bool? isActive, CancellationToken ct);
+        Task AddAsync(Module module, CancellationToken ct);
     }
 }
