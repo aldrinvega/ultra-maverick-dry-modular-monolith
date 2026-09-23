@@ -21,6 +21,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Modules\Identity\Ultramaverick.Identity.Domain\Ultramaverick.Identity.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Identity\Ultramaverick.Identity.Application\Ultramaverick.Identity.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Identity\Ultramaverick.Identity.Infrastructure\Ultramaverick.Identity.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="Xunit" />
   </ItemGroup>
 

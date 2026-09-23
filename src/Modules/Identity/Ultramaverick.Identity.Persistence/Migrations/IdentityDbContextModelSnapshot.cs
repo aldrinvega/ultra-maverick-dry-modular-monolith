@@ -354,6 +354,23 @@ namespace Ultramaverick.Identity.Persistence.Migrations
                     b.ToTable("OutboxMessages", "Infrastructure");
                 });
 
+            modelBuilder.Entity("Ultramaverick.Identity.Persistence.Entities.ProcessedEvent", b =>
+                {
+                    b.Property<Guid>("EventId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ProjectionName")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<DateTime>("ProcessedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("EventId", "ProjectionName");
+
+                    b.ToTable("ProcessedEvents", "Infrastructure");
+                });
+
             modelBuilder.Entity("Ultramaverick.Identity.Persistence.Entities.RefreshToken", b =>
                 {
                     b.Property<int>("Id")

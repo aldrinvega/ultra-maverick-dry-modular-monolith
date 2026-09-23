@@ -4,6 +4,10 @@ using Microsoft.Extensions.Hosting;
 using System.Text;
 using Ultramaverick.Identity.Application.Abstractions;
 using Ultramaverick.Identity.Infrastructure.BackgroundServices;
+<<<<<<< HEAD
+=======
+using Ultramaverick.Identity.Infrastructure.Events;
+>>>>>>> origin/main
 using Ultramaverick.Identity.Infrastructure.Options;
 using Ultramaverick.Identity.Infrastructure.Security;
 
@@ -26,7 +30,14 @@ namespace Ultramaverick.Identity.Infrastructure
             services.AddScoped<ITokenService, JwtTokenService>();
             services.AddScoped<ICurrentUser, CurrentUser>();
 
+<<<<<<< HEAD
             services.AddHostedService<RefreshTokenPrunerService>();
+=======
+            // Event dispatch and the outbox publisher run on the Application abstractions;
+            // the concrete stores live in Persistence and are registered by AddIdentityPersistence.
+            services.AddScoped<IEventDispatcher, EventDispatcher>();
+            services.AddHostedService<OutboxPublisherService>();
+>>>>>>> origin/main
 
             return services;
         }

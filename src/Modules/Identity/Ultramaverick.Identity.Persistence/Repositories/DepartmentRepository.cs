@@ -12,6 +12,12 @@ public sealed class DepartmentRepository : IDepartmentRepository
     public Task<Department?> GetByIdAsync(int departmentId, CancellationToken ct)
         => _context.Departments.FirstOrDefaultAsync(d => d.Id == departmentId, ct);
 
+    public Task<Department?> GetByNameAsync(string name, CancellationToken ct)
+        => _context.Departments.FirstOrDefaultAsync(d => d.Name == name, ct);
+
+    public async Task AddAsync(Department department, CancellationToken ct)
+        => await _context.Departments.AddAsync(department, ct);
+
     public async Task<IReadOnlyList<Department>> ListAsync(
         string? search, bool? isActive, int skip, int take, CancellationToken ct)
         => await BuildQuery(search, isActive).OrderBy(d => d.Id).Skip(skip).Take(take).ToListAsync(ct);
