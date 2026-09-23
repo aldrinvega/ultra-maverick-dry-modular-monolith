@@ -131,6 +131,7 @@ internal sealed class FakeRefreshTokenStore : IRefreshTokenStore
         => Task.FromResult<int?>(null);
     public Task RevokeAsync(string token, CancellationToken ct) => Task.CompletedTask;
     public Task RevokeAllForUserAsync(int userId, CancellationToken ct) => Task.CompletedTask;
+    public Task<int> PruneAsync(DateTime olderThanUtc, CancellationToken ct) => Task.FromResult(0);
 }
 
 internal sealed class FakeCurrentUser : ICurrentUser
