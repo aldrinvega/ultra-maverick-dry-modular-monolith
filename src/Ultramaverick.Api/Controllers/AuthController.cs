@@ -1,9 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Ultramaverick.Identity.Application.Commands.Authenticate;
-using Ultramaverick.Identity.Application.Commands.RefreshToken;
-using Ultramaverick.Identity.Application.Commands.RevokeToken;
+using Ultramaverick.Identity.Application.Commands.Authentication;
 using Ultramaverick.Identity.Application.Models;
 
 namespace Ultramaverick.Api.Controllers

@@ -1,56 +1,54 @@
-﻿using MediatR;
+using MediatR;
 using Ultramaverick.Identity.Application.Abstractions;
 using Ultramaverick.Identity.Application.Models;
 
-namespace Ultramaverick.Identity.Application.Commands.RefreshToken
+namespace Ultramaverick.Identity.Application.Commands.Authentication
 {
-    public sealed class RefreshTokenCommandHandler
-        : IRequestHandler<RefreshTokenCommand, Result<AuthenticateResponse>>
+    public sealed class AuthenticateCommandHandler : IRequestHandler<AuthenticateCommand, Result<AuthenticateResponse>>
     {
-        private const string InvalidToken = "Refresh token is invalid, expired, or already used.";
+        private const string InvalidCredentials = "Username or Password is incorrect!";
 
         private readonly IUserRepository _users;
         private readonly IRoleRepository _roles;
         private readonly IModuleRepository _modules;
+        private readonly IPasswordHasher _hasher;
         private readonly ITokenService _tokens;
         private readonly IRefreshTokenStore _refreshTokens;
 
-        public RefreshTokenCommandHandler(
+        public AuthenticateCommandHandler(
             IUserRepository users,
             IRoleRepository roles,
             IModuleRepository modules,
+            IPasswordHasher hasher,
             ITokenService tokens,
             IRefreshTokenStore refreshTokens)
         {
             _users = users;
             _roles = roles;
             _modules = modules;
+            _hasher = hasher;
             _tokens = tokens;
             _refreshTokens = refreshTokens;
         }
 
-        public async Task<Result<AuthenticateResponse>> Handle(
-            RefreshTokenCommand request, CancellationToken ct)
+        public async Task<Result<AuthenticateResponse>> Handle(AuthenticateCommand request, CancellationToken ct)
         {
-            var newRefreshToken = _tokens.CreateRefreshToken();
-            var newExpiresAtUtc = DateTime.UtcNow.AddDays(_tokens.RefreshTokenDays);
+            var user = await _users.GetByUserNameAsync(request.UserName.Trim(), ct);
 
-            // Atomic rotation: the presented token is consumed and its replacement issued
-            // in a single transaction, so a failure cannot leave the user without a token.
-            var userId = await _refreshTokens.RotateAsync(
-                request.RefreshToken, newRefreshToken, newExpiresAtUtc, ct);
-
-            if (userId is null)
-                return Result<AuthenticateResponse>.Failure(InvalidToken);
-
-            var user = await _users.GetByIdAsync(userId.Value, ct);
             if (user is null || !user.IsActive)
-                return Result<AuthenticateResponse>.Failure(InvalidToken);
+                return Result<AuthenticateResponse>.Failure(InvalidCredentials);
+
+            if (!_hasher.Verify(request.Password, user.Password.Value))
+                return Result<AuthenticateResponse>.Failure(InvalidCredentials);
 
             var role = await _roles.GetByIdAsync(user.RoleId, ct);
             var moduleNames = await _modules.GetModuleNamesForRoleAsync(user.RoleId, ct);
 
             var accessToken = _tokens.CreateAccessToken(user, moduleNames);
+            var refreshToken = _tokens.CreateRefreshToken();
+
+            await _refreshTokens.IssueAsync(
+                user.Id, refreshToken, DateTime.UtcNow.AddDays(_tokens.RefreshTokenDays), ct);
 
             return Result<AuthenticateResponse>.Success(new AuthenticateResponse(
                 user.Id,
@@ -60,7 +58,7 @@ namespace Ultramaverick.Identity.Application.Commands.RefreshToken
                 role?.Name ?? string.Empty,
                 accessToken.Value,
                 accessToken.ExpiresAtUtc,
-                newRefreshToken));
+                refreshToken));
         }
     }
 }

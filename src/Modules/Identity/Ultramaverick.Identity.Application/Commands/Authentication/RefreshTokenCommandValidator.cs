@@ -1,6 +1,6 @@
-﻿using FluentValidation;
+using FluentValidation;
 
-namespace Ultramaverick.Identity.Application.Commands.RefreshToken
+namespace Ultramaverick.Identity.Application.Commands.Authentication
 {
     public sealed class RefreshTokenCommandValidator : AbstractValidator<RefreshTokenCommand>
     {

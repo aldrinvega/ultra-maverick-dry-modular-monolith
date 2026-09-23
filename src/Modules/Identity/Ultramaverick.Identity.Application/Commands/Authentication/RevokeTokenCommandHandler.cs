@@ -1,8 +1,8 @@
-﻿using MediatR;
+using MediatR;
 using Ultramaverick.Identity.Application.Abstractions;
 using Ultramaverick.Identity.Application.Models;
 
-namespace Ultramaverick.Identity.Application.Commands.RevokeToken
+namespace Ultramaverick.Identity.Application.Commands.Authentication
 {
     public sealed class RevokeTokenCommandHandler : IRequestHandler<RevokeTokenCommand, Result>
     {

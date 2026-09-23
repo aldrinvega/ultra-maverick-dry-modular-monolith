@@ -1,6 +1,6 @@
-﻿using FluentValidation;
+using FluentValidation;
 
-namespace Ultramaverick.Identity.Application.Commands.RevokeToken
+namespace Ultramaverick.Identity.Application.Commands.Authentication
 {
     public sealed class RevokeTokenCommandValidator : AbstractValidator<RevokeTokenCommand>
     {

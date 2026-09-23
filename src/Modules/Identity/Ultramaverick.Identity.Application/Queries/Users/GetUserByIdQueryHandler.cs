@@ -2,7 +2,7 @@ using MediatR;
 using Ultramaverick.Identity.Application.Abstractions;
 using Ultramaverick.Identity.Application.Models;
 
-namespace Ultramaverick.Identity.Application.Queries
+namespace Ultramaverick.Identity.Application.Queries.Users
 {
     public sealed class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<UserDto>>
     {
