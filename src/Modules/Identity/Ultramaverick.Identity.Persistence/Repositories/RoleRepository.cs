@@ -28,6 +28,48 @@ public sealed class RoleRepository : IRoleRepository
     public async Task AddAsync(Role role, CancellationToken ct)
         => await _context.Roles.AddAsync(role, ct);
 
+    public async Task<IReadOnlyList<int>> GetModuleIdsForRoleAsync(int roleId, CancellationToken ct)
+        => await _context.RoleModules
+            .Where(rm => rm.RoleId == roleId && rm.IsActive)
+            .Select(rm => rm.ModuleId)
+            .ToListAsync(ct);
+
+    public async Task SetModulesAsync(
+        int roleId, IReadOnlyCollection<int> moduleIds, int modifiedByUserId, CancellationToken ct)
+    {
+        var desired = moduleIds.Distinct().ToHashSet();
+
+        var existing = await _context.RoleModules
+            .Where(rm => rm.RoleId == roleId)
+            .ToListAsync(ct);
+
+        foreach (var moduleId in desired)
+        {
+            var link = existing.FirstOrDefault(rm => rm.ModuleId == moduleId);
+
+            if (link is null)
+                _context.RoleModules.Add(RoleModule.Create(roleId, moduleId));
+            else if (!link.IsActive)
+                link.Activate(modifiedByUserId);
+        }
+
+        foreach (var link in existing.Where(rm => rm.IsActive && !desired.Contains(rm.ModuleId)))
+            link.Deactivate(modifiedByUserId);
+    }
+
+    public async Task DeactivateModulesAsync(
+        int roleId, IReadOnlyCollection<int> moduleIds, int modifiedByUserId, CancellationToken ct)
+    {
+        var target = moduleIds.Distinct().ToHashSet();
+
+        var links = await _context.RoleModules
+            .Where(rm => rm.RoleId == roleId && target.Contains(rm.ModuleId) && rm.IsActive)
+            .ToListAsync(ct);
+
+        foreach (var link in links)
+            link.Deactivate(modifiedByUserId);
+    }
+
     private IQueryable<Role> BuildQuery(string? search, bool? isActive)
     {
         var query = _context.Roles.AsNoTracking();

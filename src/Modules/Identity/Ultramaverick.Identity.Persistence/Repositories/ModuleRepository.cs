@@ -38,6 +38,17 @@ public sealed class ModuleRepository : IModuleRepository
             .ToListAsync(ct);
     }
 
+    public async Task<IReadOnlyList<int>> GetExistingIdsAsync(
+        IReadOnlyCollection<int> moduleIds, CancellationToken ct)
+    {
+        var ids = moduleIds.Distinct().ToArray();
+
+        return await _context.Modules
+            .Where(m => ids.Contains(m.Id))
+            .Select(m => m.Id)
+            .ToListAsync(ct);
+    }
+
     public async Task<IReadOnlyList<Module>> ListAsync(
         string? search, bool? isActive, int skip, int take, CancellationToken ct)
         => await BuildQuery(search, isActive).OrderBy(m => m.Id).Skip(skip).Take(take).ToListAsync(ct);
