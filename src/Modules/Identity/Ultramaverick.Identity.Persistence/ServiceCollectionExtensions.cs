@@ -19,6 +19,7 @@ namespace Ultramaverick.Identity.Persistence
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             services.AddScoped<IModuleRepository, ModuleRepository>();
+            services.AddScoped<IMainMenuRepository, MainMenuRepository>();
             services.AddScoped<IIdentityUnitOfWork, IdentityUnitOfWork>();
             services.AddScoped<IRefreshTokenStore, RefreshTokenStore>();
 
