@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Ultramaverick.Api.Authorization;
 using Ultramaverick.Identity.Application.Commands.Users;
 using Ultramaverick.Identity.Application.Models;
-using Ultramaverick.Identity.Application.Queries;
+using Ultramaverick.Identity.Application.Queries.Users;
 
 namespace Ultramaverick.Api.Controllers
 {

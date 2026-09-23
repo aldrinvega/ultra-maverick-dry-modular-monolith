@@ -1,9 +1,9 @@
-﻿using FluentValidation;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Ultramaverick.Identity.Application.Commands.Authenticate
+namespace Ultramaverick.Identity.Application.Commands.Authentication
 {
     public sealed class AuthenticateCommandValidator : AbstractValidator<AuthenticateCommand>
     {
