@@ -22,6 +22,22 @@ public sealed class ModuleRepository : IModuleRepository
             .ToListAsync(ct);
     }
 
+    public Task<Module?> GetByIdAsync(int moduleId, CancellationToken ct)
+        => _context.Modules.FirstOrDefaultAsync(m => m.Id == moduleId, ct);
+
+    public async Task<IReadOnlyList<Module>> GetByRoleIdAsync(int roleId, CancellationToken ct)
+    {
+        var moduleIds = _context.RoleModules
+            .Where(rm => rm.RoleId == roleId && rm.IsActive)
+            .Select(rm => rm.ModuleId);
+
+        return await _context.Modules
+            .AsNoTracking()
+            .Where(m => moduleIds.Contains(m.Id))
+            .OrderBy(m => m.Id)
+            .ToListAsync(ct);
+    }
+
     public async Task<IReadOnlyList<Module>> ListAsync(
         string? search, bool? isActive, int skip, int take, CancellationToken ct)
         => await BuildQuery(search, isActive).OrderBy(m => m.Id).Skip(skip).Take(take).ToListAsync(ct);
