@@ -90,6 +90,9 @@ internal sealed class FakeModuleRepository : IModuleRepository
 
     public Task<int> CountAsync(string? search, bool? isActive, CancellationToken ct)
         => throw new NotSupportedException();
+
+    public Task AddAsync(Module module, CancellationToken ct)
+        => throw new NotSupportedException();
 }
 
 internal sealed class FakePasswordHasher : IPasswordHasher
