@@ -31,6 +31,7 @@ namespace Ultramaverick.Identity.Infrastructure
             // the concrete stores live in Persistence and are registered by AddIdentityPersistence.
             services.AddScoped<IEventDispatcher, EventDispatcher>();
             services.AddHostedService<OutboxPublisherService>();
+            services.AddHostedService<RefreshTokenPrunerService>();
 
             return services;
         }
