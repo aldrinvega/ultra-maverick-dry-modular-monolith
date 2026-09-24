@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Shared\Ultramaverick.SharedKernel\Ultramaverick.SharedKernel.csproj" />
+    <ProjectReference Include="..\Ultramaverick.Catalog.Domain\Ultramaverick.Catalog.Domain.csproj" />
   </ItemGroup>
 
 </Project>

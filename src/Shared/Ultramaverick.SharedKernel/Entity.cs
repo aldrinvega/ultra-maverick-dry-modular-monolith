@@ -1,4 +1,4 @@
-﻿namespace Ultramaverick.Identity.Domain.Common
+﻿namespace Ultramaverick.SharedKernel
 {
     public abstract class Entity
     {

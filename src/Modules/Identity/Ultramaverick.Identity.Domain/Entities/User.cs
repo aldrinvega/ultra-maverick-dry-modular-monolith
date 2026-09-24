@@ -1,6 +1,6 @@
-﻿using Ultramaverick.Identity.Domain.Common;
-using Ultramaverick.Identity.Domain.Events;
+﻿using Ultramaverick.Identity.Domain.Events;
 using Ultramaverick.Identity.Domain.ValueObjects;
+using Ultramaverick.SharedKernel;
 
 namespace Ultramaverick.Identity.Domain.Entities
 {

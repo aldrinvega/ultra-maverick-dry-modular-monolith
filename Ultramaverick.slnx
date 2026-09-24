@@ -3,11 +3,20 @@
     <Project Path="src/Ultramaverick.Api/Ultramaverick.Api.csproj" />
   </Folder>
   <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Catalog/">
+    <Project Path="src/Modules/Catalog/Ultramaverick.Catalog.Application/Ultramaverick.Catalog.Application.csproj" />
+    <Project Path="src/Modules/Catalog/Ultramaverick.Catalog.Domain/Ultramaverick.Catalog.Domain.csproj" />
+    <Project Path="src/Modules/Catalog/Ultramaverick.Catalog.Infrastructure/Ultramaverick.Catalog.Infrastructure.csproj" />
+    <Project Path="src/Modules/Catalog/Ultramaverick.Catalog.Persistence/Ultramaverick.Catalog.Persistence.csproj" />
+  </Folder>
   <Folder Name="/src/Modules/Identity/">
     <Project Path="src/Modules/Identity/Ultramaverick.Identity.Application/Ultramaverick.Identity.Application.csproj" />
     <Project Path="src/Modules/Identity/Ultramaverick.Identity.Domain/Ultramaverick.Identity.Domain.csproj" />
     <Project Path="src/Modules/Identity/Ultramaverick.Identity.Infrastructure/Ultramaverick.Identity.Infrastructure.csproj" />
     <Project Path="src/Modules/Identity/Ultramaverick.Identity.Persistence/Ultramaverick.Identity.Persistence.csproj" />
+  </Folder>
+  <Folder Name="/src/Shared/">
+    <Project Path="src/Shared/Ultramaverick.SharedKernel/Ultramaverick.SharedKernel.csproj" />
   </Folder>
   <Folder Name="/test/">
     <Project Path="tests/Ultramaverick.Api.AuthorizationTests/Ultramaverick.Api.AuthorizationTests.csproj" />
