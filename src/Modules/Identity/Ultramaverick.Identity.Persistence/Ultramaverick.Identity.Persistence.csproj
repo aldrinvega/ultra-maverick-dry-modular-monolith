@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Shared\Ultramaverick.SharedKernel\Ultramaverick.SharedKernel.csproj" />
     <ProjectReference Include="..\Ultramaverick.Identity.Application\Ultramaverick.Identity.Application.csproj" />
     <ProjectReference Include="..\Ultramaverick.Identity.Domain\Ultramaverick.Identity.Domain.csproj" />
   </ItemGroup>
