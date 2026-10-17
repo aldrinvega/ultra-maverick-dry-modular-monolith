@@ -1,6 +1,6 @@
 using FluentValidation;
 using MediatR;
-using AppValidationException = Ultramaverick.Identity.Application.Exceptions.ValidationException;
+using AppValidationException = Ultramaverick.SharedKernel.ValidationException;
 
 namespace Ultramaverick.Identity.Application.Behaviors
 {
