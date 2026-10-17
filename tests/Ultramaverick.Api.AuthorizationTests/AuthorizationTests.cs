@@ -1,4 +1,4 @@
-using System.Net;
+﻿using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 
@@ -6,6 +6,8 @@ namespace Ultramaverick.Api.AuthorizationTests;
 
 public class AuthorizationTests : IClassFixture<ApiFixture>
 {
+    private const string CatalogListRoute = "/api/RawMaterial/GetAllRawMaterialsWithPagination";
+
     private readonly ApiFixture _fixture;
 
     public AuthorizationTests(ApiFixture fixture) => _fixture = fixture;
@@ -40,6 +42,40 @@ public class AuthorizationTests : IClassFixture<ApiFixture>
             new AuthenticationHeaderValue("Bearer", _fixture.CreateToken("Identity"));
 
         var response = await client.GetAsync("/api/User/GetById/1");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task A_catalog_endpoint_without_a_token_returns_401()
+    {
+        var client = _fixture.CreateClient();
+
+        var response = await client.GetAsync(CatalogListRoute);
+
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task A_token_without_the_catalog_module_returns_403()
+    {
+        var client = _fixture.CreateClient();
+        client.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", _fixture.CreateToken("Identity", "Warehouse"));
+
+        var response = await client.GetAsync(CatalogListRoute);
+
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task A_token_with_the_catalog_module_is_allowed()
+    {
+        var client = _fixture.CreateClient();
+        client.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", _fixture.CreateToken("Catalog"));
+
+        var response = await client.GetAsync(CatalogListRoute);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
