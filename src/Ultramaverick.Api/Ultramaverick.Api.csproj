@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <UserSecretsId>d4d8c524-a7c3-4327-ab74-99b55ea8b982</UserSecretsId>
@@ -20,6 +20,9 @@
     <ProjectReference Include="..\Modules\Identity\Ultramaverick.Identity.Application\Ultramaverick.Identity.Application.csproj" />
     <ProjectReference Include="..\Modules\Identity\Ultramaverick.Identity.Infrastructure\Ultramaverick.Identity.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Identity\Ultramaverick.Identity.Persistence\Ultramaverick.Identity.Persistence.csproj" />
+    <ProjectReference Include="..\Modules\Catalog\Ultramaverick.Catalog.Application\Ultramaverick.Catalog.Application.csproj" />
+    <ProjectReference Include="..\Modules\Catalog\Ultramaverick.Catalog.Infrastructure\Ultramaverick.Catalog.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modules\Catalog\Ultramaverick.Catalog.Persistence\Ultramaverick.Catalog.Persistence.csproj" />
   </ItemGroup>
 
 </Project>

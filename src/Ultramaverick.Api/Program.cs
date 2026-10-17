@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +9,11 @@ using Ultramaverick.Identity.Application;
 using Ultramaverick.Identity.Infrastructure;
 using Ultramaverick.Identity.Infrastructure.Options;
 using Ultramaverick.Identity.Infrastructure.Security;
+using Ultramaverick.Api.Integration;
+using Ultramaverick.Catalog.Application;
+using Ultramaverick.Catalog.Application.Abstractions;
+using Ultramaverick.Catalog.Infrastructure;
+using Ultramaverick.Catalog.Persistence;
 using Ultramaverick.Identity.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +21,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddIdentityApplication();
 builder.Services.AddIdentityPersistence(builder.Configuration);
 builder.Services.AddIdentityInfrastructure(builder.Configuration);
+
+builder.Services.AddCatalogApplication();
+builder.Services.AddCatalogPersistence(builder.Configuration);
+builder.Services.AddCatalogInfrastructure(builder.Configuration);
+
+// Bridges Catalog's cross-context department port to Identity's query surface.
+builder.Services.AddScoped<IDepartmentDirectory, CatalogDepartmentDirectory>();
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
