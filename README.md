@@ -45,6 +45,15 @@ Full architecture notes are in the planning repository (`docs/bounded-contexts.m
 | Auth | JWT bearer (HMAC-SHA256), PBKDF2 password hashing |
 | API docs | OpenAPI (development only) |
 
+## Build configuration
+
+Build settings live in two files at the repository root and apply to every project:
+
+- `Directory.Build.props` — `net10.0`, `Nullable`, `ImplicitUsings`, `LangVersion=latest`, and **warnings as errors** (`TreatWarningsAsErrors`, with analyzers and code style enforced in build).
+- `Directory.Packages.props` — **central package management**: every `PackageReference` omits its `Version`; versions are declared once here (with transitive pinning). This is why the individual project files carry no `Version=` attributes.
+
+Because warnings are errors, `dotnet build` fails on analyzer, code-style, or NuGet-audit warnings (for example a vulnerable transitive package). Fix the warning rather than suppressing it.
+
 ## Repository layout
 
 ```
@@ -56,6 +65,13 @@ src/
       Ultramaverick.Identity.Application/     commands, queries, handlers, validators, ports
       Ultramaverick.Identity.Persistence/     DbContext, configurations, repositories, migrations
       Ultramaverick.Identity.Infrastructure/  password hasher, JWT token service, current user
+    Catalog/
+      Ultramaverick.Catalog.Domain/           entities, value objects, domain events
+      Ultramaverick.Catalog.Application/      commands, queries, handlers, validators, ports
+      Ultramaverick.Catalog.Persistence/      DbContext, configurations, repositories, migrations
+      Ultramaverick.Catalog.Infrastructure/   adapters
+  Shared/
+    Ultramaverick.SharedKernel/               Entity, AggregateRoot, IDomainEvent, shared primitives
 tests/
   Ultramaverick.Identity.UnitTests/
   Ultramaverick.Identity.IntegrationTests/
@@ -239,7 +255,7 @@ The target system has nine bounded contexts:
 | Context | Status |
 | --- | --- |
 | Identity | In progress (login, user admin, authorization) |
-| Catalog | Not started |
+| Catalog | In progress (module skeleton scaffolded; 21 tables pending) |
 | Procurement | Not started |
 | Quality | Not started |
 | Laboratory | Not started |
@@ -248,15 +264,15 @@ The target system has nine bounded contexts:
 | Manufacturing | Not started |
 | Reporting | Not started |
 
-Planned for Identity: role/module/department endpoints, refresh and revoke endpoints, the outbox publisher, and tests.
+Planned for Identity: the outbox publisher and further module endpoints. The test suites are in place (see [Testing](#testing)).
 
 ## Testing
 
-Test projects exist but contain no tests yet. Planned:
+The suites currently pass **47 tests**:
 
-- Unit: password hasher, entity invariants, authenticator handler
-- Integration: handlers against a disposable database (Testcontainers)
-- Authorization: 401/403 per protected route
+- Unit (35): password hasher, entity invariants, and use-case handlers
+- Integration (8): handlers and repositories against a disposable database
+- Authorization (4): 401/403 per protected route
 
 ```powershell
 dotnet test
