@@ -263,3 +263,44 @@ Known follow-up: Catalog's outbox rows are written but not yet dispatched; the m
 | Domain entities | — | **27** (6 Identity + 21 Catalog) |
 | Bounded contexts done | 0 | **2** (Identity, Catalog); 7 not started |
 | Tests | none meaningful | **71 green, run in CI** |
+
+---
+
+## 10. Update — Wave 3 (Procurement) complete
+
+**Reported on:** 2026-10-18
+**Branch / HEAD:** `feature/procurement-module` @ `f82f2b9`
+**Build:** `dotnet build Ultramaverick.slnx` → **succeeded**, 0 warnings, 0 errors
+**Tests:** `dotnet test Ultramaverick.slnx` → **83 passed, 0 failed** (10 Procurement unit + 2 Procurement integration + 16 Catalog unit + 5 Catalog integration + 35 Identity unit + 8 Identity integration + 7 authorization)
+
+### 10.1 Wave 3 — Procurement module
+
+Full four-layer Procurement module (guide §6), modelled on the approved Catalog module:
+
+- **Domain** — `PurchaseOrder` aggregate with `PurchaseOrderLine`; `PurchaseOrderChanged` (Created/LineAdded) and `PurchaseOrderReceived` events. `SupplierId`/`ItemId`/`UomId` are scalars, not cross-module foreign keys (guide §6.1).
+- **Application** — `CreatePurchaseOrderCommand` (+ handler + validator), `GetPurchaseOrdersQuery` (+ handler), `PurchaseOrderDto`, `Result`/`PagedResult`, `ValidationBehavior`, and the ports `IProcurementUnitOfWork`, `IPurchaseOrderRepository`, `ISupplierLookup`, `ICurrentUser`.
+- **Persistence** — `ProcurementDbContext` (schema `Procurement`) with the transactional outbox, 4 configurations, migration `20261017231822_InitialProcurement`, repositories, and `SupplierLookup` (read-only cross-schema query into `Catalog.Suppliers`).
+- **Infrastructure** — `ProcurementCurrentUser`.
+- **Api** — `PurchaseOrdersController` (routes `api/Ordering/AddPurchaseOrder`, `api/Ordering/GetPurchaseOrders`), composition-root wiring, and `Policies.Procurement`.
+
+Notable decisions:
+
+- **Per-module outbox continues.** Procurement owns `Procurement.OutboxMessages` and `Procurement.ProcessedEvents`, matching the Wave 2 decision; no shared `Infrastructure` schema.
+- **`Policies.Procurement` constant added.** The guide's `Policies.RequireModule("Procurement")` is not a compile-time constant, so `public const string Procurement = "RequireModule:Procurement";` was added beside `Policies.Catalog` and used in the controller's `[Authorize]`. The runtime policy already resolves because `Program.cs`'s module loop already contained `"Procurement"`.
+- **Cross-context supplier check stays a port.** `ISupplierLookup` is implemented in Procurement.Persistence by a read-only `SqlQuery` against `Catalog.Suppliers`; Procurement takes no Catalog project reference.
+- **`RowVersion` concurrency tokens** mirror Catalog's `ItemConfiguration` structure.
+- **`Api.csproj` gained three `ProjectReference`s** to the Procurement projects (Application, Infrastructure, Persistence) — required for the composition root to compile; the file was not in the brief's edit list.
+- **Procurement result mapping lives in the controller file.** The brief allowed only `PurchaseOrdersController.cs` under `src/Ultramaverick.Api/`, so the `.ToOk()` extension for `Ultramaverick.Procurement.Application.Models.Result<T>` is declared as an internal helper in that same file rather than in a new `Errors/` file.
+- **Migration was scaffolded, not applied.** Like Catalog's `InitialCatalog`, `InitialProcurement` was generated with `dotnet ef migrations add` and committed; it is applied only at test runtime by the integration fixture (`MigrateAsync` on a throwaway DB). No production database was touched.
+- **CI** — added `PROCUREMENT_TEST_CONNECTION` alongside `CATALOG_TEST_CONNECTION`.
+
+### 10.2 Coverage vs legacy
+
+| Dimension | Legacy | New (after Wave 3) |
+| --- | --- | --- |
+| Controllers | 30 | **16** (6 Identity + 9 Catalog + 1 Procurement) |
+| HTTP-verb endpoints | 464 | **103** |
+| `DbSet<>` declarations | 62 | **36** (9 Identity + 23 Catalog + 4 Procurement) |
+| Domain entities | — | **29** (6 Identity + 21 Catalog + 2 Procurement) |
+| Bounded contexts done | 0 | **3** (Identity, Catalog, Procurement); 6 not started |
+| Tests | none meaningful | **83 green, run in CI** |
