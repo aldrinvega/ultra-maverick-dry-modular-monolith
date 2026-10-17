@@ -13,7 +13,7 @@ public sealed class GetPurchaseOrdersQueryHandler
 
     public async Task<PagedResult<PurchaseOrderDto>> Handle(GetPurchaseOrdersQuery request, CancellationToken ct)
     {
-        var page = request.Page < 1 ? 1 : request.Page;
+        var page = request.Page < 1 ? 1 : request.Page > 10_000 ? 10_000 : request.Page;
         var pageSize = request.PageSize is < 1 or > 200 ? 20 : request.PageSize;
         var skip = (page - 1) * pageSize;
 

@@ -30,6 +30,7 @@ public sealed class PurchaseOrderRepository : IPurchaseOrderRepository
         if (!string.IsNullOrWhiteSpace(search))
         {
             var term = search.Trim();
+            if (term.Length > 100) term = term[..100];
             query = query.Where(x => x.PoNumber.Contains(term)
                 || (x.PrNumber != null && x.PrNumber.Contains(term)));
         }
