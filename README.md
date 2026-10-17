@@ -71,7 +71,7 @@ src/
       Ultramaverick.Catalog.Persistence/      DbContext, configurations, repositories, migrations
       Ultramaverick.Catalog.Infrastructure/   adapters
   Shared/
-    Ultramaverick.SharedKernel/               Entity, AggregateRoot, IDomainEvent, shared primitives
+    Ultramaverick.SharedKernel/               Entity, IDomainEvent, shared primitives
 tests/
   Ultramaverick.Identity.UnitTests/
   Ultramaverick.Identity.IntegrationTests/
