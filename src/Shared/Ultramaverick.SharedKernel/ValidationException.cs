@@ -1,8 +1,9 @@
-namespace Ultramaverick.Identity.Application.Exceptions
+namespace Ultramaverick.SharedKernel
 {
     /// <summary>
-    /// Thrown by the validation pipeline behavior when one or more validators fail.
-    /// The API maps it to a 400 with the shared validation error shape.
+    /// Thrown by a module's validation pipeline behavior when one or more validators fail.
+    /// It lives in the shared kernel so the API's exception middleware can map failures from
+    /// every module to the same 400 validation shape without referencing each module.
     /// </summary>
     public sealed class ValidationException : Exception
     {

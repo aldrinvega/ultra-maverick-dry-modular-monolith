@@ -1,4 +1,4 @@
-<Solution>
+﻿<Solution>
   <Folder Name="/src/">
     <Project Path="src/Ultramaverick.Api/Ultramaverick.Api.csproj" />
   </Folder>
@@ -20,6 +20,8 @@
   </Folder>
   <Folder Name="/test/">
     <Project Path="tests/Ultramaverick.Api.AuthorizationTests/Ultramaverick.Api.AuthorizationTests.csproj" />
+    <Project Path="tests/Ultramaverick.Catalog.IntegrationTests/Ultramaverick.Catalog.IntegrationTests.csproj" />
+    <Project Path="tests/Ultramaverick.Catalog.UnitTests/Ultramaverick.Catalog.UnitTests.csproj" />
     <Project Path="tests/Ultramaverick.Identity.IntegrationTests/Ultramaverick.Identity.IntegrationTests.csproj" />
     <Project Path="tests/Ultramaverick.Identity.UnitTests/Ultramaverick.Identity.UnitTests.csproj" />
   </Folder>

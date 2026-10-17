@@ -1,8 +1,7 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using AppValidationException = Ultramaverick.Identity.Application.Exceptions.ValidationException;
 
 namespace Ultramaverick.Api.Errors
 {
@@ -38,7 +37,7 @@ namespace Ultramaverick.Api.Errors
             {
                 await _next(context);
             }
-            catch (AppValidationException ex)
+            catch (Ultramaverick.SharedKernel.ValidationException ex)
             {
                 await WriteAsync(context, StatusCodes.Status400BadRequest,
                     new ApiValidationError(ex.Errors));

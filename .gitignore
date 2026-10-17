@@ -41,3 +41,6 @@ Desktop.ini
 .env
 .env.*
 !.env.example
+
+# Binary guide source (markdown is the plan of record)
+docs/*.docx

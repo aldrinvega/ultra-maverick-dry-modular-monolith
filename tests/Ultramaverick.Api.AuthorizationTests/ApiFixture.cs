@@ -1,4 +1,4 @@
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Hosting;
@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Ultramaverick.Catalog.Persistence;
 using Ultramaverick.Identity.Domain.Entities;
 using Ultramaverick.Identity.Domain.ValueObjects;
 using Ultramaverick.Identity.Persistence;
@@ -42,6 +43,12 @@ public sealed class ApiFixture : IAsyncLifetime
         {
             await context.Database.MigrateAsync();
             await SeedAsync(context);
+        }
+
+        // Catalog owns its own schema, so apply its migrations too.
+        await using (var catalogContext = CreateCatalogContext())
+        {
+            await catalogContext.Database.MigrateAsync();
         }
 
         _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
@@ -96,6 +103,15 @@ public sealed class ApiFixture : IAsyncLifetime
             .Options;
 
         return new IdentityDbContext(options);
+    }
+
+    private CatalogDbContext CreateCatalogContext()
+    {
+        var options = new DbContextOptionsBuilder<CatalogDbContext>()
+            .UseSqlServer(ConnectionString)
+            .Options;
+
+        return new CatalogDbContext(options);
     }
 
     private static async Task SeedAsync(IdentityDbContext context)
