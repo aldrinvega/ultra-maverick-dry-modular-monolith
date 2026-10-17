@@ -1,5 +1,6 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Ultramaverick.Catalog.Persistence;
 using Ultramaverick.Procurement.Persistence;
 
 namespace Ultramaverick.Procurement.IntegrationTests;
@@ -26,8 +27,11 @@ public sealed class DatabaseFixture : IAsyncLifetime
             InitialCatalog = $"UltramaverickProcurementTests_{Guid.NewGuid():N}"
         }.ConnectionString;
 
-        await using var context = CreateContext();
-        await context.Database.MigrateAsync();
+        await using (var context = CreateContext())
+            await context.Database.MigrateAsync();
+
+        await using (var catalogContext = CreateCatalogContext())
+            await catalogContext.Database.MigrateAsync();
     }
 
     public async Task DisposeAsync()
@@ -43,5 +47,14 @@ public sealed class DatabaseFixture : IAsyncLifetime
             .Options;
 
         return new ProcurementDbContext(options);
+    }
+
+    public CatalogDbContext CreateCatalogContext()
+    {
+        var options = new DbContextOptionsBuilder<CatalogDbContext>()
+            .UseSqlServer(ConnectionString)
+            .Options;
+
+        return new CatalogDbContext(options);
     }
 }

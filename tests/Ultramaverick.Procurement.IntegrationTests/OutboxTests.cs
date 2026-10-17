@@ -17,10 +17,13 @@ public class OutboxTests : IClassFixture<DatabaseFixture>
     public async Task Creating_a_purchase_order_writes_one_PurchaseOrderChanged_row()
     {
         await using var context = _fixture.CreateContext();
+        await TestData.ClearOutboxAsync(context);
 
         var poId = await TestData.CreatePurchaseOrderAsync(context);
 
-        var rows = await context.OutboxMessages.AsNoTracking().ToListAsync();
+        var rows = await context.OutboxMessages.AsNoTracking()
+            .Where(x => x.AggregateId == poId.ToString())
+            .ToListAsync();
 
         Assert.Single(rows);
         Assert.Equal("PurchaseOrderChanged", rows[0].EventType);
@@ -35,6 +38,7 @@ public class OutboxTests : IClassFixture<DatabaseFixture>
     public async Task Marking_a_purchase_order_received_appends_a_PurchaseOrderReceived_row()
     {
         await using var context = _fixture.CreateContext();
+        await TestData.ClearOutboxAsync(context);
 
         var poId = await TestData.CreatePurchaseOrderAsync(context);
         await TestData.ClearOutboxAsync(context);
@@ -43,7 +47,9 @@ public class OutboxTests : IClassFixture<DatabaseFixture>
         po.MarkReceived(1);
         await context.SaveChangesAsync();
 
-        var rows = await context.OutboxMessages.AsNoTracking().ToListAsync();
+        var rows = await context.OutboxMessages.AsNoTracking()
+            .Where(x => x.AggregateId == poId.ToString())
+            .ToListAsync();
 
         Assert.Single(rows);
         Assert.Equal("PurchaseOrderReceived", rows[0].EventType);
