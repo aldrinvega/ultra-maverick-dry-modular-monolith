@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Ultramaverick.Catalog.Application\Ultramaverick.Catalog.Application.csproj" />
+    <ProjectReference Include="..\Ultramaverick.Catalog.Domain\Ultramaverick.Catalog.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

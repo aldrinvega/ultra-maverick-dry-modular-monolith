@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Ultramaverick.Identity.Domain.Common;
+﻿using Ultramaverick.SharedKernel;
 
 namespace Ultramaverick.Identity.Domain.Events
 {

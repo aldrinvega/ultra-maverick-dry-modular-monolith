@@ -1,8 +1,8 @@
 ﻿using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
-using Ultramaverick.Identity.Domain.Common;
 using Ultramaverick.Identity.Domain.Entities;
 using Ultramaverick.Identity.Persistence.Entities;
+using Ultramaverick.SharedKernel;
 
 namespace Ultramaverick.Identity.Persistence
 {

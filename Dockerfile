@@ -9,11 +9,15 @@ WORKDIR /src
 # Restore the API and its project references first, for layer caching.
 # Only the csproj files are copied, so a source-only change does not re-restore.
 COPY Ultramaverick.slnx ./
+# Root build configuration (central package management + shared props) is
+# required by restore, so copy it into the restore layer too.
+COPY Directory.Build.props Directory.Packages.props ./
 COPY src/Ultramaverick.Api/Ultramaverick.Api.csproj src/Ultramaverick.Api/
 COPY src/Modules/Identity/Ultramaverick.Identity.Domain/Ultramaverick.Identity.Domain.csproj src/Modules/Identity/Ultramaverick.Identity.Domain/
 COPY src/Modules/Identity/Ultramaverick.Identity.Application/Ultramaverick.Identity.Application.csproj src/Modules/Identity/Ultramaverick.Identity.Application/
 COPY src/Modules/Identity/Ultramaverick.Identity.Persistence/Ultramaverick.Identity.Persistence.csproj src/Modules/Identity/Ultramaverick.Identity.Persistence/
 COPY src/Modules/Identity/Ultramaverick.Identity.Infrastructure/Ultramaverick.Identity.Infrastructure.csproj src/Modules/Identity/Ultramaverick.Identity.Infrastructure/
+COPY src/Shared/Ultramaverick.SharedKernel/Ultramaverick.SharedKernel.csproj src/Shared/Ultramaverick.SharedKernel/
 RUN dotnet restore src/Ultramaverick.Api/Ultramaverick.Api.csproj
 
 # Copy the rest and publish.
