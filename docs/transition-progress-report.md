@@ -225,6 +225,7 @@ Sections 1–8 above are the original 2026-10-16 snapshot (HEAD `141c244`) and a
 | P1-2 warnings not errors | **Resolved** — `TreatWarningsAsErrors`, `AnalysisLevel=latest`, `EnforceCodeStyleInBuild` enabled. |
 | P1-3 stale README | **Resolved** — status/roadmap/layout refreshed in Wave 1. |
 | P1-4 Dockerfile restore list | **Resolved** — restore list updated. |
+| P1-5 empty Catalog scaffold | **Resolved** - Wave 2 built the full Catalog module (see 9.3). |
 | P2-1 / P2-2 event naming and style | Open — deferred, non-blocking. |
 | P2-4 `Infrastructure` schema note | **Superseded** — see 9.3 (per-module outbox). |
 
