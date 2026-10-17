@@ -22,13 +22,15 @@ public sealed class CreatePurchaseOrderCommandHandler
 
     public async Task<Result<int>> Handle(CreatePurchaseOrderCommand request, CancellationToken ct)
     {
-        if (await _uow.PurchaseOrders.GetByNumberAsync(request.PoNumber, ct) is not null)
-            return Result<int>.Failure($"PO '{request.PoNumber}' already exists.");
+        var poNumber = (request.PoNumber ?? string.Empty).Trim();
+
+        if (await _uow.PurchaseOrders.GetByNumberAsync(poNumber, ct) is not null)
+            return Result<int>.Failure($"PO '{poNumber}' already exists.");
 
         if (!await _suppliers.ExistsAsync(request.SupplierId, ct))
             return Result<int>.Failure("Supplier does not exist.");
 
-        var po = PurchaseOrder.Create(request.PoNumber, request.PrNumber, request.PoDate,
+        var po = PurchaseOrder.Create(poNumber, request.PrNumber, request.PoDate,
             request.PrDate, request.SupplierId, importBatchId: null, _currentUser.UserId);
 
         foreach (var line in request.Lines)
