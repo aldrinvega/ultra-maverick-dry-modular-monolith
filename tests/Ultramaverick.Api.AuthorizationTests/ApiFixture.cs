@@ -10,6 +10,7 @@ using Ultramaverick.Catalog.Persistence;
 using Ultramaverick.Identity.Domain.Entities;
 using Ultramaverick.Identity.Domain.ValueObjects;
 using Ultramaverick.Identity.Persistence;
+using Ultramaverick.Procurement.Persistence;
 
 namespace Ultramaverick.Api.AuthorizationTests;
 
@@ -49,6 +50,11 @@ public sealed class ApiFixture : IAsyncLifetime
         await using (var catalogContext = CreateCatalogContext())
         {
             await catalogContext.Database.MigrateAsync();
+        }
+
+        await using (var procurementContext = CreateProcurementContext())
+        {
+            await procurementContext.Database.MigrateAsync();
         }
 
         _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
@@ -112,6 +118,15 @@ public sealed class ApiFixture : IAsyncLifetime
             .Options;
 
         return new CatalogDbContext(options);
+    }
+
+    private ProcurementDbContext CreateProcurementContext()
+    {
+        var options = new DbContextOptionsBuilder<ProcurementDbContext>()
+            .UseSqlServer(ConnectionString)
+            .Options;
+
+        return new ProcurementDbContext(options);
     }
 
     private static async Task SeedAsync(IdentityDbContext context)
