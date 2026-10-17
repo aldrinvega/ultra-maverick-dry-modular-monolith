@@ -30,5 +30,7 @@
     <Project Path="tests/Ultramaverick.Catalog.UnitTests/Ultramaverick.Catalog.UnitTests.csproj" />
     <Project Path="tests/Ultramaverick.Identity.IntegrationTests/Ultramaverick.Identity.IntegrationTests.csproj" />
     <Project Path="tests/Ultramaverick.Identity.UnitTests/Ultramaverick.Identity.UnitTests.csproj" />
+    <Project Path="tests/Ultramaverick.Procurement.IntegrationTests/Ultramaverick.Procurement.IntegrationTests.csproj" />
+    <Project Path="tests/Ultramaverick.Procurement.UnitTests/Ultramaverick.Procurement.UnitTests.csproj" />
   </Folder>
 </Solution>
