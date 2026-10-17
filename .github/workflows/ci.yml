@@ -36,6 +36,7 @@ jobs:
       # The integration and authorization tests create their own throwaway databases
       # on this server and drop them afterwards.
       IDENTITY_TEST_CONNECTION: "Server=localhost,1433;User Id=sa;Password=${{ secrets.CI_MSSQL_SA_PASSWORD }};TrustServerCertificate=True"
+      CATALOG_TEST_CONNECTION: "Server=localhost,1433;User Id=sa;Password=${{ secrets.CI_MSSQL_SA_PASSWORD }};TrustServerCertificate=True"
 
     steps:
       - name: Checkout
