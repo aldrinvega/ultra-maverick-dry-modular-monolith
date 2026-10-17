@@ -202,3 +202,63 @@ Left over from the `Common → src/Shared/Ultramaverick.SharedKernel` move in `1
 - Root `Ultramaverick.SharedKernel/` → 0 children (empty).
 - `Ultramaverick.Catalog.*` → 4 `.csproj`, 0 `.cs`.
 - Zero `.cs` files reference the `Ultramaverick.BuildingBlocks` namespace.
+
+---
+
+## 9. Update — Wave 1 (Part 0) and Wave 2 (Catalog) complete
+
+**Reported on:** 2026-10-17
+**Branch / HEAD:** `main` @ `4b24fd4`
+**Build:** `dotnet build Ultramaverick.slnx` → **succeeded**, 0 warnings, 0 errors
+**Tests:** `dotnet test Ultramaverick.slnx` → **71 passed, 0 failed** (35 Identity unit + 16 Catalog unit + 8 Identity integration + 5 Catalog integration + 7 authorization)
+
+Sections 1–8 above are the original 2026-10-16 snapshot (HEAD `141c244`) and are kept verbatim as the point-in-time record. This section records what changed since.
+
+### 9.1 Original findings resolved
+
+| Finding | Status |
+| --- | --- |
+| P0-1 `Ultramaverick.BuildingBlocks` duplicate | **Resolved** — deleted; messaging stays per module. |
+| P0-2 empty root `Ultramaverick.SharedKernel/` | **Resolved** — deleted. |
+| P0-3 uncommitted work | **Resolved** — Wave 1 merged to `main` (`#14`). |
+| P1-1 no central package management | **Resolved** — `Directory.Build.props` + `Directory.Packages.props` (CPM); `Microsoft.Data.SqlClient` pinned `10.0.13` for a transitive advisory. |
+| P1-2 warnings not errors | **Resolved** — `TreatWarningsAsErrors`, `AnalysisLevel=latest`, `EnforceCodeStyleInBuild` enabled. |
+| P1-3 stale README | **Resolved** — status/roadmap/layout refreshed in Wave 1. |
+| P1-4 Dockerfile restore list | **Resolved** — restore list updated. |
+| P2-1 / P2-2 event naming and style | Open — deferred, non-blocking. |
+| P2-4 `Infrastructure` schema note | **Superseded** — see 9.3 (per-module outbox). |
+
+### 9.2 Wave 1 — Part 0 (shared kernel) — merged `#14`
+
+`b13f56f refactor: extract shared kernel and scaffold Catalog module (#14)`. `BuildingBlocks` removed; CPM and root props added; 13 `.csproj` stripped; SqlClient pinned; README and Dockerfile fixed.
+
+### 9.3 Wave 2 — Catalog module — merged `#15` (`4b24fd4`)
+
+Full four-layer Catalog module:
+
+- **Domain** — 21 entities + 20 change events.
+- **Application** — CQRS for 9 surfaces (Items, Uoms, Suppliers, Customers, LotNames, Reasons, AccountTitles, ProductTypes, Formulas), ports, `ValidationBehavior`.
+- **Persistence** — `CatalogDbContext` (schema `Catalog`) with the transactional outbox, 23 configurations, migration `20261017135130_InitialCatalog`.
+- **Infrastructure** — `CatalogCurrentUser`.
+- **Api** — 9 controllers under `api/`, composition-root wiring, `CatalogResultExtensions`.
+
+Notable decisions:
+
+- **Per-module outbox (reverses the original shared-`Infrastructure`-schema plan, P2-4).** Catalog owns `Catalog.OutboxMessages` and `Catalog.ProcessedEvents`. The guide's §3.6 fixtures apply only Catalog migrations yet assert `context.OutboxMessages`, which is only possible when each module owns its outbox; guide notes at L788 and L3264 corroborate. Waves 3–9 follow the same pattern.
+- **`Policies.Catalog` constant added** — the guide's `Policies.RequireModule("Catalog")` does not compile as an attribute argument, so a `const` was added alongside `RequireModule`.
+- **`SharedKernel.ValidationException` consolidated** — Identity's duplicate `Application.Exceptions.ValidationException` was removed; both modules throw the shared type and `ExceptionMiddleware` keeps a single catch.
+- **Cross-context `IDepartmentDirectory`** implemented at the composition root (`CatalogDepartmentDirectory`), keeping Catalog free of an Identity dependency.
+- **CI** — added `CATALOG_TEST_CONNECTION` alongside `IDENTITY_TEST_CONNECTION`.
+
+Known follow-up: Catalog's outbox rows are written but not yet dispatched; the multi-store dispatcher lands in Part 11.
+
+### 9.4 Coverage vs legacy
+
+| Dimension | Legacy | New (after Wave 2) |
+| --- | --- | --- |
+| Controllers | 30 | **15** (6 Identity + 9 Catalog) |
+| HTTP-verb endpoints | 464 | **101** |
+| `DbSet<>` declarations | 62 | **32** (9 Identity + 23 Catalog) |
+| Domain entities | — | **27** (6 Identity + 21 Catalog) |
+| Bounded contexts done | 0 | **2** (Identity, Catalog); 7 not started |
+| Tests | none meaningful | **71 green, run in CI** |
