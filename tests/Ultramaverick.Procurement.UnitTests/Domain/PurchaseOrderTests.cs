@@ -72,9 +72,13 @@ public class PurchaseOrderTests
         Assert.Equal("Received", po.Status);
         Assert.Equal(9, po.ModifiedByUserId);
 
-        var raised = Assert.IsType<PurchaseOrderReceived>(po.DomainEvents.First());
-        Assert.Equal(po.Id, raised.PurchaseOrderId);
+        var raised = Assert.IsType<PurchaseOrderReceived>(Assert.Single(po.DomainEvents));
         Assert.Equal(5, raised.SupplierId);
+
+        po.MarkReceived(9);
+
+        Assert.Equal("Received", po.Status);
+        Assert.Single(po.DomainEvents);
     }
 
     [Fact]
