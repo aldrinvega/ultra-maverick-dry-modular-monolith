@@ -80,6 +80,7 @@ builder.Services.AddScoped<IDepartmentDirectory, CatalogDepartmentDirectory>();
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+builder.Services.AddHealthChecks();
 
 // Model-validation failures use the shared validation error shape.
 builder.Services.Configure<ApiBehaviorOptions>(options =>
@@ -165,6 +166,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseRateLimiter();
 app.MapControllers();
+app.MapHealthChecks("/health");
 app.Run();
 
 // Exposed so the authorization test project can host the application.
