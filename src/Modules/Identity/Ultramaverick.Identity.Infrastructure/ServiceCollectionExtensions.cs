@@ -7,6 +7,7 @@ using Ultramaverick.Identity.Infrastructure.BackgroundServices;
 using Ultramaverick.Identity.Infrastructure.Events;
 using Ultramaverick.Identity.Infrastructure.Options;
 using Ultramaverick.Identity.Infrastructure.Security;
+using Ultramaverick.SharedKernel.Outbox;
 
 namespace Ultramaverick.Identity.Infrastructure
 {

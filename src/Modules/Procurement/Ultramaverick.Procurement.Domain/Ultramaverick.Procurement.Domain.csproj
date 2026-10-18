@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <ProjectReference Include="..\Ultramaverick.Procurement.Contracts\Ultramaverick.Procurement.Contracts.csproj" />
     <ProjectReference Include="..\..\..\Shared\Ultramaverick.SharedKernel\Ultramaverick.SharedKernel.csproj" />
   </ItemGroup>
 

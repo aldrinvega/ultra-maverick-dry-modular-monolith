@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Ultramaverick.Identity.Application.Abstractions;
 using Ultramaverick.Identity.Persistence.Repositories;
+using Ultramaverick.SharedKernel.Outbox;
 
 namespace Ultramaverick.Identity.Persistence
 {
@@ -24,7 +25,6 @@ namespace Ultramaverick.Identity.Persistence
             services.AddScoped<IRefreshTokenStore, RefreshTokenStore>();
 
             services.AddScoped<IOutboxStore, OutboxStore>();
-            services.AddScoped<IProcessedEventStore, ProcessedEventStore>();
 
             return services;
         }

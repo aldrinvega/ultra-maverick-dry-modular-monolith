@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using Ultramaverick.Identity.Application.Abstractions;
 using Ultramaverick.Identity.Persistence.Entities;
+using Ultramaverick.SharedKernel.Outbox;
 
 namespace Ultramaverick.Identity.Persistence.Repositories;
 

@@ -1,34 +1,40 @@
 using Microsoft.Extensions.DependencyInjection;
-using Ultramaverick.Identity.Application.Abstractions;
+using Microsoft.Extensions.Logging;
+using Ultramaverick.SharedKernel.Outbox;
 
 namespace Ultramaverick.Identity.Infrastructure.Events;
 
 /// <summary>
-/// Finds the IIntegrationEventHandler implementations registered for a record's EventType,
-/// invoking each at most once per (EventId, handler type) using the processed-events table.
+/// Finds the IIntegrationEventHandler implementations registered for a record's EventType and
+/// invokes each. Idempotency is consumer-owned; the dispatcher keeps no processed-events guard.
 /// </summary>
 public sealed class EventDispatcher : IEventDispatcher
 {
     private readonly IServiceProvider _provider;
+    private readonly ILogger<EventDispatcher> _logger;
 
-    public EventDispatcher(IServiceProvider provider) => _provider = provider;
+    public EventDispatcher(IServiceProvider provider, ILogger<EventDispatcher> logger)
+    {
+        _provider = provider;
+        _logger = logger;
+    }
 
     public async Task DispatchAsync(OutboxRecord record, CancellationToken ct)
     {
-        var processed = _provider.GetRequiredService<IProcessedEventStore>();
+        var matched = false;
 
         foreach (var handler in _provider.GetServices<IIntegrationEventHandler>())
         {
             if (!string.Equals(handler.EventType, record.EventType, StringComparison.Ordinal))
                 continue;
 
-            var projection = handler.GetType().Name;
-
-            if (await processed.HasProcessedAsync(record.EventId, projection, ct))
-                continue;
-
+            matched = true;
             await handler.HandleAsync(record, ct);
-            await processed.MarkProcessedAsync(record.EventId, projection, ct);
         }
+
+        if (!matched)
+            _logger.LogWarning(
+                "No handler registered for event type {EventType}; {EventId} will be marked published without processing.",
+                record.EventType, record.EventId);
     }
 }

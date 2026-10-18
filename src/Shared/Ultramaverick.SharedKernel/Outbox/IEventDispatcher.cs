@@ -1,9 +1,9 @@
-namespace Ultramaverick.Identity.Application.Abstractions
+namespace Ultramaverick.SharedKernel.Outbox
 {
     /// <summary>
     /// A handler for one published event type. Each module implements the events it consumes.
-    /// Handlers must be idempotent; the dispatcher additionally guards them with the
-    /// processed-events table keyed by (EventId, handler type name).
+    /// Idempotency is owned by the consumer and must be applied atomically with its own side
+    /// effects; the dispatcher keeps no processed-events guard.
     /// </summary>
     public interface IIntegrationEventHandler
     {
