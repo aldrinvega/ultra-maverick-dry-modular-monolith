@@ -1,0 +1,31 @@
+SET NOCOUNT ON;
+SET XACT_ABORT ON;
+
+-- Warming the Reporting read models after the bulk load. The projections are deterministic
+-- functions of the migrated rows, so this backfill produces the same state the outbox replay
+-- would; an outbox replay remains available for a live system because projections are
+-- idempotent on (EventId, ProjectionName).
+
+BEGIN TRANSACTION;
+
+INSERT INTO [Reporting].[InventoryPositions] ([WarehouseId], [ItemId], [UomId], [LotNo], [Quantity], [UpdatedAtUtc])
+SELECT r.[WarehouseId],
+       r.[ItemId],
+       MIN(r.[UomId]),
+       ISNULL(NULLIF(LTRIM(RTRIM(r.[LotNo])), ''), ''),
+       SUM(r.[Quantity]),
+       SYSUTCDATETIME()
+FROM [Warehouse].[WarehouseReceipts] r
+GROUP BY r.[WarehouseId], r.[ItemId], ISNULL(NULLIF(LTRIM(RTRIM(r.[LotNo])), ''), '');
+
+INSERT INTO [Reporting].[OrderFulfillment] ([OrderNumber], [CustomerId], [Status], [OccurredAtUtc], [UpdatedAtUtc])
+SELECT o.[OrderNumber], o.[CustomerId], o.[Status], o.[CreatedAtUtc], ISNULL(o.[ModifiedAtUtc], o.[CreatedAtUtc])
+FROM [Orders].[Orders] o
+WHERE NOT EXISTS (SELECT 1 FROM [Reporting].[OrderFulfillment] f WHERE f.[OrderNumber] = o.[OrderNumber]);
+
+INSERT INTO [Reporting].[QcStatus] ([QcReceiptId], [ItemId], [UomId], [LotNo], [NetQuantity], [Status], [OccurredAtUtc], [UpdatedAtUtc])
+SELECT q.[Id], q.[ItemId], q.[UomId], q.[BatchNo], q.[ActualDelivered], q.[Status], SYSUTCDATETIME(), SYSUTCDATETIME()
+FROM [Quality].[QcReceipts] q
+WHERE NOT EXISTS (SELECT 1 FROM [Reporting].[QcStatus] s WHERE s.[QcReceiptId] = q.[Id]);
+
+COMMIT TRANSACTION;
