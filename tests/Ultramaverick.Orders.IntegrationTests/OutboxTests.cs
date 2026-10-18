@@ -32,5 +32,13 @@ public class OutboxTests : IClassFixture<DatabaseFixture>
         Assert.Null(row.PublishedAtUtc);
         Assert.Equal(0, row.Attempts);
         Assert.Contains("OrderNumber", row.Payload);
+
+        var persistedLines = await context.OrderLines.AsNoTracking()
+            .Where(x => x.OrderId == orderId)
+            .ToListAsync();
+
+        var line = Assert.Single(persistedLines);
+        Assert.Equal(10, line.ItemId);
+        Assert.Equal(5m, line.QuantityOrdered);
     }
 }

@@ -70,6 +70,7 @@ public sealed class Order : Entity
     public void Confirm()
     {
         Status = OrderStatuses.Confirmed;
+        ModifiedAtUtc = DateTime.UtcNow;
         RaiseDomainEvent(new OrderConfirmed(OrderNumber, DateTime.UtcNow));
     }
 
@@ -80,6 +81,8 @@ public sealed class Order : Entity
         IsCancelledOrder = true;
         CancelledAtUtc = occurredAt;
         CancelledByUserId = userId;
+        ModifiedAtUtc = occurredAt;
+        ModifiedByUserId = userId;
         RaiseDomainEvent(new OrderCancelled(OrderNumber, reason, occurredAt));
     }
 }

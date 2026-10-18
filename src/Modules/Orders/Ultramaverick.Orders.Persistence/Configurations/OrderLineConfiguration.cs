@@ -17,6 +17,7 @@ public sealed class OrderLineConfiguration : IEntityTypeConfiguration<OrderLine>
         b.Property(x => x.AllocatedQuantity).HasPrecision(18, 4);
         b.Property(x => x.PlateNumber).HasMaxLength(50);
         b.Property(x => x.DeliveryStatus).HasMaxLength(50);
+        b.Property(x => x.FormulaHeaderId);
         b.Property(x => x.IsActive).IsRequired();
 
         b.HasIndex(x => x.OrderId);
