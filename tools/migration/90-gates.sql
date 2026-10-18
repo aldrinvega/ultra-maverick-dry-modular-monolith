@@ -79,8 +79,18 @@ INSERT INTO @gate ([Gate], [SourceCount], [TargetCount]) VALUES
     (SELECT COUNT(*) FROM [$(LegacyDb)].[dbo].[LabTestRequests]),
     0),
 ('Reporting.InventoryPositions',
-    0,
-    (SELECT COUNT(*) FROM [Reporting].[InventoryPositions]));
+    (SELECT COUNT(*) FROM (
+        SELECT [WarehouseId], [ItemId], ISNULL(NULLIF(LTRIM(RTRIM([LotNo])), ''), '') AS [LotNo]
+        FROM [Warehouse].[WarehouseReceipts]
+        GROUP BY [WarehouseId], [ItemId], ISNULL(NULLIF(LTRIM(RTRIM([LotNo])), ''), '')
+    ) positions),
+    (SELECT COUNT(*) FROM [Reporting].[InventoryPositions])),
+('Reporting.OrderFulfillment',
+    (SELECT COUNT(*) FROM [Orders].[Orders]),
+    (SELECT COUNT(*) FROM [Reporting].[OrderFulfillment])),
+('Reporting.QcStatus',
+    (SELECT COUNT(*) FROM [Quality].[QcReceipts]),
+    (SELECT COUNT(*) FROM [Reporting].[QcStatus]));
 
 SELECT [Gate], [SourceCount], [TargetCount]
 FROM @gate
