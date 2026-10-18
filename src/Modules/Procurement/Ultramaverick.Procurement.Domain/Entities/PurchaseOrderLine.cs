@@ -21,8 +21,12 @@ public sealed class PurchaseOrderLine : Entity
         int headerId, int itemId, int uomId, decimal orderedQuantity, decimal unitPrice)
         => new()
         {
-            PurchaseOrderId = headerId, ItemId = itemId, UomId = uomId,
-            OrderedQuantity = orderedQuantity, UnitPrice = unitPrice, IsActive = true
+            PurchaseOrderId = headerId,
+            ItemId = itemId,
+            UomId = uomId,
+            OrderedQuantity = orderedQuantity,
+            UnitPrice = unitPrice,
+            IsActive = true
         };
 
     internal void AddDelivery(decimal quantity) => DeliveredQuantity += quantity;

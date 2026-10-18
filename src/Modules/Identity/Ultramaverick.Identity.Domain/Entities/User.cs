@@ -22,10 +22,10 @@ namespace Ultramaverick.Identity.Domain.Entities
         private User() { }
 
         public static User Create(
-            string fullName, 
-            string userName, 
-            PasswordHash password, 
-            int roleId, 
+            string fullName,
+            string userName,
+            PasswordHash password,
+            int roleId,
             int departmentId,
             int? createdByUserId)
         {
@@ -82,7 +82,7 @@ namespace Ultramaverick.Identity.Domain.Entities
 
         public void Deactivate(int modifiedByUserId)
         {
-            if(!IsActive) return;
+            if (!IsActive) return;
             IsActive = false;
             ModifiedAtUtc = DateTime.UtcNow;
             ModifiedByUserId = modifiedByUserId;
@@ -92,7 +92,7 @@ namespace Ultramaverick.Identity.Domain.Entities
 
         public void Activate(int modifiedByUserId)
         {
-            if(IsActive) return;
+            if (IsActive) return;
             IsActive = true;
             ModifiedAtUtc = DateTime.UtcNow;
             ModifiedByUserId = modifiedByUserId;

@@ -18,14 +18,14 @@ namespace Ultramaverick.Identity.Application.Commands.Users
         public async Task<Result> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
         {
             var user = await _uow.Users.GetByIdAsync(request.UserId, cancellationToken);
-            if(user is null) return Result.Failure("User not found");
+            if (user is null) return Result.Failure("User not found");
 
             var userName = request.UserName.Trim();
             var existingUser = await _uow.Users.GetByUserNameAsync(userName, cancellationToken);
-            if(existingUser is not null && existingUser.Id != user.Id)
+            if (existingUser is not null && existingUser.Id != user.Id)
                 return Result.Failure($"Username '{userName}' is already taken.");
 
-            if(await _uow.Roles.GetByIdAsync(request.RoleId, cancellationToken) is null)
+            if (await _uow.Roles.GetByIdAsync(request.RoleId, cancellationToken) is null)
                 return Result.Failure("Role does not exist.");
 
             if (await _uow.Departments.GetByIdAsync(request.DepartmentId, cancellationToken) is null)

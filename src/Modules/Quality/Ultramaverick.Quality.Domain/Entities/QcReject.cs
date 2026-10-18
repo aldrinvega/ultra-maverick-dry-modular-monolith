@@ -20,7 +20,11 @@ public sealed class QcReject : Entity
         int qcReceiptId, decimal quantity, int? reasonId, string? remarks, int? rejectedByUserId)
         => new()
         {
-            QcReceiptId = qcReceiptId, Quantity = quantity, ReasonId = reasonId,
-            Remarks = remarks, RejectedByUserId = rejectedByUserId, IsActive = true
+            QcReceiptId = qcReceiptId,
+            Quantity = quantity,
+            ReasonId = reasonId,
+            Remarks = remarks,
+            RejectedByUserId = rejectedByUserId,
+            IsActive = true
         };
 }

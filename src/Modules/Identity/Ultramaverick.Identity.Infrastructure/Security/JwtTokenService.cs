@@ -17,7 +17,7 @@ namespace Ultramaverick.Identity.Infrastructure.Security
         private readonly JwtOptions _options;
         private readonly JwtSecurityTokenHandler _handler = new();
         private readonly SymmetricSecurityKey _key;
-        
+
         public JwtTokenService(IOptions<JwtOptions> options)
         {
             _options = options.Value;

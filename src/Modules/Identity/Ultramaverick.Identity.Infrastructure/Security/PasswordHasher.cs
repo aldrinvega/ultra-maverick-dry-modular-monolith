@@ -56,7 +56,7 @@ namespace Ultramaverick.Identity.Infrastructure.Security
             }
             catch (FormatException) { return false; }
 
-            if(salt.Length == 0 || expected.Length == 0) return false;
+            if (salt.Length == 0 || expected.Length == 0) return false;
 
             var actual = Rfc2898DeriveBytes.Pbkdf2(
                 plainText,

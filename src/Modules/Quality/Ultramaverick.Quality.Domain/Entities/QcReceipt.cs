@@ -49,9 +49,15 @@ public sealed class QcReceipt : Entity
 
         var r = new QcReceipt
         {
-            PurchaseOrderId = purchaseOrderId, PurchaseOrderLineId = purchaseOrderLineId,
-            ItemId = itemId, UomId = uomId, ProductTypeId = productTypeId,
-            BatchNo = batchNo, ActualDelivered = actualDelivered, Status = "ForReceiving", IsActive = true
+            PurchaseOrderId = purchaseOrderId,
+            PurchaseOrderLineId = purchaseOrderLineId,
+            ItemId = itemId,
+            UomId = uomId,
+            ProductTypeId = productTypeId,
+            BatchNo = batchNo,
+            ActualDelivered = actualDelivered,
+            Status = "ForReceiving",
+            IsActive = true
         };
         r.RaiseDomainEvent(new QcReceiptChanged("Created", DateTime.UtcNow));
         return r;
