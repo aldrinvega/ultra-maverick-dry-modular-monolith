@@ -82,6 +82,8 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddHealthChecks();
 
+builder.Services.AddTransient(typeof(MediatR.IPipelineBehavior<,>), typeof(Ultramaverick.Api.Telemetry.TelemetryBehavior<,>));
+
 // Model-validation failures use the shared validation error shape.
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
