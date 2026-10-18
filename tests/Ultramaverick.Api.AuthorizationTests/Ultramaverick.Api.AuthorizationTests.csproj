@@ -25,6 +25,7 @@
     <ProjectReference Include="..\..\src\Modules\Identity\Ultramaverick.Identity.Persistence\Ultramaverick.Identity.Persistence.csproj" />
     <ProjectReference Include="..\..\src\Modules\Procurement\Ultramaverick.Procurement.Persistence\Ultramaverick.Procurement.Persistence.csproj" />
     <ProjectReference Include="..\..\src\Modules\Quality\Ultramaverick.Quality.Persistence\Ultramaverick.Quality.Persistence.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Laboratory\Ultramaverick.Laboratory.Persistence\Ultramaverick.Laboratory.Persistence.csproj" />
   </ItemGroup>
 
   <ItemGroup>

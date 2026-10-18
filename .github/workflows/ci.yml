@@ -39,6 +39,7 @@ jobs:
       CATALOG_TEST_CONNECTION: "Server=localhost,1433;User Id=sa;Password=${{ secrets.CI_MSSQL_SA_PASSWORD }};TrustServerCertificate=True"
       PROCUREMENT_TEST_CONNECTION: "Server=localhost,1433;User Id=sa;Password=${{ secrets.CI_MSSQL_SA_PASSWORD }};TrustServerCertificate=True"
       QUALITY_TEST_CONNECTION: "Server=localhost,1433;User Id=sa;Password=${{ secrets.CI_MSSQL_SA_PASSWORD }};TrustServerCertificate=True"
+      LABORATORY_TEST_CONNECTION: "Server=localhost,1433;User Id=sa;Password=${{ secrets.CI_MSSQL_SA_PASSWORD }};TrustServerCertificate=True"
 
     steps:
       - name: Checkout
