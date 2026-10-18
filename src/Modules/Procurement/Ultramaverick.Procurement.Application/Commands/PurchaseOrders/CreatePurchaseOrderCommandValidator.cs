@@ -14,7 +14,7 @@ public sealed class CreatePurchaseOrderCommandValidator : AbstractValidator<Crea
         RuleFor(x => x.Lines).NotEmpty()
             .Must(lines => lines is null || lines.Count <= MaxLines)
             .WithMessage($"A purchase order cannot contain more than {MaxLines} lines.");
-        RuleForEach(x => x.Lines).ChildRules(line =>
+        RuleForEach(x => x.Lines).NotNull().ChildRules(line =>
         {
             line.RuleFor(l => l.ItemId).GreaterThan(0);
             line.RuleFor(l => l.UomId).GreaterThan(0);

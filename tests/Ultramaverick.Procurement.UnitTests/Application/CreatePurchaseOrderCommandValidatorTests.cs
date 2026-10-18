@@ -56,6 +56,15 @@ public class CreatePurchaseOrderCommandValidatorTests
     }
 
     [Fact]
+    public void Null_line_entry_fails_on_Lines()
+    {
+        var result = _validator.TestValidate(ValidCommand(lines: new List<PurchaseOrderLineInput> { null! }));
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.PropertyName.StartsWith("Lines", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void Five_hundred_lines_pass()
     {
         var result = _validator.TestValidate(ValidCommand(lines: Lines(500)));
