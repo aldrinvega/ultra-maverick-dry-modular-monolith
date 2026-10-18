@@ -26,6 +26,9 @@
     <ProjectReference Include="..\Modules\Procurement\Ultramaverick.Procurement.Application\Ultramaverick.Procurement.Application.csproj" />
     <ProjectReference Include="..\Modules\Procurement\Ultramaverick.Procurement.Infrastructure\Ultramaverick.Procurement.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Procurement\Ultramaverick.Procurement.Persistence\Ultramaverick.Procurement.Persistence.csproj" />
+    <ProjectReference Include="..\Modules\Quality\Ultramaverick.Quality.Application\Ultramaverick.Quality.Application.csproj" />
+    <ProjectReference Include="..\Modules\Quality\Ultramaverick.Quality.Infrastructure\Ultramaverick.Quality.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modules\Quality\Ultramaverick.Quality.Persistence\Ultramaverick.Quality.Persistence.csproj" />
   </ItemGroup>
 
 </Project>
