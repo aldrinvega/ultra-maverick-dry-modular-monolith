@@ -42,6 +42,7 @@ jobs:
       LABORATORY_TEST_CONNECTION: "Server=localhost,1433;User Id=sa;Password=${{ secrets.CI_MSSQL_SA_PASSWORD }};TrustServerCertificate=True"
       WAREHOUSE_TEST_CONNECTION: "Server=localhost,1433;User Id=sa;Password=${{ secrets.CI_MSSQL_SA_PASSWORD }};TrustServerCertificate=True"
       ORDERS_TEST_CONNECTION: "Server=localhost,1433;User Id=sa;Password=${{ secrets.CI_MSSQL_SA_PASSWORD }};TrustServerCertificate=True"
+      MANUFACTURING_TEST_CONNECTION: "Server=localhost,1433;User Id=sa;Password=${{ secrets.CI_MSSQL_SA_PASSWORD }};TrustServerCertificate=True"
 
     steps:
       - name: Checkout

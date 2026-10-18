@@ -50,6 +50,12 @@
     <Project Path="src/Modules/Orders/Ultramaverick.Orders.Infrastructure/Ultramaverick.Orders.Infrastructure.csproj" />
     <Project Path="src/Modules/Orders/Ultramaverick.Orders.Persistence/Ultramaverick.Orders.Persistence.csproj" />
   </Folder>
+  <Folder Name="/src/Modules/Manufacturing/">
+    <Project Path="src/Modules/Manufacturing/Ultramaverick.Manufacturing.Application/Ultramaverick.Manufacturing.Application.csproj" />
+    <Project Path="src/Modules/Manufacturing/Ultramaverick.Manufacturing.Domain/Ultramaverick.Manufacturing.Domain.csproj" />
+    <Project Path="src/Modules/Manufacturing/Ultramaverick.Manufacturing.Infrastructure/Ultramaverick.Manufacturing.Infrastructure.csproj" />
+    <Project Path="src/Modules/Manufacturing/Ultramaverick.Manufacturing.Persistence/Ultramaverick.Manufacturing.Persistence.csproj" />
+  </Folder>
   <Folder Name="/src/Shared/">
     <Project Path="src/Shared/Ultramaverick.SharedKernel/Ultramaverick.SharedKernel.csproj" />
   </Folder>
@@ -61,6 +67,8 @@
     <Project Path="tests/Ultramaverick.Identity.UnitTests/Ultramaverick.Identity.UnitTests.csproj" />
     <Project Path="tests/Ultramaverick.Laboratory.IntegrationTests/Ultramaverick.Laboratory.IntegrationTests.csproj" />
     <Project Path="tests/Ultramaverick.Laboratory.UnitTests/Ultramaverick.Laboratory.UnitTests.csproj" />
+    <Project Path="tests/Ultramaverick.Manufacturing.IntegrationTests/Ultramaverick.Manufacturing.IntegrationTests.csproj" />
+    <Project Path="tests/Ultramaverick.Manufacturing.UnitTests/Ultramaverick.Manufacturing.UnitTests.csproj" />
     <Project Path="tests/Ultramaverick.Orders.IntegrationTests/Ultramaverick.Orders.IntegrationTests.csproj" />
     <Project Path="tests/Ultramaverick.Orders.UnitTests/Ultramaverick.Orders.UnitTests.csproj" />
     <Project Path="tests/Ultramaverick.Procurement.IntegrationTests/Ultramaverick.Procurement.IntegrationTests.csproj" />
