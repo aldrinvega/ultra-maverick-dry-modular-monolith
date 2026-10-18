@@ -1,4 +1,5 @@
 using Ultramaverick.Orders.Application.Abstractions;
+using Ultramaverick.Orders.Application.Models;
 using Ultramaverick.Orders.Application.Queries.CancelledOrders;
 
 namespace Ultramaverick.Orders.UnitTests.Application;
@@ -7,11 +8,20 @@ internal sealed class FakeCancelledOrderReader : ICancelledOrderReader
 {
     public IReadOnlyList<CancelledOrderDto> Rows { get; set; } = Array.Empty<CancelledOrderDto>();
     public int? LastCustomerId { get; private set; }
+    public int? LastPage { get; private set; }
+    public int? LastPageSize { get; private set; }
 
     public Task<IReadOnlyList<CancelledOrderDto>> GetByCustomerAsync(int customerId, CancellationToken ct)
     {
         LastCustomerId = customerId;
         return Task.FromResult(Rows);
+    }
+
+    public Task<PagedResult<CancelledOrderDto>> GetPagedAsync(int page, int pageSize, CancellationToken ct)
+    {
+        LastPage = page;
+        LastPageSize = pageSize;
+        return Task.FromResult(new PagedResult<CancelledOrderDto>(Rows, page, pageSize, Rows.Count));
     }
 }
 

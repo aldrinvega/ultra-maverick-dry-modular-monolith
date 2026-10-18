@@ -36,5 +36,10 @@ namespace Ultramaverick.Api.Controllers
         [HttpGet("GetCancelledOrdersById/{customerId}")]
         public async Task<IActionResult> GetCancelledOrdersById(int customerId, CancellationToken ct)
             => (await _mediator.Send(new GetCancelledOrdersByCustomerQuery(customerId), ct)).ToOk();
+
+        [HttpGet("GetAllListOfCancelledOrdersPagination")]
+        public async Task<IActionResult> GetCancelledOrdersPagination(
+            [FromQuery] int page, [FromQuery] int pageSize, CancellationToken ct)
+            => (await _mediator.Send(new GetCancelledOrdersPagedQuery(page, pageSize), ct)).ToOk();
     }
 }
