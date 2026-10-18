@@ -46,4 +46,17 @@ public class LabTestResultTests
         Assert.Equal("Approved", raised.Status);
         Assert.Equal(9, raised.ApprovedByUserId);
     }
+
+    [Fact]
+    public void Approve_when_already_approved_throws_and_does_not_raise_again()
+    {
+        var result = LabTestResult.Record(
+            5, 6, 7, "LOT-9", DateTime.UtcNow, "Passed", 8);
+        result.ClearDomainEvents();
+        result.Approve(9);
+
+        Assert.Throws<ArgumentOutOfRangeException>(() => result.Approve(10));
+        Assert.Equal("Approved", result.Status);
+        Assert.Single(result.DomainEvents);
+    }
 }

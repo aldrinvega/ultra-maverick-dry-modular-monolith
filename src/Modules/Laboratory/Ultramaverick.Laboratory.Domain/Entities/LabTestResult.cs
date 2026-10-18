@@ -40,6 +40,9 @@ public sealed class LabTestResult : Entity
 
     public void Approve(int approvedByUserId)
     {
+        if (Status != LaboratoryStatuses.ForQaApproval)
+            throw new ArgumentOutOfRangeException(nameof(Status));
+
         Status = LaboratoryStatuses.Approved;
         RaiseDomainEvent(new LabResultApproved(
             LabReceiveRequestId, Status, approvedByUserId, DateTime.UtcNow));
