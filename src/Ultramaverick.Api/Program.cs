@@ -27,6 +27,9 @@ using Ultramaverick.Laboratory.Persistence;
 using Ultramaverick.Warehouse.Application;
 using Ultramaverick.Warehouse.Infrastructure;
 using Ultramaverick.Warehouse.Persistence;
+using Ultramaverick.Orders.Application;
+using Ultramaverick.Orders.Infrastructure;
+using Ultramaverick.Orders.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,6 +56,10 @@ builder.Services.AddLaboratoryInfrastructure(builder.Configuration);
 builder.Services.AddWarehouseApplication();
 builder.Services.AddWarehousePersistence(builder.Configuration);
 builder.Services.AddWarehouseInfrastructure(builder.Configuration);
+
+builder.Services.AddOrdersApplication();
+builder.Services.AddOrdersPersistence(builder.Configuration);
+builder.Services.AddOrdersInfrastructure(builder.Configuration);
 
 // Bridges Catalog's cross-context department port to Identity's query surface.
 builder.Services.AddScoped<IDepartmentDirectory, CatalogDepartmentDirectory>();
