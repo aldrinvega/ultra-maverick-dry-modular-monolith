@@ -1,4 +1,4 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ultramaverick.Api.Authorization;
@@ -8,6 +8,7 @@ using Ultramaverick.Warehouse.Application.Commands.WarehouseReceipts;
 using Ultramaverick.Warehouse.Application.Commands.Warehouses;
 using Ultramaverick.Warehouse.Application.Models;
 using Ultramaverick.Warehouse.Application.Queries.Inventory;
+using Ultramaverick.Warehouse.Application.Queries.Miscellaneous;
 using Ultramaverick.Warehouse.Application.Queries.WarehouseReceipts;
 
 namespace Ultramaverick.Api.Controllers
@@ -34,6 +35,15 @@ namespace Ultramaverick.Api.Controllers
         public async Task<IActionResult> GetWarehouseReceiptById(int id, CancellationToken ct)
             => (await _mediator.Send(new GetWarehouseReceiptByIdQuery(id), ct)).ToOk();
 
+        [HttpGet("GetMiscellaneousReceiptsWithPagination")]
+        public async Task<ActionResult<PagedResult<MiscellaneousReceiptDto>>> GetMiscellaneousReceipts(
+            [FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken ct = default)
+            => Ok(await _mediator.Send(new GetMiscellaneousReceiptsQuery(page, pageSize), ct));
+
+        [HttpGet("GetMiscellaneousIssuesWithPagination")]
+        public async Task<ActionResult<PagedResult<MiscellaneousIssueDto>>> GetMiscellaneousIssues(
+            [FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken ct = default)
+            => Ok(await _mediator.Send(new GetMiscellaneousIssuesQuery(page, pageSize), ct));
         [HttpGet("GetInventoryBalance")]        public async Task<ActionResult<IReadOnlyList<InventoryBalanceDto>>> GetInventoryBalance(
             [FromQuery] int? warehouseId = null, [FromQuery] int? itemId = null, CancellationToken ct = default)
             => Ok(await _mediator.Send(new GetInventoryBalanceQuery(warehouseId, itemId), ct));
@@ -54,3 +64,4 @@ namespace Ultramaverick.Api.Controllers
             => (await _mediator.Send(cmd, ct)).ToNoContent();
     }
 }
+
