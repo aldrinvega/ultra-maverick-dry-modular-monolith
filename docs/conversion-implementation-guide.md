@@ -3361,6 +3361,8 @@ public sealed class PurchaseOrderReceivedBridge : IIntegrationEventHandler<Procu
 
 Each module exposes a tiny `*.Contracts` project (POCO integration events only, no EF, no domain). Both modules reference the contract project — never each other's Domain/Persistence. This is the **only** legal cross-module reference.
 
+> **Implementation note — deliberate deviations from §13.1–13.2.** Two parts of this section are not adopted. First, the `DomainEventOutboxInterceptor` (§13.2) is skipped: it runs before SQL is sent, so it cannot capture database-generated identity keys. Each module context instead writes its outbox rows inline with the two-phase `SaveChangesAsync` shown in Part 5. Second, the per-handler processed guard of §13.1 has been removed in favour of consumer-owned idempotency — the guard was never atomic (it wrote to a different schema/DbContext after the handler ran), so handlers must be idempotent themselves.
+
 ## 13.4 API versioning + module authorisation policy
 
 ```csharp

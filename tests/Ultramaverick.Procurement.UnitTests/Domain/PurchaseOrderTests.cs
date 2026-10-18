@@ -1,3 +1,4 @@
+using Ultramaverick.Procurement.Contracts;
 using Ultramaverick.Procurement.Domain.Entities;
 using Ultramaverick.Procurement.Domain.Events;
 

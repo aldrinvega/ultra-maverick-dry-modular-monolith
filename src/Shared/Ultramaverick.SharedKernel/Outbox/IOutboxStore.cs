@@ -1,4 +1,4 @@
-namespace Ultramaverick.Identity.Application.Abstractions
+namespace Ultramaverick.SharedKernel.Outbox
 {
     /// <summary>A pending outbox row, ready to be dispatched.</summary>
     public sealed record OutboxRecord(

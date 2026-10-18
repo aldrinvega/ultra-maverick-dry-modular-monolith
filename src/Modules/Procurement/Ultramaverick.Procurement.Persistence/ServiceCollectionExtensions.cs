@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Ultramaverick.Procurement.Application.Abstractions;
 using Ultramaverick.Procurement.Persistence.Lookups;
 using Ultramaverick.Procurement.Persistence.Repositories;
+using Ultramaverick.SharedKernel.Outbox;
 
 namespace Ultramaverick.Procurement.Persistence
 {
@@ -19,6 +20,8 @@ namespace Ultramaverick.Procurement.Persistence
 
             services.AddScoped<IProcurementUnitOfWork, ProcurementUnitOfWork>();
             services.AddScoped<ISupplierLookup, SupplierLookup>();
+
+            services.AddScoped<IOutboxStore, OutboxStore>();
 
             return services;
         }

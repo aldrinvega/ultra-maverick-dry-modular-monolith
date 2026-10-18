@@ -11,6 +11,7 @@
   </Folder>
   <Folder Name="/src/Modules/Procurement/">
     <Project Path="src/Modules/Procurement/Ultramaverick.Procurement.Application/Ultramaverick.Procurement.Application.csproj" />
+    <Project Path="src/Modules/Procurement/Ultramaverick.Procurement.Contracts/Ultramaverick.Procurement.Contracts.csproj" />
     <Project Path="src/Modules/Procurement/Ultramaverick.Procurement.Domain/Ultramaverick.Procurement.Domain.csproj" />
     <Project Path="src/Modules/Procurement/Ultramaverick.Procurement.Infrastructure/Ultramaverick.Procurement.Infrastructure.csproj" />
     <Project Path="src/Modules/Procurement/Ultramaverick.Procurement.Persistence/Ultramaverick.Procurement.Persistence.csproj" />

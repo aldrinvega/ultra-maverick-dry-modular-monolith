@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Ultramaverick.Catalog.Application.Abstractions;
 using Ultramaverick.Catalog.Persistence.Repositories;
+using Ultramaverick.SharedKernel.Outbox;
 
 namespace Ultramaverick.Catalog.Persistence
 {
@@ -17,6 +18,8 @@ namespace Ultramaverick.Catalog.Persistence
             services.AddDbContext<CatalogDbContext>(options => options.UseSqlServer(connectionString));
 
             services.AddScoped<ICatalogUnitOfWork, CatalogUnitOfWork>();
+
+            services.AddScoped<IOutboxStore, OutboxStore>();
 
             return services;
         }

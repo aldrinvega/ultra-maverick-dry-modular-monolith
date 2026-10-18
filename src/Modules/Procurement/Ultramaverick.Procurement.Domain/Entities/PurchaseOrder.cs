@@ -1,3 +1,4 @@
+using Ultramaverick.Procurement.Contracts;
 using Ultramaverick.Procurement.Domain.Events;
 using Ultramaverick.SharedKernel;
 
@@ -60,6 +61,7 @@ public sealed class PurchaseOrder : Entity
         Status = "Received";
         ModifiedAtUtc = DateTime.UtcNow;
         ModifiedByUserId = modifiedByUserId;
-        RaiseDomainEvent(new PurchaseOrderReceived(Id, SupplierId, DateTime.UtcNow));
+        RaiseDomainEvent(new PurchaseOrderReceived(
+            Id, SupplierId, _lines.Select(l => l.Id).ToList(), DateTime.UtcNow));
     }
 }

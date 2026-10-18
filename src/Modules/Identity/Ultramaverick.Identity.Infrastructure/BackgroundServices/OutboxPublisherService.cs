@@ -1,14 +1,15 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Ultramaverick.Identity.Application.Abstractions;
+using Ultramaverick.SharedKernel.Outbox;
 
 namespace Ultramaverick.Identity.Infrastructure.BackgroundServices;
 
 /// <summary>
-/// Polls Infrastructure.OutboxMessages for unpublished rows, dispatches them through the
-/// event dispatcher, then marks them published. Failures are recorded (Attempts/LastError)
-/// and retried on the next pass; handlers are idempotent, so redelivery is safe.
+/// Polls every registered IOutboxStore (one per producing module) for unpublished rows,
+/// dispatches them through the event dispatcher, then marks them published. Failures are
+/// recorded (Attempts/LastError) and retried on the next pass; handlers are idempotent,
+/// so redelivery is safe.
 /// </summary>
 public sealed class OutboxPublisherService : BackgroundService
 {
@@ -32,7 +33,7 @@ public sealed class OutboxPublisherService : BackgroundService
         {
             try
             {
-                await PublishPendingAsync(stoppingToken);
+                await RunOnceAsync(stoppingToken);
             }
             catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
             {
@@ -54,29 +55,36 @@ public sealed class OutboxPublisherService : BackgroundService
         }
     }
 
-    private async Task PublishPendingAsync(CancellationToken ct)
+    /// <summary>
+    /// Drains every registered outbox store exactly once. Public so tests can drive a single
+    /// deterministic pass without waiting on the polling interval.
+    /// </summary>
+    public async Task RunOnceAsync(CancellationToken ct)
     {
         using var scope = _scopeFactory.CreateScope();
 
-        var store = scope.ServiceProvider.GetRequiredService<IOutboxStore>();
+        var stores = scope.ServiceProvider.GetServices<IOutboxStore>();
         var dispatcher = scope.ServiceProvider.GetRequiredService<IEventDispatcher>();
 
-        var pending = await store.GetPendingAsync(BatchSize, ct);
-
-        foreach (var record in pending)
+        foreach (var store in stores)
         {
-            try
-            {
-                await dispatcher.DispatchAsync(record, ct);
-                await store.MarkPublishedAsync(record.EventId, ct);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex,
-                    "Failed to publish {EventType} ({EventId}); attempt {Attempts}.",
-                    record.EventType, record.EventId, record.Attempts + 1);
+            var pending = await store.GetPendingAsync(BatchSize, ct);
 
-                await store.MarkFailedAsync(record.EventId, ex.Message, ct);
+            foreach (var record in pending)
+            {
+                try
+                {
+                    await dispatcher.DispatchAsync(record, ct);
+                    await store.MarkPublishedAsync(record.EventId, ct);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex,
+                        "Failed to publish {EventType} ({EventId}); attempt {Attempts}.",
+                        record.EventType, record.EventId, record.Attempts + 1);
+
+                    await store.MarkFailedAsync(record.EventId, ex.Message, ct);
+                }
             }
         }
     }
