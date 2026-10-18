@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Modules\Reporting\Ultramaverick.Reporting.Domain\Ultramaverick.Reporting.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Reporting\Ultramaverick.Reporting.Application\Ultramaverick.Reporting.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Reporting\Ultramaverick.Reporting.Persistence\Ultramaverick.Reporting.Persistence.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Reporting\Ultramaverick.Reporting.Infrastructure\Ultramaverick.Reporting.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Orders\Ultramaverick.Orders.Contracts\Ultramaverick.Orders.Contracts.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Quality\Ultramaverick.Quality.Contracts\Ultramaverick.Quality.Contracts.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Warehouse\Ultramaverick.Warehouse.Contracts\Ultramaverick.Warehouse.Contracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+</Project>

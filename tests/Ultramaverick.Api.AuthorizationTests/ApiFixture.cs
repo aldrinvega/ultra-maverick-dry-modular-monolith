@@ -13,6 +13,7 @@ using Ultramaverick.Identity.Domain.ValueObjects;
 using Ultramaverick.Identity.Persistence;
 using Ultramaverick.Orders.Persistence;
 using Ultramaverick.Manufacturing.Persistence;
+using Ultramaverick.Reporting.Persistence;
 using Ultramaverick.Procurement.Persistence;
 using Ultramaverick.Quality.Persistence;
 using Ultramaverick.Laboratory.Persistence;
@@ -94,6 +95,11 @@ public sealed class ApiFixture : IAsyncLifetime
         {
             await manufacturingContext.Database.MigrateAsync();
             ProductionPlanId = await SeedProductionPlanAsync(manufacturingContext);
+        }
+
+        await using (var reportingContext = CreateReportingContext())
+        {
+            await reportingContext.Database.MigrateAsync();
         }
 
         _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
@@ -211,6 +217,15 @@ public sealed class ApiFixture : IAsyncLifetime
             .Options;
 
         return new ManufacturingDbContext(options);
+    }
+
+    private ReportingDbContext CreateReportingContext()
+    {
+        var options = new DbContextOptionsBuilder<ReportingDbContext>()
+            .UseSqlServer(ConnectionString)
+            .Options;
+
+        return new ReportingDbContext(options);
     }
 
     /// <summary>
