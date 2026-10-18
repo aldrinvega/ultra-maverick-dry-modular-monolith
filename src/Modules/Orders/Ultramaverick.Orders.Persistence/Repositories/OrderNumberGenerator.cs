@@ -15,7 +15,8 @@ public sealed class OrderNumberGenerator : IOrderNumberGenerator
 
         var last = await _context.Orders
             .Where(o => o.OrderNumber.StartsWith(prefix))
-            .OrderByDescending(o => o.OrderNumber)
+            .OrderByDescending(o => o.OrderNumber.Length)
+            .ThenByDescending(o => o.OrderNumber)
             .Select(o => o.OrderNumber)
             .FirstOrDefaultAsync(ct);
 

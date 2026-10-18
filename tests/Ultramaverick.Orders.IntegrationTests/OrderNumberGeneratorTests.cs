@@ -38,4 +38,20 @@ public class OrderNumberGeneratorTests : IClassFixture<DatabaseFixture>
 
         Assert.Equal("SO-20260103-0010", number);
     }
+
+    [Fact]
+    public async Task NextAsync_ranks_by_digit_count_past_9999()
+    {
+        await using var context = _fixture.CreateContext();
+        await TestData.ClearOrdersAsync(context);
+
+        var utcNow = DateTime.UtcNow;
+        await TestData.CreateOrderAsync(context, $"SO-{utcNow:yyyyMMdd}-9999");
+        await TestData.CreateOrderAsync(context, $"SO-{utcNow:yyyyMMdd}-10000");
+
+        var generator = new OrderNumberGenerator(context);
+        var number = await generator.NextAsync(utcNow, CancellationToken.None);
+
+        Assert.Equal($"SO-{utcNow:yyyyMMdd}-10001", number);
+    }
 }

@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Ultramaverick.Orders.Application.Abstractions;
 using Ultramaverick.Orders.Application.Models;
 using Ultramaverick.Orders.Domain;
@@ -28,7 +29,14 @@ public sealed class CancelOrderCommandHandler : IRequestHandler<CancelOrderComma
         // The cancel audit and status are written through the aggregate; Orders.CancelledOrders
         // is map-only this wave and is never written by this handler.
         order.Cancel(request.Reason, _currentUser.UserId);
-        await _uow.SaveChangesAsync(ct);
+        try
+        {
+            await _uow.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            return Result.Failure("Order was modified concurrently. Please retry.");
+        }
 
         return Result.Success();
     }
