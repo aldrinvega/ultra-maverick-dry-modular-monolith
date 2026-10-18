@@ -5,6 +5,7 @@ using Ultramaverick.Api.Authorization;
 using Ultramaverick.Api.Errors;
 using Ultramaverick.Orders.Application.Commands.Orders;
 using Ultramaverick.Orders.Application.Queries.CancelledOrders;
+using Ultramaverick.Orders.Application.Queries.Orders;
 
 namespace Ultramaverick.Api.Controllers
 {
@@ -41,5 +42,28 @@ namespace Ultramaverick.Api.Controllers
         public async Task<IActionResult> GetCancelledOrdersPagination(
             [FromQuery] int page, [FromQuery] int pageSize, CancellationToken ct)
             => (await _mediator.Send(new GetCancelledOrdersPagedQuery(page, pageSize), ct)).ToOk();
+
+        [HttpGet("GetOrders")]
+        public async Task<IActionResult> GetOrders(
+            [FromQuery] int? customerId,
+            [FromQuery] string? status,
+            [FromQuery] int page,
+            [FromQuery] int pageSize,
+            CancellationToken ct)
+            => (await _mediator.Send(new GetOrdersQuery(customerId, status, page, pageSize), ct)).ToOk();
+
+        [HttpGet("GetOrderById/{id}")]
+        public async Task<IActionResult> GetOrderById(int id, CancellationToken ct)
+            => (await _mediator.Send(new GetOrderByIdQuery(id), ct)).ToOk();
+
+        [HttpGet("GetMoveOrders")]
+        public async Task<IActionResult> GetMoveOrders(
+            [FromQuery] int page, [FromQuery] int pageSize, CancellationToken ct)
+            => (await _mediator.Send(new GetMoveOrdersQuery(page, pageSize), ct)).ToOk();
+
+        [HttpGet("GetTransactedMoveOrders")]
+        public async Task<IActionResult> GetTransactedMoveOrders(
+            [FromQuery] int page, [FromQuery] int pageSize, CancellationToken ct)
+            => (await _mediator.Send(new GetTransactedMoveOrdersQuery(page, pageSize), ct)).ToOk();
     }
 }

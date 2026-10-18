@@ -22,6 +22,7 @@ namespace Ultramaverick.Orders.Persistence
             services.AddScoped<IOrderNumberGenerator, OrderNumberGenerator>();
             services.AddScoped<ICustomerLookup, CustomerLookup>();
             services.AddScoped<ICancelledOrderReader, CancelledOrderReader>();
+            services.AddScoped<IOrderReader, OrderReader>();
 
             services.AddScoped<IOutboxStore, OrdersOutboxStore>();
             services.AddScoped<IProcessedEventStore, OrdersProcessedEventStore>();
