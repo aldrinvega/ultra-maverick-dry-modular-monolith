@@ -4,13 +4,12 @@ using Ultramaverick.Quality.Application.Abstractions;
 namespace Ultramaverick.Quality.Persistence.Lookups;
 
 /// <summary>
-/// Reads the Procurement and Catalog schemas directly so Quality can build a QC receipt from
-/// a purchase-order line without a project reference to either module. Read-only cross-schema
-/// query.
+/// Reads Procurement's [PurchaseOrderLines] cross-schema so Quality can build a QC receipt from
+/// a purchase-order line without a project reference to Procurement. Read-only query.
 ///
-/// Deviation: the guide's port returns ProductTypeId and BatchNo, but neither
-/// [Procurement].[PurchaseOrderLines] nor [Catalog].[Items] currently carries those columns,
-/// so both are projected as NULL. When those columns are added, extend the SELECT below.
+/// Deviation: the guide's port returns ProductTypeId and BatchNo, but
+/// [Procurement].[PurchaseOrderLines] currently carries neither column, so both are projected as
+/// NULL. When those columns are added, extend the SELECT below.
 /// </summary>
 public sealed class PurchaseOrderLineLookup : IPurchaseOrderLineLookup
 {

@@ -10,7 +10,7 @@ public class RejectQcReceiptCommandHandlerTests
     public async Task Handle_rejects_the_quantity_and_saves_once()
     {
         var uow = new FakeQualityUnitOfWork();
-        var receipt = QcReceipt.Create(1, 10, null, null, 10m, 20);
+        var receipt = QcReceipt.Create(1, 10, null, null, 10m, 20, null);
         uow.QcReceiptsRepo.SeedWithId(1, receipt);
         var handler = new RejectQcReceiptCommandHandler(uow, new FakeCurrentUser { UserId = 7 });
 
@@ -40,7 +40,7 @@ public class RejectQcReceiptCommandHandlerTests
     public async Task Handle_fails_when_the_quantity_exceeds_the_remaining_delivered()
     {
         var uow = new FakeQualityUnitOfWork();
-        var receipt = QcReceipt.Create(1, 10, null, null, 1m, 20);
+        var receipt = QcReceipt.Create(1, 10, null, null, 1m, 20, null);
         uow.QcReceiptsRepo.SeedWithId(1, receipt);
         var handler = new RejectQcReceiptCommandHandler(uow, new FakeCurrentUser());
 

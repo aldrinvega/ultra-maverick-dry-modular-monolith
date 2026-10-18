@@ -39,15 +39,18 @@ public sealed class QcReceipt : Entity
     private QcReceipt() { }
 
     public static QcReceipt Create(
-        int purchaseOrderId, int itemId, int? productTypeId, string? batchNo, decimal actualDelivered, int uomId)
+        int purchaseOrderId, int itemId, int? productTypeId, string? batchNo, decimal actualDelivered,
+        int uomId, int? purchaseOrderLineId)
     {
         if (purchaseOrderId <= 0) throw new ArgumentOutOfRangeException(nameof(purchaseOrderId));
         if (itemId <= 0) throw new ArgumentOutOfRangeException(nameof(itemId));
         if (uomId <= 0) throw new ArgumentOutOfRangeException(nameof(uomId));
+        if (purchaseOrderLineId is <= 0) throw new ArgumentOutOfRangeException(nameof(purchaseOrderLineId));
 
         var r = new QcReceipt
         {
-            PurchaseOrderId = purchaseOrderId, ItemId = itemId, UomId = uomId, ProductTypeId = productTypeId,
+            PurchaseOrderId = purchaseOrderId, PurchaseOrderLineId = purchaseOrderLineId,
+            ItemId = itemId, UomId = uomId, ProductTypeId = productTypeId,
             BatchNo = batchNo, ActualDelivered = actualDelivered, Status = "ForReceiving", IsActive = true
         };
         r.RaiseDomainEvent(new QcReceiptChanged("Created", DateTime.UtcNow));

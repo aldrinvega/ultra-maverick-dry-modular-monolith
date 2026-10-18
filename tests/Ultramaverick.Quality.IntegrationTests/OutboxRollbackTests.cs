@@ -26,7 +26,7 @@ public class OutboxRollbackTests : IClassFixture<DatabaseFixture>
 
         await using (var context = _fixture.CreateContext(new FailingOutboxCommandInterceptor()))
         {
-            context.QcReceipts.Add(QcReceipt.Create(1, 10, null, batchNo, 5m, 20));
+            context.QcReceipts.Add(QcReceipt.Create(1, 10, null, batchNo, 5m, 20, null));
 
             var exception = await Assert.ThrowsAsync<DbUpdateException>(() => context.SaveChangesAsync());
             Assert.IsType<InvalidOperationException>(exception.InnerException);

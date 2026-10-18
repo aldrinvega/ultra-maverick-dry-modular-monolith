@@ -15,7 +15,7 @@ internal static class TestData
     {
         var receipt = QcReceipt.Create(
             purchaseOrderId: 1, itemId: 10, productTypeId: null, batchNo: Code("LOT"),
-            actualDelivered: 5m, uomId: 20);
+            actualDelivered: 5m, uomId: 20, purchaseOrderLineId: null);
 
         context.QcReceipts.Add(receipt);
         await context.SaveChangesAsync();

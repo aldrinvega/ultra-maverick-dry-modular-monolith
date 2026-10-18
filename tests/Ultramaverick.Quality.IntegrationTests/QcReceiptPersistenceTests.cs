@@ -15,7 +15,7 @@ public class QcReceiptPersistenceTests : IClassFixture<DatabaseFixture>
         int receiptId;
         await using (var context = _fixture.CreateContext())
         {
-            var receipt = QcReceipt.Create(1, 10, null, null, 10m, 20);
+            var receipt = QcReceipt.Create(1, 10, null, null, 10m, 20, null);
             receipt.Reject(3.1234m, 1, "damaged", 7);
             context.QcReceipts.Add(receipt);
             await context.SaveChangesAsync();
@@ -43,7 +43,7 @@ public class QcReceiptPersistenceTests : IClassFixture<DatabaseFixture>
         {
             await TestData.ClearOutboxAsync(context);
 
-            var receipt = QcReceipt.Create(1, 10, null, "LOT-1", 10m, 20);
+            var receipt = QcReceipt.Create(1, 10, null, "LOT-1", 10m, 20, null);
             receipt.Reject(4m, null, null, null);
             context.QcReceipts.Add(receipt);
             await context.SaveChangesAsync();

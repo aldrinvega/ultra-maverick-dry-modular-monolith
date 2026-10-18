@@ -23,6 +23,7 @@ public class PurchaseOrderReceivedIntegrationTests : IClassFixture<DatabaseFixtu
     public async Task Marking_a_purchase_order_received_projects_one_receipt_per_line()
     {
         int purchaseOrderId;
+        int[] lineIds;
         await using (var procurement = _fixture.CreateProcurementContext())
         {
             var po = Procurement.Domain.Entities.PurchaseOrder.Create(
@@ -32,6 +33,7 @@ public class PurchaseOrderReceivedIntegrationTests : IClassFixture<DatabaseFixtu
             procurement.PurchaseOrders.Add(po);
             await procurement.SaveChangesAsync();
             purchaseOrderId = po.Id;
+            lineIds = po.Lines.Select(l => l.Id).OrderBy(x => x).ToArray();
 
             // Leave exactly the PurchaseOrderReceived row for the dispatcher to find.
             procurement.OutboxMessages.RemoveRange(procurement.OutboxMessages);
@@ -59,6 +61,11 @@ public class PurchaseOrderReceivedIntegrationTests : IClassFixture<DatabaseFixtu
 
             Assert.Equal(2, receipts.Count);
             Assert.All(receipts, r => Assert.Equal("ForReceiving", r.Status));
+
+            // Each receipt must carry the purchase-order line it was projected from.
+            Assert.Equal(
+                lineIds.Select(x => (int?)x).ToArray(),
+                receipts.Select(r => r.PurchaseOrderLineId).OrderBy(x => x).ToArray());
         }
     }
 

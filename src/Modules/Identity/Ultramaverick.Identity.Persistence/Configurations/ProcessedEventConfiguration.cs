@@ -8,6 +8,7 @@ public sealed class ProcessedEventConfiguration : IEntityTypeConfiguration<Proce
 {
     public void Configure(EntityTypeBuilder<ProcessedEvent> builder)
     {
+        // Table/schema intentionally retained to avoid migration churn; the store registration and concrete class were removed.
         builder.ToTable("ProcessedEvents", "Infrastructure");
         builder.HasKey(p => new { p.EventId, p.ProjectionName });
 

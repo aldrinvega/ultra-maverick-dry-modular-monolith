@@ -31,6 +31,24 @@ public class PurchaseOrderReceivedHandlerTests
         Assert.Equal(2, uow.QcReceiptsRepo.All.Count);
         Assert.Equal(1, uow.SaveCount);
         Assert.Equal(1, processed.MarkCount);
+
+        // The handler must bind each receipt to the purchase-order line it was read from.
+        Assert.Equal(
+            new int?[] { 1, 2 },
+            uow.QcReceiptsRepo.All.Select(r => r.PurchaseOrderLineId).OrderBy(x => x).ToArray());
+    }
+
+    [Fact]
+    public async Task Handle_deduplicates_a_repeated_line_id_into_one_receipt()
+    {
+        var (handler, uow, lines, processed) = Build();
+        lines.Lines[1] = new PurchaseOrderLineInfo(1, 10, 20, 5m, null, null);
+
+        await handler.Handle(Notification(100, 1, 1), CancellationToken.None);
+
+        Assert.Single(uow.QcReceiptsRepo.All);
+        Assert.Equal(1, uow.SaveCount);
+        Assert.Equal(1, processed.MarkCount);
     }
 
     [Fact]
@@ -38,7 +56,7 @@ public class PurchaseOrderReceivedHandlerTests
     {
         var (handler, uow, lines, processed) = Build();
         lines.Lines[1] = new PurchaseOrderLineInfo(1, 10, 20, 5m, null, null);
-        uow.QcReceiptsRepo.Seed(Ultramaverick.Quality.Domain.Entities.QcReceipt.Create(100, 1, null, null, 1m, 1));
+        uow.QcReceiptsRepo.Seed(Ultramaverick.Quality.Domain.Entities.QcReceipt.Create(100, 1, null, null, 1m, 1, null));
 
         await handler.Handle(Notification(100, 1), CancellationToken.None);
 

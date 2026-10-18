@@ -30,14 +30,16 @@ public sealed class PurchaseOrderReceivedHandler : INotificationHandler<Purchase
         if (await _processedEvents.HasProcessedAsync(notification.EventId, nameof(PurchaseOrderReceivedHandler), ct))
             return;
 
-        foreach (var lineId in notification.LineItemIds)
+        foreach (var lineId in notification.LineItemIds.Distinct())
         {
             var line = await _lines.GetAsync(lineId, ct)
                 ?? throw new InvalidOperationException($"Purchase order line {lineId} was not found.");
 
+            // Deviation from §13.3: LotNo is sourced from the PO line's BatchNo, and the PO line id
+            // and UomId are added from the purchase-order line (the guide's projection omitted them).
             var receipt = QcReceipt.Create(
                 notification.PurchaseOrderId, line.ItemId, line.ProductTypeId,
-                line.BatchNo, line.Quantity, line.UomId);
+                line.BatchNo, line.Quantity, line.UomId, line.PurchaseOrderLineId);
             await _uow.QcReceipts.AddAsync(receipt, ct);
         }
 

@@ -68,23 +68,31 @@ public sealed class OutboxPublisherService : BackgroundService
 
         foreach (var store in stores)
         {
-            var pending = await store.GetPendingAsync(BatchSize, ct);
-
-            foreach (var record in pending)
+            // A fault in one store must not starve the stores registered after it.
+            try
             {
-                try
-                {
-                    await dispatcher.DispatchAsync(record, ct);
-                    await store.MarkPublishedAsync(record.EventId, ct);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning(ex,
-                        "Failed to publish {EventType} ({EventId}); attempt {Attempts}.",
-                        record.EventType, record.EventId, record.Attempts + 1);
+                var pending = await store.GetPendingAsync(BatchSize, ct);
 
-                    await store.MarkFailedAsync(record.EventId, ex.Message, ct);
+                foreach (var record in pending)
+                {
+                    try
+                    {
+                        await dispatcher.DispatchAsync(record, ct);
+                        await store.MarkPublishedAsync(record.EventId, ct);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning(ex,
+                            "Failed to publish {EventType} ({EventId}); attempt {Attempts}.",
+                            record.EventType, record.EventId, record.Attempts + 1);
+
+                        await store.MarkFailedAsync(record.EventId, ex.Message, ct);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Outbox store {Store} failed during a drain pass.", store.GetType().FullName);
             }
         }
     }
