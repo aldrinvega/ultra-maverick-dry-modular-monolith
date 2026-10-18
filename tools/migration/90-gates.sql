@@ -105,3 +105,38 @@ ELSE
 BEGIN
     PRINT 'All reconciliation gates passed.';
 END;
+
+-- Coverage gate: every legacy table that holds rows must be either migrated or explicitly retired.
+DECLARE @unexpected TABLE ([TableName] sysname NOT NULL);
+
+INSERT INTO @unexpected ([TableName])
+SELECT t.[name]
+FROM [$(LegacyDb)].sys.tables t
+JOIN [$(LegacyDb)].sys.partitions p
+  ON p.[object_id] = t.[object_id] AND p.[index_id] IN (0, 1)
+WHERE p.[rows] > 0
+  AND t.[name] NOT IN (
+      'Departments','MainMenus','Modules','RoleModules','Roles','Users',
+      'AccountTitles','Customers','Farms','ItemCategories','LotCategories','LotNames',
+      'ProductTypes','RawMaterials','Reasons','Suppliers','UOMS','Transactions','SampleTypes',
+      'POSummary',
+      'QC_Receiving','QC_Reject','ChecklistTypes','ChecklistQuestions','QcChecklists',
+      'ChecklistAnswers','QChecklistOpenFieldAnswers','QChecklistProductDimensions',
+      'ChecklistOtherObservations','ChecklistCompliances','ChecklistReviewVerificationLogs',
+      'WarehouseReceived','MiscellaneousReceipts','MiscellaneousIssues','MiscellaneousIssueDetails',
+      'Orders','MoveOrders','TransactMoveOrder','CancelledOrders','AdvancesToEmployees',
+      'Transformation_Planning','Transformation_Request','Transformation_Preparation','Transformation_Reject',
+      'Formulas','FormulaRequirements','LabTestRequests',
+      'GenerateOrderNos','CheckListStrings','Warehouse_Reject','__EFMigrationsHistory'
+  )
+GROUP BY t.[name];
+
+IF EXISTS (SELECT 1 FROM @unexpected)
+BEGIN
+    SELECT [TableName] FROM @unexpected;
+    RAISERROR('Legacy tables with data are neither migrated nor retired.', 16, 1);
+END
+ELSE
+BEGIN
+    PRINT 'Coverage gate passed: every legacy table with data is migrated or retired.';
+END;
