@@ -35,6 +35,16 @@ namespace Ultramaverick.Api.Controllers
             var result = await _mediator.Send(new GetTransformationRequestByIdQuery(id), ct);
             return result.Succeeded ? Ok(result.Value) : BadRequest(new ApiResponse(400, result.Error));
         }
+        [HttpPut("Reject/{id}")]
+        public async Task<IActionResult> Reject(
+            int id, [FromBody] RejectTransformationRequestCommand cmd, CancellationToken ct)
+        {
+            if (id != cmd.Id)
+                return BadRequest(new ApiResponse(400, "Route id and body id must match."));
+
+            var result = await _mediator.Send(cmd, ct);
+            return result.Succeeded ? NoContent() : BadRequest(new ApiResponse(400, result.Error));
+        }
         [HttpPost("AddTransformationRequest")]
         public async Task<IActionResult> AddTransformationRequest(
             [FromBody] CreateTransformationRequestCommand cmd, CancellationToken ct)
@@ -45,4 +55,5 @@ namespace Ultramaverick.Api.Controllers
             => (await _mediator.Send(new PrepareTransformationRequestCommand(id), ct)).ToNoContent();
     }
 }
+
 
