@@ -12,6 +12,7 @@ using Ultramaverick.Identity.Domain.Entities;
 using Ultramaverick.Identity.Domain.ValueObjects;
 using Ultramaverick.Identity.Persistence;
 using Ultramaverick.Orders.Persistence;
+using Ultramaverick.Manufacturing.Persistence;
 using Ultramaverick.Procurement.Persistence;
 using Ultramaverick.Quality.Persistence;
 using Ultramaverick.Laboratory.Persistence;
@@ -37,6 +38,9 @@ public sealed class ApiFixture : IAsyncLifetime
 
     /// <summary>Id of the active Catalog customer seeded for the Orders create-order tests.</summary>
     public int CustomerId { get; private set; }
+
+    /// <summary>Id of the production plan seeded for the Manufacturing create-request tests.</summary>
+    public int ProductionPlanId { get; private set; }
 
     public async Task InitializeAsync()
     {
@@ -84,6 +88,12 @@ public sealed class ApiFixture : IAsyncLifetime
         await using (var warehouseContext = CreateWarehouseContext())
         {
             await warehouseContext.Database.MigrateAsync();
+        }
+
+        await using (var manufacturingContext = CreateManufacturingContext())
+        {
+            await manufacturingContext.Database.MigrateAsync();
+            ProductionPlanId = await SeedProductionPlanAsync(manufacturingContext);
         }
 
         _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
@@ -192,6 +202,34 @@ public sealed class ApiFixture : IAsyncLifetime
             .Options;
 
         return new OrdersDbContext(options);
+    }
+
+    private ManufacturingDbContext CreateManufacturingContext()
+    {
+        var options = new DbContextOptionsBuilder<ManufacturingDbContext>()
+            .UseSqlServer(ConnectionString)
+            .Options;
+
+        return new ManufacturingDbContext(options);
+    }
+
+    /// <summary>
+    /// Seeds one production plan so Manufacturing's create-request handler has a valid target.
+    /// ProductionPlan is map-only this wave, so the row is inserted with SQL.
+    /// </summary>
+    private static async Task<int> SeedProductionPlanAsync(ManufacturingDbContext context)
+    {
+        await context.Database.ExecuteSqlAsync($"""
+            INSERT INTO [Manufacturing].[ProductionPlans]
+                ([ItemId], [UomId], [Quantity], [Status], [IsApproved], [IsPrepared], [IsMixed], [IsActive], [CreatedAtUtc])
+            VALUES (10, 20, 100, 'Pending', 0, 0, 0, 1, SYSUTCDATETIME());
+            """);
+
+        return await context.ProductionPlans
+            .AsNoTracking()
+            .OrderByDescending(x => x.Id)
+            .Select(x => x.Id)
+            .FirstAsync();
     }
 
     /// <summary>Seeds one active customer so Orders' create-order handler has a valid target.</summary>

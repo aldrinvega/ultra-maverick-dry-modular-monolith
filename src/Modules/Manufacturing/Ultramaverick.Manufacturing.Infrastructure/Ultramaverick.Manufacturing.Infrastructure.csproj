@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Ultramaverick.Manufacturing.Application\Ultramaverick.Manufacturing.Application.csproj" />
+    <ProjectReference Include="..\Ultramaverick.Manufacturing.Domain\Ultramaverick.Manufacturing.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
