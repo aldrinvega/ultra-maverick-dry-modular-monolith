@@ -6,10 +6,12 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Ultramaverick.Catalog.Domain.Entities;
 using Ultramaverick.Catalog.Persistence;
 using Ultramaverick.Identity.Domain.Entities;
 using Ultramaverick.Identity.Domain.ValueObjects;
 using Ultramaverick.Identity.Persistence;
+using Ultramaverick.Orders.Persistence;
 using Ultramaverick.Procurement.Persistence;
 using Ultramaverick.Quality.Persistence;
 using Ultramaverick.Laboratory.Persistence;
@@ -33,6 +35,9 @@ public sealed class ApiFixture : IAsyncLifetime
     private WebApplicationFactory<Program> _factory = null!;
     public string ConnectionString { get; private set; } = string.Empty;
 
+    /// <summary>Id of the active Catalog customer seeded for the Orders create-order tests.</summary>
+    public int CustomerId { get; private set; }
+
     public async Task InitializeAsync()
     {
         var baseConnection = Environment.GetEnvironmentVariable("IDENTITY_TEST_CONNECTION")
@@ -53,6 +58,12 @@ public sealed class ApiFixture : IAsyncLifetime
         await using (var catalogContext = CreateCatalogContext())
         {
             await catalogContext.Database.MigrateAsync();
+            CustomerId = await SeedCustomerAsync(catalogContext);
+        }
+
+        await using (var ordersContext = CreateOrdersContext())
+        {
+            await ordersContext.Database.MigrateAsync();
         }
 
         await using (var procurementContext = CreateProcurementContext())
@@ -172,6 +183,28 @@ public sealed class ApiFixture : IAsyncLifetime
             .Options;
 
         return new WarehouseDbContext(options);
+    }
+
+    private OrdersDbContext CreateOrdersContext()
+    {
+        var options = new DbContextOptionsBuilder<OrdersDbContext>()
+            .UseSqlServer(ConnectionString)
+            .Options;
+
+        return new OrdersDbContext(options);
+    }
+
+    /// <summary>Seeds one active customer so Orders' create-order handler has a valid target.</summary>
+    private static async Task<int> SeedCustomerAsync(CatalogDbContext context)
+    {
+        var customer = Customer.Create(
+            $"C{Guid.NewGuid():N}"[..12], "Authorization Test Customer",
+            null, null, null, null, null, null, null, null, null, null);
+
+        context.Customers.Add(customer);
+        await context.SaveChangesAsync();
+
+        return customer.Id;
     }
 
     private static async Task SeedAsync(IdentityDbContext context)
