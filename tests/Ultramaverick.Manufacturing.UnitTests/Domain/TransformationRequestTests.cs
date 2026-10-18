@@ -1,6 +1,6 @@
-using Ultramaverick.Manufacturing.Domain;
+﻿using Ultramaverick.Manufacturing.Domain;
 using Ultramaverick.Manufacturing.Domain.Entities;
-using Ultramaverick.Manufacturing.Domain.Events;
+using Ultramaverick.Manufacturing.Contracts;
 
 namespace Ultramaverick.Manufacturing.UnitTests.Domain;
 
@@ -94,3 +94,4 @@ public class TransformationRequestTests
         Assert.Throws<InvalidOperationException>(() => request.Reject(3, 1m));
     }
 }
+

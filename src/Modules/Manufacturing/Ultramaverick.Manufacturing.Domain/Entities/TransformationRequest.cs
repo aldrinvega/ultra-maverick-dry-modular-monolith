@@ -1,4 +1,4 @@
-using Ultramaverick.Manufacturing.Domain.Events;
+﻿using Ultramaverick.Manufacturing.Contracts;
 using Ultramaverick.SharedKernel;
 
 namespace Ultramaverick.Manufacturing.Domain.Entities;
@@ -16,8 +16,8 @@ public sealed class TransformationRequest : Entity
 
     public int Id { get; private set; }
     public int? LegacyId { get; private set; }
-    public int ProductionPlanId { get; private set; }  // FK → Manufacturing.ProductionPlans
-    public int WarehouseId { get; private set; }       // scalar → Warehouse (no FK)
+    public int ProductionPlanId { get; private set; }  // FK â†’ Manufacturing.ProductionPlans
+    public int WarehouseId { get; private set; }       // scalar â†’ Warehouse (no FK)
     public string Status { get; private set; } = TransformationStatuses.Requested;
     public bool IsActive { get; private set; } = true;
     public DateTime CreatedAtUtc { get; private set; } = DateTime.UtcNow;
@@ -91,3 +91,4 @@ public sealed class TransformationRequest : Entity
         RaiseDomainEvent(new TransformationRejected(TransformationChangeTypes.Rejected, occurredAt));
     }
 }
+

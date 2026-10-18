@@ -52,6 +52,7 @@
   </Folder>
   <Folder Name="/src/Modules/Manufacturing/">
     <Project Path="src/Modules/Manufacturing/Ultramaverick.Manufacturing.Application/Ultramaverick.Manufacturing.Application.csproj" />
+    <Project Path="src/Modules/Manufacturing/Ultramaverick.Manufacturing.Contracts/Ultramaverick.Manufacturing.Contracts.csproj" />
     <Project Path="src/Modules/Manufacturing/Ultramaverick.Manufacturing.Domain/Ultramaverick.Manufacturing.Domain.csproj" />
     <Project Path="src/Modules/Manufacturing/Ultramaverick.Manufacturing.Infrastructure/Ultramaverick.Manufacturing.Infrastructure.csproj" />
     <Project Path="src/Modules/Manufacturing/Ultramaverick.Manufacturing.Persistence/Ultramaverick.Manufacturing.Persistence.csproj" />
@@ -87,3 +88,4 @@
     <Project Path="tests/Ultramaverick.Warehouse.UnitTests/Ultramaverick.Warehouse.UnitTests.csproj" />
   </Folder>
 </Solution>
+
