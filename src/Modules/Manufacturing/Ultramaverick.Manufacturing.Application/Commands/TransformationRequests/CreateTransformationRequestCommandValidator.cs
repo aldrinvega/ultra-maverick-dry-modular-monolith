@@ -11,6 +11,8 @@ public sealed class CreateTransformationRequestCommandValidator
         RuleFor(x => x.WarehouseId).GreaterThan(0);
         RuleFor(x => x.Lines).NotEmpty();
 
+        RuleForEach(x => x.Lines).NotNull();
+
         RuleForEach(x => x.Lines).ChildRules(line =>
         {
             line.RuleFor(l => l.ItemId).GreaterThan(0);

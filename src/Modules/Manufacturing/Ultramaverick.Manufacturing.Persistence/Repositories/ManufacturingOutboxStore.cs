@@ -35,10 +35,13 @@ public sealed class ManufacturingOutboxStore : IOutboxStore
 
     public async Task MarkFailedAsync(Guid eventId, string error, CancellationToken ct)
     {
+        const int maxErrorLength = 2000;
+        var storedError = error.Length > maxErrorLength ? error[..maxErrorLength] : error;
+
         await _context.OutboxMessages
             .Where(m => m.EventId == eventId)
             .ExecuteUpdateAsync(setters => setters
                 .SetProperty(m => m.Attempts, m => m.Attempts + 1)
-                .SetProperty(m => m.LastError, error), ct);
+                .SetProperty(m => m.LastError, storedError), ct);
     }
 }
