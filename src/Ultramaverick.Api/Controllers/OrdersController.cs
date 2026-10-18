@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Ultramaverick.Api.Authorization;
 using Ultramaverick.Api.Errors;
 using Ultramaverick.Orders.Application.Commands.Orders;
+using Ultramaverick.Orders.Application.Queries.CancelledOrders;
 
 namespace Ultramaverick.Api.Controllers
 {
@@ -31,5 +32,9 @@ namespace Ultramaverick.Api.Controllers
             => id != cmd.OrderId
                 ? ResultExtensions.BadRequestError("Route id and body id must match.")
                 : (await _mediator.Send(cmd, ct)).ToNoContent();
+
+        [HttpGet("GetCancelledOrdersById/{customerId}")]
+        public async Task<IActionResult> GetCancelledOrdersById(int customerId, CancellationToken ct)
+            => (await _mediator.Send(new GetCancelledOrdersByCustomerQuery(customerId), ct)).ToOk();
     }
 }
