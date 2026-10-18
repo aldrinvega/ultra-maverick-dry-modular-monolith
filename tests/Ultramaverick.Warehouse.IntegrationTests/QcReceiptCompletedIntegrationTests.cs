@@ -64,6 +64,44 @@ public class QcReceiptCompletedIntegrationTests : IClassFixture<DatabaseFixture>
     }
 
     [Fact]
+    public async Task The_bridge_records_a_non_positive_quantity_event_without_producing_stock()
+    {
+        await using (var context = _fixture.CreateContext())
+        {
+            await TestData.ClearOutboxAsync(context);
+        }
+
+        var qcReceiptId = 4343;
+        var eventId = Guid.NewGuid();
+        var record = TestData.QcReceiptCompletedRecord(
+            eventId, qcReceiptId, itemId: 13, uomId: 23, lotNo: "LOT-Z", netQuantity: 0m);
+
+        using (var scope = _fixture.CreateScope())
+        {
+            await ResolveBridge(scope).HandleAsync(record, CancellationToken.None);
+        }
+
+        await using (var context = _fixture.CreateContext())
+        {
+            // (a) The marker still commits, so a redelivery is never retried as poison.
+            Assert.True(await context.ProcessedEvents.AsNoTracking()
+                .AnyAsync(p => p.EventId == eventId));
+
+            // (b)/(c) No stock is projected: no receipt, no balance and no movement.
+            Assert.False(await context.WarehouseReceipts.AsNoTracking()
+                .AnyAsync(r => r.QcReceiptId == qcReceiptId));
+            Assert.False(await context.InventoryBalances.AsNoTracking()
+                .AnyAsync(b => b.ItemId == 13));
+            Assert.False(await context.InventoryMovements.AsNoTracking()
+                .AnyAsync(m => m.ItemId == 13));
+
+            // (d) With no receipt there is no StockReceived row in Warehouse's outbox.
+            Assert.False(await context.OutboxMessages.AsNoTracking()
+                .AnyAsync(o => o.EventType == "StockReceived"));
+        }
+    }
+
+    [Fact]
     public void The_bridge_preserves_the_event_type_literal_quality_writes()
     {
         using var scope = _fixture.CreateScope();
