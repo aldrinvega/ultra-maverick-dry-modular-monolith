@@ -30,8 +30,11 @@ namespace Ultramaverick.Api.Controllers
             [FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken ct = default)
             => Ok(await _mediator.Send(new GetWarehouseReceiptsQuery(page, pageSize), ct));
 
-        [HttpGet("GetInventoryBalance")]
-        public async Task<ActionResult<IReadOnlyList<InventoryBalanceDto>>> GetInventoryBalance(
+        [HttpGet("GetWarehouseReceiptById/{id}")]
+        public async Task<IActionResult> GetWarehouseReceiptById(int id, CancellationToken ct)
+            => (await _mediator.Send(new GetWarehouseReceiptByIdQuery(id), ct)).ToOk();
+
+        [HttpGet("GetInventoryBalance")]        public async Task<ActionResult<IReadOnlyList<InventoryBalanceDto>>> GetInventoryBalance(
             [FromQuery] int? warehouseId = null, [FromQuery] int? itemId = null, CancellationToken ct = default)
             => Ok(await _mediator.Send(new GetInventoryBalanceQuery(warehouseId, itemId), ct));
 
