@@ -36,6 +36,13 @@
     <Project Path="src/Modules/Laboratory/Ultramaverick.Laboratory.Infrastructure/Ultramaverick.Laboratory.Infrastructure.csproj" />
     <Project Path="src/Modules/Laboratory/Ultramaverick.Laboratory.Persistence/Ultramaverick.Laboratory.Persistence.csproj" />
   </Folder>
+  <Folder Name="/src/Modules/Warehouse/">
+    <Project Path="src/Modules/Warehouse/Ultramaverick.Warehouse.Application/Ultramaverick.Warehouse.Application.csproj" />
+    <Project Path="src/Modules/Warehouse/Ultramaverick.Warehouse.Contracts/Ultramaverick.Warehouse.Contracts.csproj" />
+    <Project Path="src/Modules/Warehouse/Ultramaverick.Warehouse.Domain/Ultramaverick.Warehouse.Domain.csproj" />
+    <Project Path="src/Modules/Warehouse/Ultramaverick.Warehouse.Infrastructure/Ultramaverick.Warehouse.Infrastructure.csproj" />
+    <Project Path="src/Modules/Warehouse/Ultramaverick.Warehouse.Persistence/Ultramaverick.Warehouse.Persistence.csproj" />
+  </Folder>
   <Folder Name="/src/Shared/">
     <Project Path="src/Shared/Ultramaverick.SharedKernel/Ultramaverick.SharedKernel.csproj" />
   </Folder>
@@ -51,5 +58,7 @@
     <Project Path="tests/Ultramaverick.Procurement.UnitTests/Ultramaverick.Procurement.UnitTests.csproj" />
     <Project Path="tests/Ultramaverick.Quality.IntegrationTests/Ultramaverick.Quality.IntegrationTests.csproj" />
     <Project Path="tests/Ultramaverick.Quality.UnitTests/Ultramaverick.Quality.UnitTests.csproj" />
+    <Project Path="tests/Ultramaverick.Warehouse.IntegrationTests/Ultramaverick.Warehouse.IntegrationTests.csproj" />
+    <Project Path="tests/Ultramaverick.Warehouse.UnitTests/Ultramaverick.Warehouse.UnitTests.csproj" />
   </Folder>
 </Solution>
