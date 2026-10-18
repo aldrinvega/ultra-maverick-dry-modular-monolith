@@ -13,6 +13,7 @@ public static class ServiceCollectionExtensions
             cfg.RegisterServicesFromAssembly(typeof(ServiceCollectionExtensions).Assembly));
 
         services.AddValidatorsFromAssembly(typeof(ServiceCollectionExtensions).Assembly);
+        services.AddScoped<Ultramaverick.Procurement.Application.Import.IImportReader, Ultramaverick.Procurement.Application.Import.XlsxImportReader>();
 
         // Run validators before handlers.
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
