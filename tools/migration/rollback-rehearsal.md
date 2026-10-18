@@ -47,6 +47,22 @@ loss.
 
 6. **Record** the wall-clock time of steps 2-3 as the recovery time objective for the cutover runbook.
 
+## Rehearsal result (2026-10-18)
+
+Executed against `UltraMaverickDry_Migrated` after the full load:
+
+| Step | Outcome |
+|---|---|
+| Snapshot to `target_post_migration.bak` | succeeded |
+| Drop target database | succeeded |
+| Restore from snapshot | succeeded |
+| `90-gates.sql` after restore | **all 29 gates pass** |
+| Spot-check counts after restore | Orders 16,203 · OrderLines 90,082 · ChecklistAnswers 83,765 · InventoryPositions 1,530 · OrderFulfillment 16,203 |
+
+Measured recovery time objective: **0.8 seconds** (backup + drop + restore on local SQL Express).
+That figure covers only the database round-trip; add application restart time when rehearsing on
+staging.
+
 ## Notes
 
 - Because the ETL is idempotent (guarded by `LegacyIdMap` and target `LegacyId`), the alternative to
