@@ -12,6 +12,7 @@ using Ultramaverick.Identity.Domain.ValueObjects;
 using Ultramaverick.Identity.Persistence;
 using Ultramaverick.Procurement.Persistence;
 using Ultramaverick.Quality.Persistence;
+using Ultramaverick.Laboratory.Persistence;
 
 namespace Ultramaverick.Api.AuthorizationTests;
 
@@ -61,6 +62,11 @@ public sealed class ApiFixture : IAsyncLifetime
         await using (var qualityContext = CreateQualityContext())
         {
             await qualityContext.Database.MigrateAsync();
+        }
+
+        await using (var laboratoryContext = CreateLaboratoryContext())
+        {
+            await laboratoryContext.Database.MigrateAsync();
         }
 
         _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
@@ -142,6 +148,15 @@ public sealed class ApiFixture : IAsyncLifetime
             .Options;
 
         return new QualityDbContext(options);
+    }
+
+    private LaboratoryDbContext CreateLaboratoryContext()
+    {
+        var options = new DbContextOptionsBuilder<LaboratoryDbContext>()
+            .UseSqlServer(ConnectionString)
+            .Options;
+
+        return new LaboratoryDbContext(options);
     }
 
     private static async Task SeedAsync(IdentityDbContext context)

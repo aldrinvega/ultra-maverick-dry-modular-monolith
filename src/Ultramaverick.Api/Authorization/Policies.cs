@@ -8,6 +8,7 @@ namespace Ultramaverick.Api.Authorization
         public const string Catalog = "RequireModule:Catalog";
         public const string Procurement = "RequireModule:Procurement";
         public const string Quality = "RequireModule:Quality";
+        public const string Laboratory = "RequireModule:Laboratory";
 
         public static string RequireModule(string module) => $"RequireModule:{module}";
     }

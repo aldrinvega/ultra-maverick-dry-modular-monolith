@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Ultramaverick.Laboratory.Contracts\Ultramaverick.Laboratory.Contracts.csproj" />
+    <ProjectReference Include="..\..\..\Shared\Ultramaverick.SharedKernel\Ultramaverick.SharedKernel.csproj" />
+  </ItemGroup>
+
+</Project>
