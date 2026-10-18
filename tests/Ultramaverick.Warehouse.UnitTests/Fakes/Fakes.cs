@@ -45,13 +45,12 @@ internal sealed class FakeWarehouseReceiptRepository : IWarehouseReceiptReposito
         => Task.FromResult(_receipts.FirstOrDefault(r => r.Id == warehouseReceiptId));
 
     public Task<IReadOnlyList<WarehouseReceipt>> ListAsync(
-        int? warehouseId, int skip, int take, CancellationToken ct)
+        int skip, int take, CancellationToken ct)
         => Task.FromResult<IReadOnlyList<WarehouseReceipt>>(
-            _receipts.Where(r => warehouseId is null || r.WarehouseId == warehouseId)
-                .Skip(skip).Take(take).ToList());
+            _receipts.Skip(skip).Take(take).ToList());
 
-    public Task<int> CountAsync(int? warehouseId, CancellationToken ct)
-        => Task.FromResult(_receipts.Count(r => warehouseId is null || r.WarehouseId == warehouseId));
+    public Task<int> CountAsync(CancellationToken ct)
+        => Task.FromResult(_receipts.Count);
 
     public Task AddAsync(WarehouseReceipt receipt, CancellationToken ct)
     {

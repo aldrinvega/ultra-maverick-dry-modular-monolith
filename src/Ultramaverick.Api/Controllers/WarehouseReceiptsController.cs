@@ -27,9 +27,8 @@ namespace Ultramaverick.Api.Controllers
 
         [HttpGet("GetWarehouseReceiptsWithPagination")]
         public async Task<ActionResult<PagedResult<WarehouseReceiptDto>>> GetWarehouseReceiptsWithPagination(
-            [FromQuery] int page = 1, [FromQuery] int pageSize = 20,
-            [FromQuery] int? warehouseId = null, CancellationToken ct = default)
-            => Ok(await _mediator.Send(new GetWarehouseReceiptsQuery(page, pageSize, warehouseId), ct));
+            [FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken ct = default)
+            => Ok(await _mediator.Send(new GetWarehouseReceiptsQuery(page, pageSize), ct));
 
         [HttpGet("GetInventoryBalance")]
         public async Task<ActionResult<IReadOnlyList<InventoryBalanceDto>>> GetInventoryBalance(

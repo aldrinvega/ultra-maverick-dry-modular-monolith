@@ -20,6 +20,7 @@ public sealed class MiscellaneousIssueConfiguration : IEntityTypeConfiguration<M
             .WithOne()
             .HasForeignKey(l => l.MiscellaneousIssueId)
             .OnDelete(DeleteBehavior.Cascade);
+        b.Navigation(x => x.Lines).UsePropertyAccessMode(PropertyAccessMode.Field);
 
         b.Property<byte[]>("RowVersion").IsRowVersion();
     }

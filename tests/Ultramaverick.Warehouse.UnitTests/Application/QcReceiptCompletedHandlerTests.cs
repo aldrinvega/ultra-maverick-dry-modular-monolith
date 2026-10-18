@@ -73,4 +73,22 @@ public class QcReceiptCompletedHandlerTests
         Assert.Empty(uow.ReceiptsRepo.All);
         Assert.Equal(0, uow.SaveCount);
     }
+
+    [Fact]
+    public async Task Handle_records_a_zero_quantity_event_without_writing_stock()
+    {
+        var (handler, uow, processed) = Build();
+        var eventId = Guid.NewGuid();
+        var notification = new QcReceiptCompletedNotification(
+            56, ItemId: 10, UomId: 20, LotNo: "LOT-Z", NetQuantity: 0m,
+            ManufacturingDate: null, ExpiryDate: null, CompletedBy: 7, eventId);
+
+        await handler.Handle(notification, CancellationToken.None);
+
+        Assert.Equal(1, processed.MarkCount);
+        Assert.Equal(1, uow.SaveCount);
+        Assert.Empty(uow.ReceiptsRepo.All);
+        Assert.Empty(uow.BalancesRepo.All);
+        Assert.Empty(uow.MovementsRepo.All);
+    }
 }

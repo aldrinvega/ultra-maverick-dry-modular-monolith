@@ -35,6 +35,15 @@ public sealed class QcReceiptCompletedHandler : INotificationHandler<QcReceiptCo
         if (await _processedEvents.HasProcessedAsync(notification.EventId, nameof(QcReceiptCompletedHandler), ct))
             return;
 
+        // A zero (or negative) net quantity has no stock to project, but the event must still be
+        // recorded as handled so redeliveries do not keep retrying it (ruling D3: no outbox poison).
+        if (notification.NetQuantity <= 0)
+        {
+            await _processedEvents.MarkProcessedAsync(notification.EventId, nameof(QcReceiptCompletedHandler), ct);
+            await _uow.SaveChangesAsync(ct);
+            return;
+        }
+
         var warehouseId = await _selector.DefaultForItemAsync(notification.ItemId, ct);
 
         var receipt = WarehouseReceipt.Create(

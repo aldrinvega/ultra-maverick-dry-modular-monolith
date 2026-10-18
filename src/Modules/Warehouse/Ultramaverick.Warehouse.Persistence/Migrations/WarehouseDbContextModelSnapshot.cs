@@ -62,8 +62,7 @@ namespace Ultramaverick.Warehouse.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("WarehouseId", "ItemId", "UomId", "LotNo")
-                        .IsUnique()
-                        .HasFilter("[LotNo] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("InventoryBalances", "Warehouse");
                 });

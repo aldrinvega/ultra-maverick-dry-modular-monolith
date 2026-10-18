@@ -20,6 +20,7 @@ public sealed class MiscellaneousReceiptConfiguration : IEntityTypeConfiguration
             .WithOne()
             .HasForeignKey(l => l.MiscellaneousReceiptId)
             .OnDelete(DeleteBehavior.Cascade);
+        b.Navigation(x => x.Lines).UsePropertyAccessMode(PropertyAccessMode.Field);
 
         b.Property<byte[]>("RowVersion").IsRowVersion();
     }

@@ -276,8 +276,7 @@ namespace Ultramaverick.Warehouse.Persistence.Migrations
                 schema: "Warehouse",
                 table: "InventoryBalances",
                 columns: new[] { "WarehouseId", "ItemId", "UomId", "LotNo" },
-                unique: true,
-                filter: "[LotNo] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_InventoryMovements_WarehouseId_ItemId",

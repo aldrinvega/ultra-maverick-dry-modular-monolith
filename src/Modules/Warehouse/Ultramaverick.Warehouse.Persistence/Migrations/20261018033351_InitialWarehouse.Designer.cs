@@ -12,7 +12,7 @@ using Ultramaverick.Warehouse.Persistence;
 namespace Ultramaverick.Warehouse.Persistence.Migrations
 {
     [DbContext(typeof(WarehouseDbContext))]
-    [Migration("20261018031132_InitialWarehouse")]
+    [Migration("20261018033351_InitialWarehouse")]
     partial class InitialWarehouse
     {
         /// <inheritdoc />
@@ -65,8 +65,7 @@ namespace Ultramaverick.Warehouse.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("WarehouseId", "ItemId", "UomId", "LotNo")
-                        .IsUnique()
-                        .HasFilter("[LotNo] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("InventoryBalances", "Warehouse");
                 });

@@ -2,7 +2,7 @@ using Ultramaverick.SharedKernel;
 
 namespace Ultramaverick.Warehouse.Domain.Entities;
 
-/// <summary>Map-only placeholder for a manual stock issue. No behaviour this wave (G38).</summary>
+/// <summary>Map-only placeholder for a manual stock issue. No behaviour this wave (G42).</summary>
 public sealed class MiscellaneousIssue : Entity
 {
     public int Id { get; private set; }
