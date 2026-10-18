@@ -173,3 +173,20 @@ asserted by the coverage gate in `90-gates.sql`:
 The order backfill in that script matched nothing: legacy `Orders.TransactionType` is NULL on every row, so
 no order carries a transaction type. Only move orders reference a transaction, and their target table has no
 transaction-type column.
+
+## Identity module-name mapping (authorization)
+
+Legacy `Modules.Name` values are menu route paths (`/ordering/orders`, `/setup/uom-management`), not
+module identifiers, so JWT role claims never matched the `RequireModule:*` policies and every
+authenticated call returned 403. `19-identity-module-map.sql` inserts the nine canonical module
+identifiers and remaps each role's menu grants by path family
+(`/ordering/*` and `/move-order-approval/*` → Orders, `/inventory/*` and `/receiving/*` → Warehouse,
+`/qc-module/*` → Quality, `/import/*` → Procurement, `/user-management/*` → Identity,
+`/reports/*` → Reporting, `/setup/*` → Catalog).
+
+Run order: `10-identity.sql` then `19-identity-module-map.sql` before any authenticated smoke test.
+
+For local API testing a dedicated dev account can be created directly in the migrated database with a
+PBKDF2 hash (`PBKDF2;SHA256;210000;<base64 salt 16>;<base64 key 32>`, see
+`PasswordHasher.cs`) and granted the nine canonical modules. Never carry that account into an
+environment that holds real users.
