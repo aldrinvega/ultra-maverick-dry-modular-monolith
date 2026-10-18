@@ -7,6 +7,7 @@ public sealed class RecordLabResultCommandValidator : AbstractValidator<RecordLa
     public RecordLabResultCommandValidator()
     {
         RuleFor(x => x.LabReceiveRequestId).GreaterThan(0);
+        RuleFor(x => x.AnalyzedAt).NotEmpty();
         RuleFor(x => x.Result).NotEmpty().MaximumLength(2000);
     }
 }

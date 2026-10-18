@@ -73,4 +73,22 @@ public class LabTestRequestTests
         Assert.Contains(request.SwabTypes, x => x.SwabTypeId == 6);
         Assert.Contains(request.SwabTypes, x => x.SwabTypeId == 7);
     }
+
+    [Fact]
+    public void Tag_methods_skip_ids_that_are_already_tagged()
+    {
+        var request = LabTestRequest.Create(null, null, 1m, null, null, null, null);
+
+        request.TagAnalyses(new[] { 1, 1 });
+        request.TagParameters(new[] { 2, 2 });
+        request.TagProductConditions(new[] { 3, 3 });
+        request.TagSampleTypes(new[] { 4, 4 });
+        request.TagSwabTypes(new[] { 5, 5 });
+
+        Assert.Single(request.Analyses);
+        Assert.Single(request.Parameters);
+        Assert.Single(request.ProductConditions);
+        Assert.Single(request.SampleTypes);
+        Assert.Single(request.SwabTypes);
+    }
 }

@@ -60,26 +60,36 @@ public sealed class LabTestRequest : Entity
 
     public void TagAnalyses(IEnumerable<int> ids)
     {
-        foreach (var id in ids) _analyses.Add(LabTestAnalysis.Create(Id, id));
+        foreach (var id in ids.Distinct())
+            if (_analyses.All(x => x.AnalysisId != id))
+                _analyses.Add(LabTestAnalysis.Create(Id, id));
     }
 
     public void TagParameters(IEnumerable<int> ids)
     {
-        foreach (var id in ids) _parameters.Add(LabTestParameter.Create(Id, id));
+        foreach (var id in ids.Distinct())
+            if (_parameters.All(x => x.ParameterId != id))
+                _parameters.Add(LabTestParameter.Create(Id, id));
     }
 
     public void TagProductConditions(IEnumerable<int> ids)
     {
-        foreach (var id in ids) _productConditions.Add(LabTestProductCondition.Create(Id, id));
+        foreach (var id in ids.Distinct())
+            if (_productConditions.All(x => x.ProductConditionId != id))
+                _productConditions.Add(LabTestProductCondition.Create(Id, id));
     }
 
     public void TagSampleTypes(IEnumerable<int> ids)
     {
-        foreach (var id in ids) _sampleTypes.Add(LabTestSampleType.Create(Id, id));
+        foreach (var id in ids.Distinct())
+            if (_sampleTypes.All(x => x.SampleTypeId != id))
+                _sampleTypes.Add(LabTestSampleType.Create(Id, id));
     }
 
     public void TagSwabTypes(IEnumerable<int> ids)
     {
-        foreach (var id in ids) _swabTypes.Add(LabTestSwabType.Create(Id, id));
+        foreach (var id in ids.Distinct())
+            if (_swabTypes.All(x => x.SwabTypeId != id))
+                _swabTypes.Add(LabTestSwabType.Create(Id, id));
     }
 }

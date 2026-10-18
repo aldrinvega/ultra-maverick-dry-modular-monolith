@@ -38,7 +38,7 @@ public sealed class RecordLabResultCommandHandler
             testRequest.BatchNo,
             request.AnalyzedAt,
             request.Result,
-            _currentUser.UserId ?? 0);
+            _currentUser.UserId);
 
         await _uow.LabTestResults.AddAsync(result, ct);
         await _uow.SaveChangesAsync(ct);

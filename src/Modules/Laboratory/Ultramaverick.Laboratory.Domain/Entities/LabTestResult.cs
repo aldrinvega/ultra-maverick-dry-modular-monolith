@@ -19,7 +19,7 @@ public sealed class LabTestResult : Entity
 
     public static LabTestResult Record(
         int labReceiveRequestId, int labTestRequestId, int? warehouseReceiptId, string? batchNo,
-        DateTime analyzedAt, string result, int analyzedByUserId)
+        DateTime analyzedAt, string result, int? analyzedByUserId)
     {
         var entity = new LabTestResult
         {
