@@ -1,74 +1,44 @@
 ﻿# Endpoint parity
 
-Generated 2026-10-18.
+Measured 2026-10-18 by static scan of both codebases.
 
-| Side | Actions |
-|---|---|
-| Legacy API | 464 |
-| New API | 118 |
-| Legacy actions with no same-named new action | 461 |
-
-## Per-controller counts
-
-| Controller | Legacy | New |
+| Side | Measure | Count |
 |---|---|---|
-| AccountTitleController | 4 | 0 |
-| AccountTitlesController | 0 | 6 |
-| AuthController | 0 | 3 |
-| BugController | 4 | 0 |
-| CancelledOrdersController | 5 | 0 |
-| ChecklistController | 12 | 0 |
-| CustomerController | 20 | 0 |
-| CustomersController | 0 | 6 |
-| DepartmentsController | 0 | 9 |
-| FormulasController | 0 | 6 |
-| ImportController | 10 | 0 |
-| InventoryController | 4 | 0 |
-| ItemsController | 0 | 6 |
-| LaboratoryTestController | 12 | 0 |
-| LabTestMasterListController | 47 | 0 |
-| LabTestsController | 0 | 3 |
-| LoginController |  | 0 |
-| LotController | 20 | 0 |
-| LotNamesController | 0 | 6 |
-| MainMenusController | 0 | 9 |
-| ManufacturingController | 0 | 2 |
-| MiscellaneousController | 18 | 0 |
-| ModuleController | 20 | 0 |
-| ModulesController | 0 | 10 |
-| OrderingController | 54 | 0 |
-| OrdersController | 0 | 2 |
-| PlanningController | 18 | 0 |
-| PreparationController | 13 | 0 |
-| ProductTypeController | 6 | 0 |
-| ProductTypesController | 0 | 6 |
-| PurchaseOrdersController | 0 | 2 |
-| QcReceiptsController | 0 | 2 |
-| RawMaterialController | 21 | 0 |
-| ReasonController | 10 | 0 |
-| ReasonsController | 0 | 6 |
-| ReceivingController | 30 | 0 |
-| ReportController | 27 | 0 |
-| ReportsController | 0 |  |
-| RoleController | 20 | 0 |
-| RolesController | 0 | 10 |
-| SupplierController | 10 | 0 |
-| SuppliersController | 0 | 6 |
-| TransactionController | 8 | 0 |
-| TransformationController | 18 | 0 |
-| UomController | 10 | 0 |
-| UomsController | 0 | 6 |
-| UserController | 22 | 0 |
-| UsersController | 0 | 6 |
-| WarehouseController | 20 | 0 |
-| WarehouseReceiptsController | 0 | 5 |
+| Legacy API | `[Http*]` action attributes | 464 |
+| Legacy API | named action routes (`[Route("...")]`, excludes class templates) | 413 |
+| New API | `[Http*("...")]` actions | 118 |
+| Legacy actions with no same-named new action | name match only | ~339 |
 
-## Port waves (module-bounded, one PR each)
+## How this was measured, and its limits
 
-1. Identity parity remainder
-2. Catalog parity remainder
-3. Procurement parity remainder
-4. Quality parity remainder
-5. Warehouse parity remainder
-6. Orders parity remainder
-7. Reporting report endpoints (port or retire each legacy report action)
+The counts come from regular-expression scans of controller source, not from a running OpenAPI diff.
+
+- Legacy controllers declare the action name in a method-level `[Route("Action")]` and the verb in a bare
+  `[Http*]` attribute, while the new controllers declare the name inline as `[Http*("Action")]`. A
+  verb-and-name match therefore under-reports parity.
+- The ~339 "unmatched" figure is an upper bound: it includes class-level route templates such as
+  `api/[controller]` and `errors/`, and it ignores renamed-but-equivalent endpoints (for example the
+  legacy reporting actions that Reporting deliberately replaces with read models).
+
+Treat this file as a sizing estimate. A per-controller comparison against both running applications'
+OpenAPI documents is required before any endpoint is marked ported or retired.
+
+## What the numbers mean
+
+The architectural conversion is complete: nine bounded contexts, per-module schemas, outbox and
+projections, module authorization policies, and a green build, test and format gate.
+
+Functional parity is not complete. Roughly three quarters of the legacy action surface has no
+counterpart in the new API. Closing that gap is the remaining work.
+
+## Port waves
+
+One PR per wave, module-bounded, each with unit, integration and authorization tests:
+
+1. Identity remainder
+2. Catalog remainder
+3. Procurement remainder
+4. Quality remainder
+5. Warehouse remainder
+6. Orders remainder
+7. Reporting reports — each legacy report action is either ported against a read model or explicitly retired
