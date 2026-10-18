@@ -41,6 +41,9 @@
     <ProjectReference Include="..\Modules\Manufacturing\Ultramaverick.Manufacturing.Application\Ultramaverick.Manufacturing.Application.csproj" />
     <ProjectReference Include="..\Modules\Manufacturing\Ultramaverick.Manufacturing.Infrastructure\Ultramaverick.Manufacturing.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Manufacturing\Ultramaverick.Manufacturing.Persistence\Ultramaverick.Manufacturing.Persistence.csproj" />
+    <ProjectReference Include="..\Modules\Reporting\Ultramaverick.Reporting.Application\Ultramaverick.Reporting.Application.csproj" />
+    <ProjectReference Include="..\Modules\Reporting\Ultramaverick.Reporting.Infrastructure\Ultramaverick.Reporting.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modules\Reporting\Ultramaverick.Reporting.Persistence\Ultramaverick.Reporting.Persistence.csproj" />
   </ItemGroup>
 
 </Project>
