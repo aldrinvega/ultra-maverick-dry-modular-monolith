@@ -1,5 +1,6 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Ultramaverick.Catalog.Persistence;
 using Ultramaverick.Procurement.Persistence;
 
@@ -40,10 +41,11 @@ public sealed class DatabaseFixture : IAsyncLifetime
         await context.Database.EnsureDeletedAsync();
     }
 
-    public ProcurementDbContext CreateContext()
+    public ProcurementDbContext CreateContext(params IInterceptor[] interceptors)
     {
         var options = new DbContextOptionsBuilder<ProcurementDbContext>()
             .UseSqlServer(ConnectionString)
+            .AddInterceptors(interceptors)
             .Options;
 
         return new ProcurementDbContext(options);
