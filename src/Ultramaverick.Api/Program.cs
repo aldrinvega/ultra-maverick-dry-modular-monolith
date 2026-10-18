@@ -82,6 +82,13 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddHealthChecks();
 
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new Asp.Versioning.ApiVersion(1, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+});
+
 builder.Services.AddTransient(typeof(MediatR.IPipelineBehavior<,>), typeof(Ultramaverick.Api.Telemetry.TelemetryBehavior<,>));
 
 // Model-validation failures use the shared validation error shape.
