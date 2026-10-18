@@ -7,6 +7,7 @@ using Ultramaverick.Warehouse.Application.Commands.Inventory;
 using Ultramaverick.Warehouse.Application.Commands.WarehouseReceipts;
 using Ultramaverick.Warehouse.Application.Commands.Warehouses;
 using Ultramaverick.Warehouse.Application.Models;
+using Ultramaverick.Warehouse.Application.Queries.Expiring;
 using Ultramaverick.Warehouse.Application.Queries.Inventory;
 using Ultramaverick.Warehouse.Application.Queries.Miscellaneous;
 using Ultramaverick.Warehouse.Application.Queries.WarehouseReceipts;
@@ -44,6 +45,11 @@ namespace Ultramaverick.Api.Controllers
         public async Task<ActionResult<PagedResult<MiscellaneousIssueDto>>> GetMiscellaneousIssues(
             [FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken ct = default)
             => Ok(await _mediator.Send(new GetMiscellaneousIssuesQuery(page, pageSize), ct));
+        [HttpGet("GetExpiringReceipts")]
+        public async Task<ActionResult<PagedResult<WarehouseReceiptDetailDto>>> GetExpiringReceipts(
+            [FromQuery] int days = 30, [FromQuery] int page = 1, [FromQuery] int pageSize = 20,
+            CancellationToken ct = default)
+            => Ok(await _mediator.Send(new GetExpiringReceiptsQuery(days, page, pageSize), ct));
         [HttpGet("GetInventoryBalance")]        public async Task<ActionResult<IReadOnlyList<InventoryBalanceDto>>> GetInventoryBalance(
             [FromQuery] int? warehouseId = null, [FromQuery] int? itemId = null, CancellationToken ct = default)
             => Ok(await _mediator.Send(new GetInventoryBalanceQuery(warehouseId, itemId), ct));
@@ -64,4 +70,5 @@ namespace Ultramaverick.Api.Controllers
             => (await _mediator.Send(cmd, ct)).ToNoContent();
     }
 }
+
 
