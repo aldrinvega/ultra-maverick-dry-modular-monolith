@@ -1,5 +1,7 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -42,6 +44,20 @@ namespace Ultramaverick.Api.Errors
                 await WriteAsync(context, StatusCodes.Status400BadRequest,
                     new ApiValidationError(ex.Errors));
             }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                _logger.LogWarning(ex, "Concurrency conflict for {Path}", context.Request.Path);
+
+                await WriteAsync(context, StatusCodes.Status409Conflict,
+                    new ApiResponse(409, "The record was modified by another request. Please retry."));
+            }
+            catch (DbUpdateException ex) when (IsUniqueViolation(ex))
+            {
+                _logger.LogWarning(ex, "Unique constraint violation for {Path}", context.Request.Path);
+
+                await WriteAsync(context, StatusCodes.Status409Conflict,
+                    new ApiResponse(409, "The record conflicts with an existing one."));
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unhandled exception for {Path}", context.Request.Path);
@@ -53,6 +69,10 @@ namespace Ultramaverick.Api.Errors
                 await WriteAsync(context, StatusCodes.Status500InternalServerError, body);
             }
         }
+
+        private static bool IsUniqueViolation(DbUpdateException ex)
+            => ex.InnerException is SqlException sql
+               && (sql.Number == 2601 || sql.Number == 2627);
 
         private static async Task WriteAsync(HttpContext context, int statusCode, object body)
         {
