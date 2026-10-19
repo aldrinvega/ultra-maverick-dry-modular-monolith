@@ -139,18 +139,26 @@ back at the legacy database. The rehearsal records wall-clock RTO.
 ```
 tools/migration/
   README.md                  this plan
-  00-provision.ps1           apply all nine module migrations to a target database
+  provision-target.ps1      apply all nine module migrations to a target database
   01-legacy-id-map.sql       staging map
   10-identity.sql            reference data
   11-catalog.sql
   12-procurement.sql
   13-quality.sql
+  13b-quality-checklist.sql
   14-warehouse.sql
+  14b-warehouse-misc.sql
   15-orders.sql
+  15b-orders-detail.sql
   16-warm-reporting.sql
+  17-catalog-gaps.sql
+  18-warehouse-balances.sql
+  19-identity-module-map.sql
   20-password-change-required.sql  flag sentinel-hashed users
+  21-replay-reporting.sql    synthetic projection replay
   90-gates.sql               reconciliation gates
   99-run-all.ps1             orchestrator with abort-on-gate-failure
+  rollback-rehearsal.md      rollback procedure and recorded result
 ```
 
 ## Retired legacy tables
@@ -191,3 +199,19 @@ For local API testing a dedicated dev account can be created directly in the mig
 PBKDF2 hash (`PBKDF2;SHA256;210000;<base64 salt 16>;<base64 key 32>`, see
 `PasswordHasher.cs`) and granted the nine canonical modules. Never carry that account into an
 environment that holds real users.
+
+## Inventory ledger: move-order consumption (known limitation)
+
+`18b-warehouse-move-consumption.sql` posts negative movements for transacted move orders, which the
+first pass omitted. After it runs the ledger holds 19,988 movements (4,343 receipts, 45 issues,
+15,600 move-outs) and the balance fold equals the ledger sum exactly (25,356,578.27).
+
+Two consequences must be understood before reporting inventory:
+
+1. **260 balances are negative.** Move orders carry no lot number, so consumption is booked against
+   the empty lot while receipts sit on real lots. The aggregate total is right; the lot split is not.
+   Anyone consuming `InventoryBalances` per lot will see phantom stock on lots and negatives on `''`.
+2. **The fix is lot attribution**, not arithmetic: either give move orders a lot at source, or allocate
+   consumption FIFO across existing lots for that item/warehouse when posting the movement.
+
+Do not present per-lot balances as trustworthy until one of those lands.
