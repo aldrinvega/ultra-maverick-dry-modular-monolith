@@ -1,4 +1,4 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Ultramaverick.Manufacturing.Application.Abstractions;
 using Ultramaverick.Manufacturing.Application.Models;
@@ -28,7 +28,7 @@ public sealed class PrepareTransformationRequestCommandHandler
 
         // The state guard lives here, like CancelOrderCommandHandler: the aggregate transitions
         // unconditionally, the use case refuses a second preparation.
-        if (transformationRequest.Status != TransformationStatuses.Requested)
+        if (transformationRequest.Status is not (TransformationStatuses.Requested or TransformationStatuses.Approved))
             return Result.Failure("Transformation request is already prepared.");
 
         var userId = _currentUser.UserId;
@@ -49,3 +49,4 @@ public sealed class PrepareTransformationRequestCommandHandler
         return Result.Success();
     }
 }
+

@@ -28,8 +28,11 @@ public sealed class ChecklistReviewVerificationLog : Entity
 
         return new ChecklistReviewVerificationLog
         {
-            ChecklistId = checklistId, Disposition = disposition, Remarks = remarks,
-            ReviewedByUserId = reviewedByUserId, ReviewedAtUtc = DateTime.UtcNow
+            ChecklistId = checklistId,
+            Disposition = disposition,
+            Remarks = remarks,
+            ReviewedByUserId = reviewedByUserId,
+            ReviewedAtUtc = DateTime.UtcNow
         };
     }
 }

@@ -14,6 +14,7 @@ namespace Ultramaverick.Identity.Domain.Entities
         public int RoleId { get; private set; }
         public int DepartmentId { get; private set; }
         public bool IsActive { get; private set; }
+        public bool MustChangePassword { get; private set; }
         public DateTime CreatedAtUtc { get; private set; } = DateTime.UtcNow;
         public int? CreatedByUserId { get; private set; }
         public DateTime? ModifiedAtUtc { get; private set; }
@@ -22,10 +23,10 @@ namespace Ultramaverick.Identity.Domain.Entities
         private User() { }
 
         public static User Create(
-            string fullName, 
-            string userName, 
-            PasswordHash password, 
-            int roleId, 
+            string fullName,
+            string userName,
+            PasswordHash password,
+            int roleId,
             int departmentId,
             int? createdByUserId)
         {
@@ -56,10 +57,21 @@ namespace Ultramaverick.Identity.Domain.Entities
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(newPassword?.Value);
             Password = newPassword;
+            MustChangePassword = false;
             ModifiedAtUtc = DateTime.UtcNow;
             ModifiedByUserId = modifiedByUserId;
 
             RaiseDomainEvent(new UserChanged(UserChangeTypes.PasswordChanged, DateTime.UtcNow));
+        }
+
+        /// <summary>
+        /// Sets a temporary password and requires the user to replace it at next sign-in.
+        /// Used for migrated accounts and administrator resets.
+        /// </summary>
+        public void ResetPassword(PasswordHash newPassword, int modifiedByUserId)
+        {
+            ChangePassword(newPassword, modifiedByUserId);
+            MustChangePassword = true;
         }
 
         public void UpdateProfile(string fullName, string userName, int roleId, int departmentId, int modifiedByUserId)
@@ -82,7 +94,7 @@ namespace Ultramaverick.Identity.Domain.Entities
 
         public void Deactivate(int modifiedByUserId)
         {
-            if(!IsActive) return;
+            if (!IsActive) return;
             IsActive = false;
             ModifiedAtUtc = DateTime.UtcNow;
             ModifiedByUserId = modifiedByUserId;
@@ -92,7 +104,7 @@ namespace Ultramaverick.Identity.Domain.Entities
 
         public void Activate(int modifiedByUserId)
         {
-            if(IsActive) return;
+            if (IsActive) return;
             IsActive = true;
             ModifiedAtUtc = DateTime.UtcNow;
             ModifiedByUserId = modifiedByUserId;

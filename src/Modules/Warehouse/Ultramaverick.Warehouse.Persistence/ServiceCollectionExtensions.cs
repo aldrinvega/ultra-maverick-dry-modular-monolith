@@ -1,8 +1,9 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Ultramaverick.SharedKernel.Outbox;
 using Ultramaverick.Warehouse.Application.Abstractions;
+using Ultramaverick.Warehouse.Persistence.Lookups;
 using Ultramaverick.Warehouse.Persistence.Repositories;
 
 namespace Ultramaverick.Warehouse.Persistence
@@ -19,6 +20,10 @@ namespace Ultramaverick.Warehouse.Persistence
 
             services.AddScoped<IWarehouseUnitOfWork, WarehouseUnitOfWork>();
             services.AddScoped<IWarehouseSelector, WarehouseSelector>();
+            services.AddScoped<IWarehouseReceiptReader, WarehouseReceiptReader>();
+            services.AddScoped<IItemUomLookup, ItemUomLookup>();
+            services.AddScoped<IMiscellaneousReader, MiscellaneousReader>();
+            services.AddScoped<IInventoryMovementReader, InventoryMovementReader>();
 
             services.AddScoped<IOutboxStore, WarehouseOutboxStore>();
             services.AddScoped<IProcessedEventStore, WarehouseProcessedEventStore>();
@@ -27,3 +32,8 @@ namespace Ultramaverick.Warehouse.Persistence
         }
     }
 }
+
+
+
+
+

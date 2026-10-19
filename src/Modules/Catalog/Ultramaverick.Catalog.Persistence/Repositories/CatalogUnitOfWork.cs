@@ -25,6 +25,8 @@ public sealed class CatalogUnitOfWork : ICatalogUnitOfWork
         Locations = new LookupRepository<Location>(context);
         AccountTitles = new LookupRepository<AccountTitle>(context);
         ProductTypes = new LookupRepository<ProductType>(context);
+        TransactionTypes = new LookupRepository<TransactionType>(context);
+        SampleTypes = new LookupRepository<SampleType>(context);
     }
 
     public IItemRepository Items { get; }
@@ -41,6 +43,8 @@ public sealed class CatalogUnitOfWork : ICatalogUnitOfWork
     public ILookupRepository<Location> Locations { get; }
     public ILookupRepository<AccountTitle> AccountTitles { get; }
     public ILookupRepository<ProductType> ProductTypes { get; }
+    public ILookupRepository<TransactionType> TransactionTypes { get; }
+    public ILookupRepository<SampleType> SampleTypes { get; }
 
     public Task<int> SaveChangesAsync(CancellationToken ct) => _context.SaveChangesAsync(ct);
 }

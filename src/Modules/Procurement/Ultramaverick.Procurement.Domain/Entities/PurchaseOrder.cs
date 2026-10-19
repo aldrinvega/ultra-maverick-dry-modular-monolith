@@ -37,9 +37,15 @@ public sealed class PurchaseOrder : Entity
 
         var po = new PurchaseOrder
         {
-            PoNumber = poNumber, PrNumber = prNumber, PoDate = poDate, PrDate = prDate,
-            SupplierId = supplierId, ImportBatchId = importBatchId,
-            Status = "Open", IsActive = true, CreatedByUserId = createdByUserId
+            PoNumber = poNumber,
+            PrNumber = prNumber,
+            PoDate = poDate,
+            PrDate = prDate,
+            SupplierId = supplierId,
+            ImportBatchId = importBatchId,
+            Status = "Open",
+            IsActive = true,
+            CreatedByUserId = createdByUserId
         };
         po.RaiseDomainEvent(new PurchaseOrderChanged("Created", DateTime.UtcNow));
         return po;

@@ -36,8 +36,11 @@ public sealed class ChecklistQuestion : Entity
 
         return new ChecklistQuestion
         {
-            ChecklistTypeId = checklistTypeId, Question = question,
-            AnswerType = (int)answerType, SortOrder = sortOrder, IsActive = true
+            ChecklistTypeId = checklistTypeId,
+            Question = question,
+            AnswerType = (int)answerType,
+            SortOrder = sortOrder,
+            IsActive = true
         };
     }
 }

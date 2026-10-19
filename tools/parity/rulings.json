@@ -1,0 +1,1838 @@
+{
+  "version": 1,
+  "controllers": {
+    "AccountTitleController": {
+      "default": {
+        "disposition": "Replace",
+        "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+        "target": "api/AccountTitle"
+      }
+    },
+    "BugController": {
+      "default": {
+        "disposition": "Retire",
+        "reason": "Error-simulation routes; not part of the business API."
+      },
+      "actions": {
+        "Get|notfound": {
+          "disposition": "Retire",
+          "reason": "Error-simulation route; retired."
+        },
+        "Get|servererror": {
+          "disposition": "Retire",
+          "reason": "Error-simulation route; retired."
+        },
+        "Get|badrequest": {
+          "disposition": "Retire",
+          "reason": "Error-simulation route; retired."
+        },
+        "Get|badrequest/{id}": {
+          "disposition": "Retire",
+          "reason": "Error-simulation route; retired."
+        }
+      }
+    },
+    "CancelledOrdersController": {
+      "default": {
+        "disposition": "Replace",
+        "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+        "target": "api/Ordering"
+      },
+      "actions": {
+        "Post|CancelOrder": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/CancelOrder/{id}"
+        },
+        "Get|GetCancelledOrdersById/{customerId}": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/GetCancelledOrdersById/{customerId}"
+        },
+        "Get|GetAllListOfCancelledOrdersPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/GetAllListOfCancelledOrdersPagination"
+        }
+      }
+    },
+    "ChecklistController": {
+      "default": {
+        "disposition": "Retire",
+        "reason": "Checklist master data is migration-managed; no runtime admin surface."
+      },
+      "actions": {
+        "Post|AddNewChecklistQuestion": {
+          "disposition": "Retire",
+          "reason": "Checklist master data is migration-managed; the new API exposes the checklist through the QC receipt read, with no runtime admin surface."
+        },
+        "Get|GetAllChecklists": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Receiving/GetQcReceiptById/{id}"
+        },
+        "Get|GetAllChecklistsQuestions": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Receiving/GetChecklistQuestionsByType/{checklistTypeId}"
+        },
+        "Patch|UpdateChecklistQuestionStatus": {
+          "disposition": "Retire",
+          "reason": "Checklist master data is migration-managed; the new API exposes the checklist through the QC receipt read, with no runtime admin surface."
+        },
+        "Put|UpdateChecklistQuestion/{id:int}": {
+          "disposition": "Retire",
+          "reason": "Checklist master data is migration-managed; the new API exposes the checklist through the QC receipt read, with no runtime admin surface."
+        },
+        "Post|AddNewChecklistType": {
+          "disposition": "Retire",
+          "reason": "Checklist master data is migration-managed; the new API exposes the checklist through the QC receipt read, with no runtime admin surface."
+        },
+        "Post|AddNewChecklist": {
+          "disposition": "Retire",
+          "reason": "Checklist master data is migration-managed; the new API exposes the checklist through the QC receipt read, with no runtime admin surface."
+        },
+        "Get|GetAllChecklistTypes": {
+          "disposition": "Retire",
+          "reason": "Checklist master data is migration-managed; the new API exposes the checklist through the QC receipt read, with no runtime admin surface."
+        },
+        "Put|UpdateChecklistType/{id}": {
+          "disposition": "Retire",
+          "reason": "Checklist master data is migration-managed; the new API exposes the checklist through the QC receipt read, with no runtime admin surface."
+        },
+        "Patch|UpdateChecklistTypeStatus/{id:int}": {
+          "disposition": "Retire",
+          "reason": "Checklist master data is migration-managed; the new API exposes the checklist through the QC receipt read, with no runtime admin surface."
+        },
+        "Get|GetChecklistAnswerById/{id}": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Receiving/GetQcReceiptById/{id}"
+        },
+        "Patch|SortChecklistTypes": {
+          "disposition": "Retire",
+          "reason": "Checklist master data is migration-managed; the new API exposes the checklist through the QC receipt read, with no runtime admin surface."
+        }
+      }
+    },
+    "CustomerController": {
+      "default": {
+        "disposition": "Replace",
+        "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+        "target": "api/Customer"
+      },
+      "patterns": [
+        {
+          "match": "Orig",
+          "disposition": "Retire",
+          "reason": "Legacy duplicate of the canonical paginated read; the new list endpoint accepts paging, search and status."
+        }
+      ],
+      "actions": {
+        "Get|GetAllFarms": {
+          "disposition": "Port",
+          "target": "api/Customer/GetAllFarms",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Get|GetFarmById/{id}": {
+          "disposition": "Port",
+          "target": "api/Customer/GetFarmById/{id}",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Get|GetAllActiveFarms": {
+          "disposition": "Port",
+          "target": "api/Customer/GetAllActiveFarms",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Get|GetAllInActiveFarms": {
+          "disposition": "Port",
+          "target": "api/Customer/GetAllInActiveFarms",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Post|AddNewFarm": {
+          "disposition": "Port",
+          "target": "api/Customer/AddNewFarm",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Put|UpdateFarm/{id}": {
+          "disposition": "Port",
+          "target": "api/Customer/UpdateFarm/{id}",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Put|InActiveFarm/{id}": {
+          "disposition": "Port",
+          "target": "api/Customer/InActiveFarm/{id}",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Put|ActivateFarm/{id}": {
+          "disposition": "Port",
+          "target": "api/Customer/ActivateFarm/{id}",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Get|GetAllFarmWithPagination/{status}": {
+          "disposition": "Port",
+          "target": "api/Customer/GetAllFarmWithPagination/{status}",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Get|GetAllCustomerWithPaginationOrig/{status}": {
+          "disposition": "Retire",
+          "reason": "Legacy duplicate pagination variant."
+        }
+      }
+    },
+    "ImportController": {
+      "default": {
+        "disposition": "Retire",
+        "reason": "Legacy manual import routes are superseded by the xlsx import endpoints and the single-row Add endpoints."
+      },
+      "actions": {
+        "Post|AddNewPOManual": {
+          "disposition": "Retire",
+          "reason": "Superseded by the xlsx import endpoints and single-row Add endpoints."
+        },
+        "Get|GetAllPoSummary": {
+          "disposition": "Retire",
+          "reason": "Superseded by the xlsx import endpoints and single-row Add endpoints."
+        },
+        "Get|GetPoSummaryById/{id}": {
+          "disposition": "Retire",
+          "reason": "Superseded by the xlsx import endpoints and single-row Add endpoints."
+        },
+        "Post|AddNewRawMaterialManual": {
+          "disposition": "Retire",
+          "reason": "Superseded by the xlsx import endpoints and single-row Add endpoints."
+        },
+        "Post|AddNewCustomerManual": {
+          "disposition": "Retire",
+          "reason": "Superseded by the xlsx import endpoints and single-row Add endpoints."
+        },
+        "Post|AddNewFormulaManual": {
+          "disposition": "Retire",
+          "reason": "Superseded by the xlsx import endpoints and single-row Add endpoints."
+        },
+        "Post|AddNewSupplierSummary": {
+          "disposition": "Retire",
+          "reason": "Superseded by the xlsx import endpoints and single-row Add endpoints."
+        },
+        "Post|UploadPOSummaryReport": {
+          "disposition": "Replace",
+          "target": "api/Procurement/UploadPOSummaryReport",
+          "reason": "Ported to the Procurement xlsx import endpoint."
+        },
+        "Post|UploadRawMaterialsReport": {
+          "disposition": "Replace",
+          "target": "api/Catalog/UploadRawMaterialsReport",
+          "reason": "Ported to the Catalog xlsx import endpoint."
+        },
+        "Post|UploadFormulaReport": {
+          "disposition": "Replace",
+          "target": "api/Catalog/UploadFormulaReport",
+          "reason": "Ported to the Catalog xlsx import endpoint."
+        }
+      }
+    },
+    "InventoryController": {
+      "default": {
+        "disposition": "Replace",
+        "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+        "target": "api/WarehouseReceiving/GetInventoryBalance"
+      },
+      "patterns": [
+        {
+          "match": "Orig",
+          "disposition": "Retire",
+          "reason": "Legacy duplicate of the canonical paginated read; the new list endpoint accepts paging, search and status."
+        }
+      ],
+      "actions": {
+        "Get|RawmaterialInventory": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/GetInventoryBalance"
+        },
+        "Get|MRPInventory": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/GetInventoryBalance"
+        },
+        "Get|GetAllItemForInventoryPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/GetInventoryBalance"
+        },
+        "Get|GetAllItemForInventoryPaginationOrig": {
+          "disposition": "Retire",
+          "reason": "Legacy duplicate pagination variant."
+        }
+      }
+    },
+    "LabTestMasterListController": {
+      "default": {
+        "disposition": "Retire",
+        "reason": "Source master table is empty; retired."
+      },
+      "actions": {
+        "Get|GetAllSampleTypes": {
+          "disposition": "Port",
+          "target": "api/LabTestMasterList/GetAllSampleTypes",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Get|GetAllSampleTypeByStatus/{status}": {
+          "disposition": "Port",
+          "target": "api/LabTestMasterList/GetAllSampleTypeByStatus/{status}",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Post|AddNewSampleType": {
+          "disposition": "Port",
+          "target": "api/LabTestMasterList/AddNewSampleType",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Get|GetSampleTypeById{id}": {
+          "disposition": "Port",
+          "target": "api/LabTestMasterList/GetSampleTypeById/{id}",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Put|UpdateSampleType": {
+          "disposition": "Port",
+          "target": "api/LabTestMasterList/UpdateSampleType",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Get|GetAllSampleTypePagination": {
+          "disposition": "Port",
+          "target": "api/LabTestMasterList/GetAllSampleTypePagination",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Get|GetAllSampleTypePaginationOrig/{status}": {
+          "disposition": "Retire",
+          "reason": "Legacy duplicate pagination variant."
+        },
+        "Put|UpdateSampleTypeStatus": {
+          "disposition": "Port",
+          "target": "api/LabTestMasterList/UpdateSampleTypeStatus",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Get|GetAllTypeOfSwab": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Post|AddNewTypeOfSwab": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Get|GetTypeOfSwabById{id}": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Get|GetAllTypeOfSwabByStatus/{status}": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Put|UpdateTypeOfSwab": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Get|GetAllTypeOfSwabPagination": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Get|GetAllTypeOfSwabPaginationOrig/{status}": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Put|UpdateTypeOfSwabStatus": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Get|GetAllAnalyses": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Post|AddNewAnalysis": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Get|GetAnalysisById{id}": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Get|GetAllAnalysisByStatus/{status}": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Put|UpdateAnalysis": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Get|GetAllAnalysesPagination": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Get|GetAllAnalysesPaginationOrig/{status}": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Put|UpdateAnalysisStatus": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Get|GetAllProductCondition": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Post|AddNewProductCondition": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Get|GetProductConditionById{id:int}": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Put|UpdateProductCondition": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Get|GetAllProductConditionPagination": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Get|GetAllProductConditionPaginationOrig/{status}": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Put|UpdateProductConditionStatus": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Post|AddNewDisposition": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Get|GetAllDisposition": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Get|GetDispositionById/{id}": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Get|GetAllDispositionByStatus/{status}": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Put|UpdateDisposition": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Put|UpdateDispositionStatus": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Get|GetAllDispositionPagination": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Get|GetAllDispositionPaginationOrig/{status}": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Post|AddNewParameter": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Get|GetAllParameter": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Get|GetParametersById/{id}": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Get|GetParametersByStatus/{status}": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Get|GetAllParametersPagination": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Get|GetAllParametersPaginationOrig/{status}": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Put|UpdateParameter": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        },
+        "Put|UpdateParameterStatus": {
+          "disposition": "Retire",
+          "reason": "Source master table is empty and the target has no rows; the reference list is migration-managed."
+        }
+      }
+    },
+    "LaboratoryTestController": {
+      "default": {
+        "disposition": "Retire",
+        "reason": "Legacy laboratory flow retired."
+      },
+      "actions": {
+        "Post|RequestLabTest": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/LaboratoryTest/AddLabTestRequest"
+        },
+        "Get|GetAllNearlyExpiryItemsPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/GetExpiringReceipts"
+        },
+        "Get|GetAllRequestedItemsForLabTest": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/LaboratoryTest/GetLabTestRequests?status=Requested"
+        },
+        "Post|AcceptLabTestRequest": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/LaboratoryTest/AcceptRequest"
+        },
+        "Get|GetAllAcceptedItemsForLabTest": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/LaboratoryTest/GetLabTestRequests?status=Accepted"
+        },
+        "Get|GetAllAcceptedItemsForLabTestPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/LaboratoryTest/GetLabTestRequests?status=Accepted"
+        },
+        "Post|ReturnItemsRequestedForLabTest": {
+          "disposition": "Retire",
+          "reason": "Legacy lab return/reject bookkeeping is retired; the new request lifecycle records acceptance and results."
+        },
+        "Get|GetAllReturnedItems": {
+          "disposition": "Retire",
+          "reason": "Legacy lab return/reject bookkeeping is retired; the new request lifecycle records acceptance and results."
+        },
+        "Get|GetAllReturnedItemsPagination": {
+          "disposition": "Retire",
+          "reason": "Legacy lab return/reject bookkeeping is retired; the new request lifecycle records acceptance and results."
+        },
+        "Post|RejectItemsForLabTest": {
+          "disposition": "Retire",
+          "reason": "Legacy lab return/reject bookkeeping is retired; the new request lifecycle records acceptance and results."
+        },
+        "Get|GetAllRejectedItemsForLabTest": {
+          "disposition": "Retire",
+          "reason": "Legacy lab return/reject bookkeeping is retired; the new request lifecycle records acceptance and results."
+        },
+        "Get|GetAllRejectedItemsForLabTestPagination": {
+          "disposition": "Retire",
+          "reason": "Legacy lab return/reject bookkeeping is retired; the new request lifecycle records acceptance and results."
+        }
+      }
+    },
+    "LoginController": {
+      "default": {
+        "disposition": "Replace",
+        "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+        "target": "api/Login/authenticate"
+      }
+    },
+    "LotController": {
+      "default": {
+        "disposition": "Replace",
+        "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+        "target": "api/Lot"
+      },
+      "actions": {
+        "Get|GetAllLotNames": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Lot"
+        },
+        "Get|GetAllLotNameWithPagination/{status}": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Lot"
+        },
+        "Get|GetAllLotNameWithPaginationOrig/{status}": {
+          "disposition": "Retire",
+          "reason": "Legacy duplicate pagination variant."
+        },
+        "Get|GetLotNameById/{id}": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Lot"
+        },
+        "Get|GetAllActiveLotName": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Lot"
+        },
+        "Get|GetAllInActiveLotName": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Lot"
+        },
+        "Post|AddNewLotName": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Lot"
+        },
+        "Put|UpdateLotName/{id}": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Lot"
+        },
+        "Put|InActiveLotName/{id}": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Lot"
+        },
+        "Put|ActivateLotName/{id}": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Lot"
+        },
+        "Get|GetAllLotCategories": {
+          "disposition": "Port",
+          "target": "api/Lot/GetAllLotCategories",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Get|GetLotCategoryById/{id}": {
+          "disposition": "Port",
+          "target": "api/Lot/GetLotCategoryById/{id}",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Get|GetAllActiveLotCategories": {
+          "disposition": "Port",
+          "target": "api/Lot/GetAllActiveLotCategories",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Get|GetAllInActiveLotCategory": {
+          "disposition": "Port",
+          "target": "api/Lot/GetAllInActiveLotCategory",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Post|AddNewLotCategory": {
+          "disposition": "Port",
+          "target": "api/Lot/AddNewLotCategory",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Put|UpdateLotCategory/{id}": {
+          "disposition": "Port",
+          "target": "api/Lot/UpdateLotCategory/{id}",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Put|InActiveLotCategory/{id}": {
+          "disposition": "Port",
+          "target": "api/Lot/InActiveLotCategory/{id}",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Put|ActivateLotCategory/{id}": {
+          "disposition": "Port",
+          "target": "api/Lot/ActivateLotCategory/{id}",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Get|GetAllLotCategoryWithPagination/{status}": {
+          "disposition": "Port",
+          "target": "api/Lot/GetAllLotCategoryWithPagination/{status}",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Get|GetAllLotCategoryWithPaginationOrig/{status}": {
+          "disposition": "Retire",
+          "reason": "Legacy duplicate pagination variant."
+        }
+      }
+    },
+    "MiscellaneousController": {
+      "default": {
+        "disposition": "Retire",
+        "reason": "Legacy miscellaneous write workflow retired."
+      },
+      "actions": {
+        "Post|AddNewMiscellaneousReceipt": {
+          "disposition": "Retire",
+          "reason": "Legacy miscellaneous receipt/issue write workflow is retired; the new API keeps the migrated reads and uses warehouse receipts/adjustments for stock."
+        },
+        "Post|AddNewMiscellaneousReceiptInWarehouse": {
+          "disposition": "Retire",
+          "reason": "Legacy miscellaneous receipt/issue write workflow is retired; the new API keeps the migrated reads and uses warehouse receipts/adjustments for stock."
+        },
+        "Put|InActiveReceipt": {
+          "disposition": "Retire",
+          "reason": "Legacy miscellaneous receipt/issue write workflow is retired; the new API keeps the migrated reads and uses warehouse receipts/adjustments for stock."
+        },
+        "Put|ActivateReceipt": {
+          "disposition": "Retire",
+          "reason": "Legacy miscellaneous receipt/issue write workflow is retired; the new API keeps the migrated reads and uses warehouse receipts/adjustments for stock."
+        },
+        "Get|GetAllMiscellaneousReceiptPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/GetMiscellaneousReceiptsWithPagination"
+        },
+        "Get|GetAllMiscellaneousReceiptPaginationOrig": {
+          "disposition": "Retire",
+          "reason": "Legacy duplicate pagination variant."
+        },
+        "Get|GetAllDetailsFromWarehouseByMReceipt": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/GetMiscellaneousReceiptsWithPagination"
+        },
+        "Post|AddNewMiscellaneousIssueDetails": {
+          "disposition": "Retire",
+          "reason": "Legacy miscellaneous receipt/issue write workflow is retired; the new API keeps the migrated reads and uses warehouse receipts/adjustments for stock."
+        },
+        "Post|AddNewMiscellaneousIssue": {
+          "disposition": "Retire",
+          "reason": "Legacy miscellaneous receipt/issue write workflow is retired; the new API keeps the migrated reads and uses warehouse receipts/adjustments for stock."
+        },
+        "Put|UpdateMiscellaneousIssuePKey": {
+          "disposition": "Retire",
+          "reason": "Legacy miscellaneous receipt/issue write workflow is retired; the new API keeps the migrated reads and uses warehouse receipts/adjustments for stock."
+        },
+        "Get|GetAllAvailableStocksForMIsssue": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/GetInventoryBalance"
+        },
+        "Get|GetAllMiscellaneousIssuePagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/GetMiscellaneousIssuesWithPagination"
+        },
+        "Get|GetAllMiscellaneousIssuePaginationOrig": {
+          "disposition": "Retire",
+          "reason": "Legacy duplicate pagination variant."
+        },
+        "Put|InActiveIssue": {
+          "disposition": "Retire",
+          "reason": "Legacy miscellaneous receipt/issue write workflow is retired; the new API keeps the migrated reads and uses warehouse receipts/adjustments for stock."
+        },
+        "Put|ActivateIssue": {
+          "disposition": "Retire",
+          "reason": "Legacy miscellaneous receipt/issue write workflow is retired; the new API keeps the migrated reads and uses warehouse receipts/adjustments for stock."
+        },
+        "Get|GetAllDetailsInMiscellaneousIssue": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/GetMiscellaneousIssuesWithPagination"
+        },
+        "Get|GetAllActiveMiscellaneousIssueTransaction": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/GetMiscellaneousIssuesWithPagination"
+        },
+        "Put|CancelItemCodeInMiscellaneousIssue": {
+          "disposition": "Retire",
+          "reason": "Legacy miscellaneous receipt/issue write workflow is retired; the new API keeps the migrated reads and uses warehouse receipts/adjustments for stock."
+        }
+      }
+    },
+    "ModuleController": {
+      "default": {
+        "disposition": "Replace",
+        "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+        "target": "api/Module"
+      },
+      "patterns": [
+        {
+          "match": "Orig",
+          "disposition": "Retire",
+          "reason": "Legacy duplicate of the canonical paginated read; the new list endpoint accepts paging, search and status."
+        }
+      ]
+    },
+    "OrderingController": {
+      "default": {
+        "disposition": "Retire",
+        "reason": "Legacy ordering write workflow retired."
+      },
+      "actions": {
+        "Get|GetAllListofOrders": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/GetOrders"
+        },
+        "Put|EditOrderQuantity": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Put|SchedulePreparedOrderedDate": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Put|ApprovePreparedDate": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Put|RejectPreparedDate": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Put|GetAllListofPreparedDate": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Get|OrderSummary": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Post|ValidateNewOrders": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Post|AddNewOrder": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/AddOrder"
+        },
+        "Get|GetAllListOfOrdersPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/GetOrders"
+        },
+        "Put|CancelOrders": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/CancelOrder/{id}"
+        },
+        "Get|GetAllListOfCancelledOrders": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/GetAllListOfCancelledOrdersPagination"
+        },
+        "Put|ReturnCancelledOrders": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Get|GetAllListForMoveOrderPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/GetMoveOrders"
+        },
+        "Get|GetAllListOfApprovedPreparedForMoveOrder": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Get|DetailedListOfOrders": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/GetOrders"
+        },
+        "Get|GetAllListForScheduleApproval": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Get|GetAllOrdersForScheduleApproval": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Get|GetAllOutOfStockByItemCodeAndOrderDate": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Post|PrepareItemsForMoveOrder": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Get|GetAllListOfOrdersForMoveOrder": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/GetMoveOrders"
+        },
+        "Get|GetAvailableStockFromWarehouse": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Get|ListOfPreparedItemsForMoveOrder": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Put|CancelPreparedItems": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Put|AddPlateNumberInMoveOrder": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Put|AddDeliveryStatus": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Put|ApproveListOfMoveOrder": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Put|RejectListOfMoveOrder": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Put|RejectApproveListOfMoveOrder": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Put|ReturnMoveOrderForApproval": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Put|UpdatePrintStatus": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Get|GetAllForApprovalMoveOrderPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/GetMoveOrders"
+        },
+        "Get|GetAllForApprovalMoveOrderPaginationOrig": {
+          "disposition": "Retire",
+          "reason": "Legacy duplicate pagination variant."
+        },
+        "Get|PrintMultipleMoveOrderSlip": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Get|ViewMoveOrderForApproval": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Get|ApprovedMoveOrderPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/GetMoveOrders"
+        },
+        "Get|ApprovedMoveOrderPaginationOrig": {
+          "disposition": "Retire",
+          "reason": "Legacy duplicate pagination variant."
+        },
+        "Get|RejectedMoveOrderPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/GetMoveOrders"
+        },
+        "Get|RejectedMoveOrderPaginationOrig": {
+          "disposition": "Retire",
+          "reason": "Legacy duplicate pagination variant."
+        },
+        "Get|GetAllApprovedMoveOrder": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/GetMoveOrders"
+        },
+        "Put|CancelOrdersInMoveOrder/{id}": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Get|GetAllApprovedOrderCalendar": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Get|GetTotalListForMoveOrder": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Get|ListOfMoveOrdersForTransact": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/GetTransactedMoveOrders"
+        },
+        "Post|TransactListOfMoveOrders": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Post|SetBeingPrepared": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Post|UnsetBeingPrepared": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Put|Allocate": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Get|GetAllListOfOrdersForAllocationPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/GetOrders"
+        },
+        "Get|GetAllListofOrdersForAllocation": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/GetOrders"
+        },
+        "Post|CancelForPendingAllocation": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        },
+        "Put|ManualAllocation": {
+          "disposition": "Retire",
+          "reason": "Legacy scheduling/allocation/move-order write workflow is retired in favour of the modular order lifecycle plus Warehouse receipts and stock adjustments; historical move orders remain readable through GetMoveOrders/GetTransactedMoveOrders."
+        }
+      }
+    },
+    "PlanningController": {
+      "default": {
+        "disposition": "Retire",
+        "reason": "Legacy planning sub-step retired."
+      },
+      "actions": {
+        "Post|AddNewTransformationRequest": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Manufacturing/AddTransformationRequest"
+        },
+        "Put|ApproveTransformRequest/{id}": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Manufacturing/Approve/{id}"
+        },
+        "Put|CancelTransformationRequest/{id}": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Manufacturing/Cancel/{id}"
+        },
+        "Put|RejectTransformationRequest/{id}": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Manufacturing/Reject/{id}"
+        },
+        "Get|GetAllApprovedTransformationRequest": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Manufacturing/GetTransformationRequests?status=Approved"
+        },
+        "Get|GetAllPendingRequest": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Manufacturing/GetTransformationRequests?status=Pending"
+        },
+        "Get|GetAllPendingTransformationRequest": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Manufacturing/GetTransformationRequests?status=Pending"
+        },
+        "Get|GetAllCancelledTransformationRequest": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Manufacturing/GetTransformationRequests?status=Cancelled"
+        },
+        "Get|GetAllRejectRequest": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Manufacturing/GetTransformationRequests?status=Rejected"
+        },
+        "Get|GetAllAvailableFormulaCode": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Transformation/GetAllFormulasWithPagination"
+        },
+        "Get|GetAllRequirementsByTransformId/{id}": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Manufacturing/GetTransformationRequestById/{id}"
+        },
+        "Get|GetAllPendingRequestWithRequirements/{id}": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Manufacturing/GetTransformationRequestById/{id}"
+        },
+        "Get|GetAllVersionByItemCode": {
+          "disposition": "Retire",
+          "reason": "Legacy planning sub-step is superseded by the transformation request lines and preparations in the Manufacturing module."
+        },
+        "Post|AddNewTransformationRequirements": {
+          "disposition": "Retire",
+          "reason": "Legacy planning sub-step is superseded by the transformation request lines and preparations in the Manufacturing module."
+        },
+        "Put|RequestRejectTransformationRequest/{id}": {
+          "disposition": "Retire",
+          "reason": "Legacy planning sub-step is superseded by the transformation request lines and preparations in the Manufacturing module."
+        },
+        "Put|EditTransformationRequest/{id}": {
+          "disposition": "Retire",
+          "reason": "Legacy planning sub-step is superseded by the transformation request lines and preparations in the Manufacturing module."
+        },
+        "Get|GetAllRejectRequirementsStatus/{id}": {
+          "disposition": "Retire",
+          "reason": "Legacy planning sub-step is superseded by the transformation request lines and preparations in the Manufacturing module."
+        },
+        "Get|GetAllCancelRequirementsStatus/{id}": {
+          "disposition": "Retire",
+          "reason": "Legacy planning sub-step is superseded by the transformation request lines and preparations in the Manufacturing module."
+        }
+      }
+    },
+    "PreparationController": {
+      "default": {
+        "disposition": "Retire",
+        "reason": "Legacy preparation sub-step retired."
+      },
+      "actions": {
+        "Get|GetAllRequirementsByTransformId": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Manufacturing/GetTransformationRequestById/{id}"
+        },
+        "Put|PrepareMaterialsForRequest/{id}": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Manufacturing/Prepare/{id}"
+        },
+        "Get|GetAllRequestForMixing": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Manufacturing/GetTransformationRequests?status=Prepared"
+        },
+        "Get|GetRawmaterialDetailsInWarehouse": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/GetInventoryBalance"
+        },
+        "Get|GetTransformationFormula": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Transformation/GetFormulaById/{id}"
+        },
+        "Get|GetAllStocks": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/GetInventoryBalance"
+        },
+        "Put|FinishedMixedMaterialsForWarehouse/{id}": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Manufacturing/Finish/{id}"
+        },
+        "Get|GetTransformationFormulaPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Transformation/GetAllFormulasWithPagination"
+        },
+        "Get|GetAllTransformationForMixing": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Manufacturing/GetTransformationRequests"
+        },
+        "Get|GetAllTransformationForMixingPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Manufacturing/GetTransformationRequests"
+        },
+        "Get|GetAllRequirementsForMixing": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Manufacturing/GetTransformationRequestById/{id}"
+        },
+        "Get|GetRemaining": {
+          "disposition": "Retire",
+          "reason": "Legacy mixing batch-remaining detail is retired; preparation quantities are carried per line on the transformation request."
+        },
+        "Get|GetAllBatchRemainingPerMixing": {
+          "disposition": "Retire",
+          "reason": "Legacy mixing batch-remaining detail is retired; preparation quantities are carried per line on the transformation request."
+        }
+      }
+    },
+    "ProductTypeController": {
+      "default": {
+        "disposition": "Replace",
+        "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+        "target": "api/ProductType"
+      }
+    },
+    "RawMaterialController": {
+      "default": {
+        "disposition": "Replace",
+        "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+        "target": "api/RawMaterial"
+      },
+      "actions": {
+        "Get|GetAllRawMaterials": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/RawMaterial"
+        },
+        "Get|GetAllRawMaterialWithPagination/{status}": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/RawMaterial"
+        },
+        "Get|GetAllRawMaterialWithPaginationOrig/{status}": {
+          "disposition": "Retire",
+          "reason": "Legacy duplicate pagination variant."
+        },
+        "Get|GetRawMaterialsById/{id}": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/RawMaterial"
+        },
+        "Get|GetAllActiveRawMaterials": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/RawMaterial"
+        },
+        "Get|GetAllInActiveRawMaterials": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/RawMaterial"
+        },
+        "Post|CreateNewRawMaterials": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/RawMaterial"
+        },
+        "Put|UpdateRawMaterials/{id}": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/RawMaterial"
+        },
+        "Put|InActiveRawMaterial/{id}": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/RawMaterial"
+        },
+        "Put|ActivateRawMaterial/{id}": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/RawMaterial"
+        },
+        "Get|GetAllItemCategory": {
+          "disposition": "Port",
+          "target": "api/RawMaterial/GetAllItemCategory",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Get|GetAllItemCategoryById/{id}": {
+          "disposition": "Port",
+          "target": "api/RawMaterial/GetAllItemCategoryById/{id}",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Get|GetAllActiveItemCategories": {
+          "disposition": "Port",
+          "target": "api/RawMaterial/GetAllActiveItemCategories",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Get|GetAllInActiveItemCategories": {
+          "disposition": "Port",
+          "target": "api/RawMaterial/GetAllInActiveItemCategories",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Post|AddNewItemCategories": {
+          "disposition": "Port",
+          "target": "api/RawMaterial/AddNewItemCategories",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Put|UpdateItemCategories/{id}": {
+          "disposition": "Port",
+          "target": "api/RawMaterial/UpdateItemCategories/{id}",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Put|InActiveItemCategory/{id}": {
+          "disposition": "Port",
+          "target": "api/RawMaterial/InActiveItemCategory/{id}",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Put|ActivateItemCategory/{id}": {
+          "disposition": "Port",
+          "target": "api/RawMaterial/ActivateItemCategory/{id}",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Get|GetAllItemCategoryWithPagination/{status}": {
+          "disposition": "Port",
+          "target": "api/RawMaterial/GetAllItemCategoryWithPagination/{status}",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Get|GetAllItemCategoryWithPaginationOrig/{status}": {
+          "disposition": "Retire",
+          "reason": "Legacy duplicate pagination variant."
+        },
+        "Get|GetSample": {
+          "disposition": "Retire",
+          "reason": "Debug/sample route; not part of the business API."
+        }
+      }
+    },
+    "ReasonController": {
+      "default": {
+        "disposition": "Replace",
+        "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+        "target": "api/Reason"
+      },
+      "patterns": [
+        {
+          "match": "Orig",
+          "disposition": "Retire",
+          "reason": "Legacy duplicate of the canonical paginated read; the new list endpoint accepts paging, search and status."
+        }
+      ]
+    },
+    "ReceivingController": {
+      "default": {
+        "disposition": "Retire",
+        "reason": "Legacy QC receiving sub-step retired."
+      },
+      "actions": {
+        "Post|AddNewReceivingInformationInPO": {
+          "disposition": "Retire",
+          "reason": "Legacy QC receiving sub-step is retired; the new Quality/Warehouse event flow covers receipt, rejection and expiry reads."
+        },
+        "Post|AddNewRejectInPo": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Receiving/Reject/{id}"
+        },
+        "Put|ReceiveRawMaterialsById/{id}": {
+          "disposition": "Retire",
+          "reason": "Legacy QC receiving sub-step is retired; the new Quality/Warehouse event flow covers receipt, rejection and expiry reads."
+        },
+        "Put|RejectRawMaterialsByReceivingId": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Receiving/Reject/{id}"
+        },
+        "Get|GetAllAvailablePo": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/GetPurchaseOrders?status=Open"
+        },
+        "Get|GetAllCancelledPo": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/GetPurchaseOrders?status=Cancelled"
+        },
+        "Get|GetAllNearlyExpireRawMaterials": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/GetExpiringReceipts"
+        },
+        "Put|CancelPO/{id}": {
+          "disposition": "Retire",
+          "reason": "Legacy QC receiving sub-step is retired; the new Quality/Warehouse event flow covers receipt, rejection and expiry reads."
+        },
+        "Put|ReturnPoInAvailableList/{id}": {
+          "disposition": "Retire",
+          "reason": "Legacy QC receiving sub-step is retired; the new Quality/Warehouse event flow covers receipt, rejection and expiry reads."
+        },
+        "Put|ApproveNearlyExpire/{id}": {
+          "disposition": "Retire",
+          "reason": "Legacy QC receiving sub-step is retired; the new Quality/Warehouse event flow covers receipt, rejection and expiry reads."
+        },
+        "Put|RejectNearlyExpire/{id}": {
+          "disposition": "Retire",
+          "reason": "Legacy QC receiving sub-step is retired; the new Quality/Warehouse event flow covers receipt, rejection and expiry reads."
+        },
+        "Put|WarehouseConfirmRejectbyQc/{id}": {
+          "disposition": "Retire",
+          "reason": "Legacy QC receiving sub-step is retired; the new Quality/Warehouse event flow covers receipt, rejection and expiry reads."
+        },
+        "Put|WarehouseReturnRejectbyQc/{id}": {
+          "disposition": "Retire",
+          "reason": "Legacy QC receiving sub-step is retired; the new Quality/Warehouse event flow covers receipt, rejection and expiry reads."
+        },
+        "Get|GetAllWarehouseReceivingConfirmReject": {
+          "disposition": "Retire",
+          "reason": "Legacy QC reject-confirmation list retired; rejects are part of the QC receipt."
+        },
+        "Get|GetAllAvailablePoWithPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/GetPurchaseOrders?status=Open"
+        },
+        "Get|GetAllAvailablePoWithPaginationOrig": {
+          "disposition": "Retire",
+          "reason": "Legacy duplicate pagination variant."
+        },
+        "Get|GetAllAvailableForWarehouseReceivingWithPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/GetWarehouseReceiptsWithPagination"
+        },
+        "Get|GetAllAvailableForWarehouseReceivingWithPaginationOrig": {
+          "disposition": "Retire",
+          "reason": "Legacy duplicate pagination variant."
+        },
+        "Get|GetAllCancelledPoWithPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/GetPurchaseOrders?status=Cancelled"
+        },
+        "Get|GetAllCancelledPoWithPaginationOrig": {
+          "disposition": "Retire",
+          "reason": "Legacy duplicate pagination variant."
+        },
+        "Get|GetAllNearlyExpireWithPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/GetExpiringReceipts"
+        },
+        "Get|GetAllNearlyExpireWithPaginationOrig": {
+          "disposition": "Retire",
+          "reason": "Legacy duplicate pagination variant."
+        },
+        "Get|GetNotification": {
+          "disposition": "Retire",
+          "reason": "Legacy QC receiving sub-step is retired; the new Quality/Warehouse event flow covers receipt, rejection and expiry reads."
+        },
+        "Get|GetAllWarehouseConfirmRejectWithPagination": {
+          "disposition": "Retire",
+          "reason": "Legacy QC reject-confirmation list retired; rejects are part of the QC receipt."
+        },
+        "Get|GetAllWarehouseConfirmRejectWithPaginationOrig": {
+          "disposition": "Retire",
+          "reason": "Legacy duplicate pagination variant."
+        },
+        "Get|GetDetailsForNearlyExpire": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/GetExpiringReceipts"
+        },
+        "Get|GetAllChecklist": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Receiving/GetQcReceiptById/{id}"
+        },
+        "Get|GetChecklistByPoSummaryId": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Receiving/GetQcReceiptById/{id}"
+        },
+        "Get|GetPoSummaryInformation": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/GetPurchaseOrderById/{id}"
+        },
+        "Put|UpdateReceivingId/{id}": {
+          "disposition": "Retire",
+          "reason": "Legacy QC receiving sub-step is retired; the new Quality/Warehouse event flow covers receipt, rejection and expiry reads."
+        }
+      }
+    },
+    "ReportController": {
+      "default": {
+        "disposition": "Retire",
+        "reason": "Legacy report retired."
+      },
+      "actions": {
+        "Get|QcReceivingReport": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Receiving/GetQcReceiptsWithPagination"
+        },
+        "Get|QcReceivingReportPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Receiving/GetQcReceiptsWithPagination"
+        },
+        "Get|WarehouseReceivingReport": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/GetWarehouseReceiptsWithPagination"
+        },
+        "Get|WarehouseReceivingReportPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/GetWarehouseReceiptsWithPagination"
+        },
+        "Get|TransformationHistoryReport": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Manufacturing/GetTransformationRequests"
+        },
+        "Get|TransformationHistoryReportPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Manufacturing/GetTransformationRequests"
+        },
+        "Get|MoveOrderHistory": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/GetMoveOrders"
+        },
+        "Get|MoveOrderHistoryPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/GetMoveOrders"
+        },
+        "Get|MiscellaneousReceiptReport": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/GetMiscellaneousReceiptsWithPagination"
+        },
+        "Get|MiscellaneousReceiptReportPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/GetMiscellaneousReceiptsWithPagination"
+        },
+        "Get|MiscellaneousIssueReport": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/GetMiscellaneousIssuesWithPagination"
+        },
+        "Get|MiscellaneousIssueReportPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/GetMiscellaneousIssuesWithPagination"
+        },
+        "Get|NearlyExpireItemsReport": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/GetExpiringReceipts"
+        },
+        "Get|NearlyExpireItemsReportPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/GetExpiringReceipts"
+        },
+        "Get|TransactedMoveOrderReport": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/GetTransactedMoveOrders"
+        },
+        "Get|TransactedMoveOrderReportPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/GetTransactedMoveOrders"
+        },
+        "Get|CancelledOrderReport": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/GetAllListOfCancelledOrdersPagination"
+        },
+        "Get|CancelledOrderReportsPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/GetAllListOfCancelledOrdersPagination"
+        },
+        "Get|InventoryMovementReport": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/GetInventoryMovementReport"
+        },
+        "Get|InventoryMovementReportPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/GetInventoryMovementReport"
+        },
+        "Get|ConsolidatedReport": {
+          "disposition": "Retire",
+          "reason": "Retired by the reporting decision: broken cross-module logic or hardcoded company/department constants; rebuild as a new Reporting projection only if the business requires it."
+        },
+        "Get|ApprovedMoveOrdersReports": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/GetMoveOrders"
+        },
+        "Get|ApprovedMoveOrdersReportsPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/GetMoveOrders"
+        },
+        "Get|OrderVsServeReports": {
+          "disposition": "Retire",
+          "reason": "Retired by the reporting decision: broken cross-module logic or hardcoded company/department constants; rebuild as a new Reporting projection only if the business requires it."
+        },
+        "Get|OrderVsServeReportsPagination": {
+          "disposition": "Retire",
+          "reason": "Retired by the reporting decision: broken cross-module logic or hardcoded company/department constants; rebuild as a new Reporting projection only if the business requires it."
+        },
+        "Get|ItemsWithBbdPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/GetExpiringReceipts"
+        }
+      }
+    },
+    "RoleController": {
+      "default": {
+        "disposition": "Replace",
+        "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+        "target": "api/Role"
+      },
+      "patterns": [
+        {
+          "match": "Orig",
+          "disposition": "Retire",
+          "reason": "Legacy duplicate of the canonical paginated read; the new list endpoint accepts paging, search and status."
+        }
+      ]
+    },
+    "SupplierController": {
+      "default": {
+        "disposition": "Replace",
+        "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+        "target": "api/Supplier"
+      },
+      "patterns": [
+        {
+          "match": "Orig",
+          "disposition": "Retire",
+          "reason": "Legacy duplicate of the canonical paginated read; the new list endpoint accepts paging, search and status."
+        }
+      ]
+    },
+    "TransactionController": {
+      "default": {
+        "disposition": "Retire",
+        "reason": "Legacy transaction master retired."
+      },
+      "actions": {
+        "Get|GetAllActiveTransactionName": {
+          "disposition": "Port",
+          "target": "api/Transaction/GetAllActiveTransactionName",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Post|AddNewTransaction": {
+          "disposition": "Port",
+          "target": "api/Transaction/AddNewTransaction",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Put|UpdateTransaction": {
+          "disposition": "Port",
+          "target": "api/Transaction/UpdateTransaction",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Put|InActiveTransaction": {
+          "disposition": "Retire",
+          "reason": "Legacy duplicate of InActiveTransaction/{id}."
+        },
+        "Put|InActiveTransaction/{id}": {
+          "disposition": "Port",
+          "target": "api/Transaction/InActiveTransaction/{id}",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Put|ActivateTransaction/{id}": {
+          "disposition": "Port",
+          "target": "api/Transaction/ActivateTransaction/{id}",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Get|GetAllTransactionPagination/{status}": {
+          "disposition": "Port",
+          "target": "api/Transaction/GetAllTransactionPagination/{status}",
+          "reason": "Ported to the modular endpoint named by target."
+        },
+        "Get|GetAllTransactionPaginationOrig/{status}": {
+          "disposition": "Retire",
+          "reason": "Legacy duplicate pagination variant."
+        }
+      }
+    },
+    "TransformationController": {
+      "default": {
+        "disposition": "Retire",
+        "reason": "Legacy formula edit route retired."
+      },
+      "actions": {
+        "Get|GetAllTransformationFormula": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Transformation/GetAllFormulasWithPagination"
+        },
+        "Get|GetAllFormulaWithPagination/{status}": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Transformation/GetAllFormulasWithPagination"
+        },
+        "Get|GetAllFormulaWithPaginationOrig/{status}": {
+          "disposition": "Retire",
+          "reason": "Legacy duplicate pagination variant."
+        },
+        "Get|GetFormulaById/{id}": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Transformation/GetFormulaById/{id}"
+        },
+        "Get|GetAllActiveFormula": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Transformation/GetAllFormulasWithPagination"
+        },
+        "Get|GetAllInActiveFormula": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Transformation/GetAllFormulasWithPagination"
+        },
+        "Post|AddNewTransformationFormula": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Transformation/AddNewFormula"
+        },
+        "Put|InActiveFormula/{id}": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Transformation/InActiveFormula/{id}"
+        },
+        "Put|ActivateFormula/{id}": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Transformation/ActivateFormula/{id}"
+        },
+        "Get|GetAllRequirementsWithFormula": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Transformation/GetAllFormulasWithPagination"
+        },
+        "Get|GetAllFormulaWithRequirementByFormulaId/{id}": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Transformation/GetAllFormulasWithPagination"
+        },
+        "Post|AddNewTransformationRequirementinFormula": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Transformation/AddFormulaRequirement/{id}"
+        },
+        "Delete|DeleteRequirementinFormula/{id}": {
+          "disposition": "Retire",
+          "reason": "Legacy formula-requirement edit/delete route is retired; formulas are versioned and requirements are added to a new version."
+        },
+        "Put|UpdateFormulaInfo/{id}": {
+          "disposition": "Retire",
+          "reason": "Legacy formula-requirement edit/delete route is retired; formulas are versioned and requirements are added to a new version."
+        },
+        "Put|InActiveRequirements/{id}": {
+          "disposition": "Retire",
+          "reason": "Legacy formula-requirement edit/delete route is retired; formulas are versioned and requirements are added to a new version."
+        },
+        "Put|ActivateRequirement/{id}": {
+          "disposition": "Retire",
+          "reason": "Legacy formula-requirement edit/delete route is retired; formulas are versioned and requirements are added to a new version."
+        },
+        "Get|GetAllInActiveRequirement": {
+          "disposition": "Retire",
+          "reason": "Legacy formula-requirement edit/delete route is retired; formulas are versioned and requirements are added to a new version."
+        },
+        "Put|UpdateQuantity/{id}": {
+          "disposition": "Retire",
+          "reason": "Legacy formula-requirement edit/delete route is retired; formulas are versioned and requirements are added to a new version."
+        }
+      }
+    },
+    "UomController": {
+      "default": {
+        "disposition": "Replace",
+        "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+        "target": "api/Uom"
+      },
+      "patterns": [
+        {
+          "match": "Orig",
+          "disposition": "Retire",
+          "reason": "Legacy duplicate of the canonical paginated read; the new list endpoint accepts paging, search and status."
+        }
+      ]
+    },
+    "UserController": {
+      "default": {
+        "disposition": "Replace",
+        "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+        "target": "api/User"
+      },
+      "patterns": [
+        {
+          "match": "Orig",
+          "disposition": "Retire",
+          "reason": "Legacy duplicate of the canonical paginated read; the new list endpoint accepts paging, search and status."
+        }
+      ]
+    },
+    "WarehouseController": {
+      "default": {
+        "disposition": "Replace",
+        "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+        "target": "api/WarehouseReceiving"
+      },
+      "actions": {
+        "Get|GetAllAvailableForWarehouseReceiving": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/Ordering/GetPurchaseOrders?status=Open"
+        },
+        "Put|CancelPartialReceivingInQc/{id}": {
+          "disposition": "Retire",
+          "reason": "Legacy warehouse console write/scan flow is retired; the new API uses AddWarehouseReceipt, AdjustStock and the QC completion event."
+        },
+        "Get|ScanBarcode/{itemcode}": {
+          "disposition": "Retire",
+          "reason": "Legacy warehouse console write/scan flow is retired; the new API uses AddWarehouseReceipt, AdjustStock and the QC completion event."
+        },
+        "Put|ReceiveRawMaterialsInWarehouse/{itemcode}": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/AddWarehouseReceipt"
+        },
+        "Get|GetRejectMaterialsForWarehouse": {
+          "disposition": "Retire",
+          "reason": "Legacy warehouse console write/scan flow is retired; the new API uses AddWarehouseReceipt, AdjustStock and the QC completion event."
+        },
+        "Put|RejectMaterialFromWarehouse": {
+          "disposition": "Retire",
+          "reason": "Legacy warehouse console write/scan flow is retired; the new API uses AddWarehouseReceipt, AdjustStock and the QC completion event."
+        },
+        "Get|ListForWarehouseReceiving": {
+          "disposition": "Retire",
+          "reason": "Legacy warehouse console write/scan flow is retired; the new API uses AddWarehouseReceipt, AdjustStock and the QC completion event."
+        },
+        "Put|ReturnRawmaterialByWarehouse/{id}": {
+          "disposition": "Retire",
+          "reason": "Legacy warehouse console write/scan flow is retired; the new API uses AddWarehouseReceipt, AdjustStock and the QC completion event."
+        },
+        "Get|GetRejectMaterialsInWarehouse/{warehouseid}": {
+          "disposition": "Retire",
+          "reason": "Legacy warehouse console write/scan flow is retired; the new API uses AddWarehouseReceipt, AdjustStock and the QC completion event."
+        },
+        "Get|GetAllWarehouseReceived": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/GetWarehouseReceiptsWithPagination"
+        },
+        "Put|CancelAndReturnForWarehouseReceive/{id}": {
+          "disposition": "Retire",
+          "reason": "Legacy warehouse console write/scan flow is retired; the new API uses AddWarehouseReceipt, AdjustStock and the QC completion event."
+        },
+        "Put|CancelAndReturnForPoSummary/{id}": {
+          "disposition": "Retire",
+          "reason": "Legacy warehouse console write/scan flow is retired; the new API uses AddWarehouseReceipt, AdjustStock and the QC completion event."
+        },
+        "Get|GetAllListForWarehouseWithPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/GetWarehouseReceiptsWithPagination"
+        },
+        "Get|GetAllListForWarehouseWithPaginationOrig": {
+          "disposition": "Retire",
+          "reason": "Legacy duplicate pagination variant."
+        },
+        "Get|GetAllRejectMaterialsFromWarehouse": {
+          "disposition": "Retire",
+          "reason": "Legacy warehouse console write/scan flow is retired; the new API uses AddWarehouseReceipt, AdjustStock and the QC completion event."
+        },
+        "Get|GetAllRejectMaterialsFromWarehouseOrig": {
+          "disposition": "Retire",
+          "reason": "Legacy duplicate pagination variant."
+        },
+        "Get|GetAllListOfWarehouseReceivingIdNull": {
+          "disposition": "Retire",
+          "reason": "Legacy warehouse console write/scan flow is retired; the new API uses AddWarehouseReceipt, AdjustStock and the QC completion event."
+        },
+        "Get|GetAllListOfWarehouseReceivingId": {
+          "disposition": "Retire",
+          "reason": "Legacy warehouse console write/scan flow is retired; the new API uses AddWarehouseReceipt, AdjustStock and the QC completion event."
+        },
+        "Get|GetAllListOfWarehouseIdPagination": {
+          "disposition": "Replace",
+          "reason": "Superseded by the existing module endpoint; the legacy route name is preserved or mapped.",
+          "target": "api/WarehouseReceiving/GetWarehouses"
+        },
+        "Get|GetAllListOfWarehouseIdPaginationOrig": {
+          "disposition": "Retire",
+          "reason": "Legacy duplicate pagination variant."
+        }
+      }
+    }
+  }
+}

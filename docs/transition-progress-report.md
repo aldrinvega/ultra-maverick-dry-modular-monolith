@@ -304,3 +304,48 @@ Notable decisions:
 | Domain entities | — | **29** (6 Identity + 21 Catalog + 2 Procurement) |
 | Bounded contexts done | 0 | **3** (Identity, Catalog, Procurement); 6 not started |
 | Tests | none meaningful | **83 green, run in CI** |
+
+---
+
+## 10. Completion status — 2026-10-18
+
+All nine bounded contexts are implemented and merged on `main` (`654d63e`):
+
+| Context | Status |
+|---|---|
+| Identity | Complete |
+| Catalog | Complete |
+| Procurement | Complete |
+| Quality | Complete |
+| Laboratory | Complete |
+| Warehouse | Complete |
+| Orders | Complete |
+| Manufacturing | Complete |
+| Reporting | Complete |
+
+Verification at that commit: `dotnet build Ultramaverick.slnx -c Release` produces 0 warnings and
+0 errors; `dotnet test` passes 341 tests across 19 projects; `dotnet format --verify-no-changes`
+exits 0.
+
+### Legacy data migration
+
+The 2024-07-04 `ElixirDepotDry` backup was restored and migrated into the per-module schemas by
+`tools/migration` (see that folder's README). Verified row parity, zero orphan rows and 47 passing
+reconciliation gates:
+
+- Identity 36 users, Catalog 1,220 items and 485 customers
+- Procurement 2,157 purchase orders / 4,196 lines
+- Quality 2,942 QC receipts, 83,765 checklist answers
+- Warehouse 4,343 receipts, 586 miscellaneous receipts
+- Orders 16,203 orders / 90,082 lines / 68,921 move orders
+- Reporting warmed to 1,530 inventory positions, 16,203 order fulfillments, 2,942 QC statuses
+
+Rollback was rehearsed (backup, drop, restore) with the gates re-passing afterwards.
+
+### Final status — 2026-10-19
+
+Endpoint parity is now measured per action: 459 legacy controller actions, 40 ported, 238 replaced,
+181 retired with written reasons, 0 unruled (`docs/action-parity.md`, `docs/action-rulings.md`).
+The cross-cutting items listed above are complete. The staging cutover rehearsal passes: 9/9 modules
+served, 0.7 s cold start, 39,676 replay events, and a stable second pass; see
+`docs/cutover-runbook.md`. Migrated users must change their password on first sign-in.

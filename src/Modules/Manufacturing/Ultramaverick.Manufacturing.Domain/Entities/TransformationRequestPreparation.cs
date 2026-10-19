@@ -8,6 +8,7 @@ public sealed class TransformationRequestPreparation : Entity
     public int Id { get; private set; }
     public int? LegacyId { get; private set; }
     public int TransformationRequestId { get; private set; } // scalar; populated by EF on save
+    public int? TransformationRequestLineId { get; private set; }
     public int? PreparedByUserId { get; private set; }
     public DateTime PreparedAtUtc { get; private set; }
     public decimal QuantityNeeded { get; private set; }
@@ -20,13 +21,15 @@ public sealed class TransformationRequestPreparation : Entity
 
     private TransformationRequestPreparation() { }
 
-    public static TransformationRequestPreparation Create(int preparedByUserId, decimal quantityNeeded)
+    public static TransformationRequestPreparation Create(
+        int? transformationRequestLineId, int preparedByUserId, decimal quantityNeeded)
     {
         if (preparedByUserId <= 0) throw new ArgumentOutOfRangeException(nameof(preparedByUserId));
         if (quantityNeeded < 0) throw new ArgumentOutOfRangeException(nameof(quantityNeeded));
 
         return new TransformationRequestPreparation
         {
+            TransformationRequestLineId = transformationRequestLineId,
             PreparedByUserId = preparedByUserId,
             PreparedAtUtc = DateTime.UtcNow,
             QuantityNeeded = quantityNeeded

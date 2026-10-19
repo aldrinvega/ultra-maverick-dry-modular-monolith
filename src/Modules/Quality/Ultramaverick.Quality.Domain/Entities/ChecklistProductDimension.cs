@@ -18,7 +18,10 @@ public sealed class ChecklistProductDimension : Entity
     internal static ChecklistProductDimension Create(int checklistId, int questionId, decimal? standard, decimal? actual)
         => new()
         {
-            ChecklistId = checklistId, QuestionId = questionId,
-            StandardValue = standard, ActualValue = actual, IsActive = true
+            ChecklistId = checklistId,
+            QuestionId = questionId,
+            StandardValue = standard,
+            ActualValue = actual,
+            IsActive = true
         };
 }

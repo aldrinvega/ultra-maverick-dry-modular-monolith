@@ -1,6 +1,6 @@
-using Ultramaverick.Manufacturing.Domain;
+﻿using Ultramaverick.Manufacturing.Domain;
 using Ultramaverick.Manufacturing.Domain.Entities;
-using Ultramaverick.Manufacturing.Domain.Events;
+using Ultramaverick.Manufacturing.Contracts;
 
 namespace Ultramaverick.Manufacturing.UnitTests.Domain;
 
@@ -49,9 +49,9 @@ public class TransformationRequestTests
 
         Assert.Equal(TransformationStatuses.Prepared, request.Status);
 
-        var preparation = Assert.Single(request.Preparations);
-        Assert.Equal(7, preparation.PreparedByUserId);
-        Assert.Equal(7.5m, preparation.QuantityNeeded);
+        Assert.Equal(2, request.Preparations.Count);
+        Assert.All(request.Preparations, p => Assert.Equal(7, p.PreparedByUserId));
+        Assert.Equal(7.5m, request.Preparations.Sum(p => p.QuantityNeeded));
 
         var raised = Assert.IsType<TransformationPrepared>(Assert.Single(request.DomainEvents));
         Assert.Equal(TransformationChangeTypes.Prepared, raised.ChangeType);
@@ -94,3 +94,4 @@ public class TransformationRequestTests
         Assert.Throws<InvalidOperationException>(() => request.Reject(3, 1m));
     }
 }
+

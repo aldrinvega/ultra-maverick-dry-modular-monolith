@@ -1,4 +1,4 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ultramaverick.Api.Authorization;
@@ -18,6 +18,8 @@ namespace Ultramaverick.Api.Controllers
 
         public UsersController(IMediator mediator) => _mediator = mediator;
 
+        public sealed record ResetPasswordBody(string NewPassword);
+
         [HttpGet("GetAllUsersWithPagination/{status}")]
         public async Task<ActionResult<PagedResult<UserDto>>> GetAll(
             bool status,
@@ -31,6 +33,13 @@ namespace Ultramaverick.Api.Controllers
         public async Task<IActionResult> GetById(int id, CancellationToken ct)
             => (await _mediator.Send(new GetUserByIdQuery(id), ct)).ToOkOrNotFound();
 
+        [HttpPut("ResetPassword/{userName}")]
+        public async Task<IActionResult> ResetPassword(
+            string userName, [FromBody] ResetPasswordBody body, CancellationToken ct)
+        {
+            var result = await _mediator.Send(new ResetUserPasswordCommand(userName, body.NewPassword), ct);
+            return result.Succeeded ? NoContent() : BadRequest(new ApiResponse(400, result.Error));
+        }
         [HttpPost("AddNewUser")]
         public async Task<IActionResult> Create(
             [FromBody] CreateUserCommand command, CancellationToken ct)
@@ -52,3 +61,4 @@ namespace Ultramaverick.Api.Controllers
             => (await _mediator.Send(new SetUserActiveCommand(id, true), ct)).ToNoContent();
     }
 }
+

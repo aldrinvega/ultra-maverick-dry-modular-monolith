@@ -1,4 +1,4 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ultramaverick.Api.Authorization;
@@ -7,6 +7,7 @@ using Ultramaverick.Laboratory.Application.Commands.LabReceiveRequests;
 using Ultramaverick.Laboratory.Application.Commands.LabTestRequests;
 using Ultramaverick.Laboratory.Application.Commands.LabTestResults;
 using Ultramaverick.Laboratory.Application.Models;
+using Ultramaverick.Laboratory.Application.Queries.LabTestRequests;
 
 namespace Ultramaverick.Api.Controllers
 {
@@ -22,6 +23,18 @@ namespace Ultramaverick.Api.Controllers
 
         public LabTestsController(IMediator mediator) => _mediator = mediator;
 
+        [HttpGet("GetLabTestRequests")]
+        public async Task<ActionResult<PagedResult<LabTestRequestDto>>> GetLabTestRequests(
+            [FromQuery] string? status = null, [FromQuery] int page = 1, [FromQuery] int pageSize = 20,
+            CancellationToken ct = default)
+            => Ok(await _mediator.Send(new GetLabTestRequestsQuery(status, page, pageSize), ct));
+
+        [HttpGet("GetLabTestRequestById/{id}")]
+        public async Task<IActionResult> GetLabTestRequestById(int id, CancellationToken ct)
+        {
+            var result = await _mediator.Send(new GetLabTestRequestByIdQuery(id), ct);
+            return result.Succeeded ? Ok(result.Value) : BadRequest(new ApiResponse(400, result.Error));
+        }
         [HttpPost("AddLabTestRequest")]
         public async Task<IActionResult> AddLabTestRequest(
             [FromBody] CreateLabTestRequestCommand cmd, CancellationToken ct)
@@ -60,3 +73,4 @@ namespace Ultramaverick.Api.Controllers
                 : new BadRequestObjectResult(new ApiResponse(400, result.Error));
     }
 }
+

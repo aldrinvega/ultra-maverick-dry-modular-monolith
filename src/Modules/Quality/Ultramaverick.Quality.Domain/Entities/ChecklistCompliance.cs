@@ -18,7 +18,10 @@ public sealed class ChecklistCompliance : Entity
     internal static ChecklistCompliance Create(int checklistId, string compliance, string? description, string? rootCause)
         => new()
         {
-            ChecklistId = checklistId, Compliance = compliance,
-            Description = description, RootCause = rootCause, IsActive = true
+            ChecklistId = checklistId,
+            Compliance = compliance,
+            Description = description,
+            RootCause = rootCause,
+            IsActive = true
         };
 }

@@ -60,7 +60,8 @@ namespace Ultramaverick.Identity.Application.Commands.Authentication
                 role?.Name ?? string.Empty,
                 accessToken.Value,
                 accessToken.ExpiresAtUtc,
-                newRefreshToken));
+                newRefreshToken,
+                user.MustChangePassword));
         }
     }
 }

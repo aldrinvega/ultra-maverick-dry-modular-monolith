@@ -274,6 +274,11 @@ namespace Ultramaverick.Identity.Persistence.Migrations
                     b.Property<int?>("ModifiedByUserId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("MustChangePassword")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(500)

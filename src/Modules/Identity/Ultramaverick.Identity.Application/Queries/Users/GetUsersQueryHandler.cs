@@ -30,7 +30,8 @@ namespace Ultramaverick.Identity.Application.Queries.Users
                 roles.GetValueOrDefault(u.RoleId, string.Empty),
                 u.DepartmentId,
                 departments.GetValueOrDefault(u.DepartmentId, string.Empty),
-                u.IsActive)).ToList();
+                u.IsActive,
+                u.MustChangePassword)).ToList();
 
             return new PagedResult<UserDto>(items, page, pageSize, total);
         }

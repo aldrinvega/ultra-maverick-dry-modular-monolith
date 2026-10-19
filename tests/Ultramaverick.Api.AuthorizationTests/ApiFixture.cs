@@ -13,6 +13,9 @@ using Ultramaverick.Identity.Domain.ValueObjects;
 using Ultramaverick.Identity.Persistence;
 using Ultramaverick.Orders.Persistence;
 using Ultramaverick.Manufacturing.Persistence;
+using Ultramaverick.Quality.Domain.Entities;
+using WarehouseEntity = Ultramaverick.Warehouse.Domain.Entities.Warehouse;
+using WarehouseReceiptEntity = Ultramaverick.Warehouse.Domain.Entities.WarehouseReceipt;
 using Ultramaverick.Reporting.Persistence;
 using Ultramaverick.Procurement.Persistence;
 using Ultramaverick.Quality.Persistence;
@@ -40,6 +43,9 @@ public sealed class ApiFixture : IAsyncLifetime
     /// <summary>Id of the active Catalog customer seeded for the Orders create-order tests.</summary>
     public int CustomerId { get; private set; }
 
+    /// <summary>Id of the active Catalog supplier seeded for the Procurement create-PO tests.</summary>
+    public int SupplierId { get; private set; }
+
     /// <summary>Id of the production plan seeded for the Manufacturing create-request tests.</summary>
     public int ProductionPlanId { get; private set; }
 
@@ -64,6 +70,7 @@ public sealed class ApiFixture : IAsyncLifetime
         {
             await catalogContext.Database.MigrateAsync();
             CustomerId = await SeedCustomerAsync(catalogContext);
+            SupplierId = await SeedSupplierAsync(catalogContext);
         }
 
         await using (var ordersContext = CreateOrdersContext())
@@ -260,6 +267,40 @@ public sealed class ApiFixture : IAsyncLifetime
         return customer.Id;
     }
 
+    private static async Task<int> SeedSupplierAsync(CatalogDbContext context)
+    {
+        var supplier = Supplier.Create(
+            $"S{Guid.NewGuid():N}"[..12], "Authorization Test Supplier", null, null);
+
+        context.Suppliers.Add(supplier);
+        await context.SaveChangesAsync();
+
+        return supplier.Id;
+    }
+
+    public async Task<int> SeedQcReceiptAsync()
+    {
+        await using var context = CreateQualityContext();
+        var receipt = QcReceipt.Create(1, 10, null, "LOT-QC", 10m, 20, 1);
+        context.QcReceipts.Add(receipt);
+        await context.SaveChangesAsync();
+        return receipt.Id;
+    }
+
+    public async Task<int> SeedWarehouseReceiptAsync()
+    {
+        await using var context = CreateWarehouseContext();
+        var warehouse = WarehouseEntity.Create($"WH-{Guid.NewGuid():N}"[..12], "Authorization Test Warehouse", null, null, null);
+        context.Warehouses.Add(warehouse);
+        await context.SaveChangesAsync();
+
+        var receipt = WarehouseReceiptEntity.Create(
+            null, warehouse.Id, 10, 20, "LOT-WH", 5m, null, null, null);
+        context.WarehouseReceipts.Add(receipt);
+        await context.SaveChangesAsync();
+        return receipt.Id;
+    }
+
     private static async Task SeedAsync(IdentityDbContext context)
     {
         var role = Role.Create("Administrator", null);
@@ -278,6 +319,21 @@ public sealed class ApiFixture : IAsyncLifetime
             null);
 
         context.Users.Add(user);
+        await context.SaveChangesAsync();
+
+        var hasher = new Ultramaverick.Identity.Infrastructure.Security.PasswordHasher();
+        var temporaryPassword = PasswordHash.FromEncoded(hasher.Hash("TempPass123!"));
+
+        var migrated = User.Create(
+            "Migrated User",
+            "migrated",
+            temporaryPassword,
+            role.Id,
+            department.Id,
+            user.Id);
+
+        migrated.ResetPassword(temporaryPassword, user.Id);
+        context.Users.Add(migrated);
         await context.SaveChangesAsync();
     }
 }

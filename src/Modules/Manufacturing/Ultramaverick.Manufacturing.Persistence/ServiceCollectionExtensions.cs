@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Ultramaverick.Manufacturing.Application.Abstractions;
@@ -18,6 +18,7 @@ namespace Ultramaverick.Manufacturing.Persistence
             services.AddDbContext<ManufacturingDbContext>(options => options.UseSqlServer(connectionString));
 
             services.AddScoped<IManufacturingUnitOfWork, ManufacturingUnitOfWork>();
+            services.AddScoped<ITransformationRequestReader, TransformationRequestReader>();
 
             services.AddScoped<IOutboxStore, ManufacturingOutboxStore>();
             services.AddScoped<IProcessedEventStore, ManufacturingProcessedEventStore>();
@@ -26,3 +27,4 @@ namespace Ultramaverick.Manufacturing.Persistence
         }
     }
 }
+

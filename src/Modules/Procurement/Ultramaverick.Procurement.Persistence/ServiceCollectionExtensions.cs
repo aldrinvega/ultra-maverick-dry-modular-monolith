@@ -20,6 +20,8 @@ namespace Ultramaverick.Procurement.Persistence
 
             services.AddScoped<IProcurementUnitOfWork, ProcurementUnitOfWork>();
             services.AddScoped<ISupplierLookup, SupplierLookup>();
+            services.AddScoped<IPurchaseOrderImportLookup, PurchaseOrderImportLookup>();
+            services.AddScoped<IPurchaseOrderReader, PurchaseOrderReader>();
 
             services.AddScoped<IOutboxStore, OutboxStore>();
 

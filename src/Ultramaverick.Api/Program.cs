@@ -80,6 +80,16 @@ builder.Services.AddScoped<IDepartmentDirectory, CatalogDepartmentDirectory>();
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+builder.Services.AddHealthChecks();
+
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new Asp.Versioning.ApiVersion(1, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+});
+
+builder.Services.AddTransient(typeof(MediatR.IPipelineBehavior<,>), typeof(Ultramaverick.Api.Telemetry.TelemetryBehavior<,>));
 
 // Model-validation failures use the shared validation error shape.
 builder.Services.Configure<ApiBehaviorOptions>(options =>
@@ -162,9 +172,31 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
+
+// A migrated or administrator-reset account signs in only to replace its password.
+// The claim is issued by JwtTokenService and cleared when the password changes.
+app.Use(async (context, next) =>
+{
+    var mustChange = context.User.Identity?.IsAuthenticated == true &&
+                     context.User.FindFirst(JwtTokenService.MustChangePasswordClaimType)?.Value == "true";
+
+    if (mustChange &&
+        !context.Request.Path.Equals("/api/Login/change-password", StringComparison.OrdinalIgnoreCase) &&
+        !context.Request.Path.Equals("/api/Login/refresh", StringComparison.OrdinalIgnoreCase) &&
+        !context.Request.Path.Equals("/api/Login/revoke", StringComparison.OrdinalIgnoreCase))
+    {
+        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+        await context.Response.WriteAsJsonAsync(new ApiResponse(403, "Password change required."));
+        return;
+    }
+
+    await next();
+});
+
 app.UseAuthorization();
 app.UseRateLimiter();
 app.MapControllers();
+app.MapHealthChecks("/health");
 app.Run();
 
 // Exposed so the authorization test project can host the application.

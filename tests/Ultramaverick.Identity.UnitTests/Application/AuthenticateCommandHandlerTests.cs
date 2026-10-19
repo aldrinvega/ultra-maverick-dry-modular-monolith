@@ -49,6 +49,18 @@ public class AuthenticateCommandHandlerTests
     }
 
     [Fact]
+    public async Task A_user_required_to_change_the_password_is_reported()
+    {
+        var user = SeedUser();
+        user.ResetPassword(PasswordHash.FromEncoded("PBKDF2;SHA256;210000;CCCC;DDDD"), 1);
+
+        var result = await CreateHandler().Handle(new AuthenticateCommand("jdoe", "pw"), default);
+
+        Assert.True(result.Succeeded);
+        Assert.True(result.Value!.MustChangePassword);
+    }
+
+    [Fact]
     public async Task Unknown_user_fails_with_the_generic_message()
     {
         _roles.Seed(Role.Create("Administrator", 1));

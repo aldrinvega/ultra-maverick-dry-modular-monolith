@@ -10,7 +10,7 @@ namespace Ultramaverick.Identity.Persistence.Configurations
         {
             builder.ToTable("Roles", "Identity");
             builder.HasKey(r => r.Id);
-            builder.Ignore(r => r.DomainEvents); 
+            builder.Ignore(r => r.DomainEvents);
             builder.Property(r => r.Name).HasMaxLength(100).IsRequired();
             builder.HasIndex(r => r.Name).IsUnique();
             builder.Property(r => r.IsActive).IsRequired();

@@ -1,4 +1,4 @@
-using Ultramaverick.Manufacturing.Domain.Events;
+﻿using Ultramaverick.Manufacturing.Contracts;
 using Ultramaverick.SharedKernel;
 
 namespace Ultramaverick.Manufacturing.Domain.Entities;
@@ -16,8 +16,8 @@ public sealed class TransformationRequest : Entity
 
     public int Id { get; private set; }
     public int? LegacyId { get; private set; }
-    public int ProductionPlanId { get; private set; }  // FK → Manufacturing.ProductionPlans
-    public int WarehouseId { get; private set; }       // scalar → Warehouse (no FK)
+    public int ProductionPlanId { get; private set; }  // FK â†’ Manufacturing.ProductionPlans
+    public int WarehouseId { get; private set; }       // scalar â†’ Warehouse (no FK)
     public string Status { get; private set; } = TransformationStatuses.Requested;
     public bool IsActive { get; private set; } = true;
     public DateTime CreatedAtUtc { get; private set; } = DateTime.UtcNow;
@@ -65,13 +65,16 @@ public sealed class TransformationRequest : Entity
     public void Prepare(int preparedByUserId)
     {
         var occurredAt = DateTime.UtcNow;
-        var quantityNeeded = _lines.Sum(line => line.RequiredQuantity);
 
         Status = TransformationStatuses.Prepared;
         ModifiedAtUtc = occurredAt;
         ModifiedByUserId = preparedByUserId;
 
-        _preparations.Add(TransformationRequestPreparation.Create(preparedByUserId, quantityNeeded));
+        // One preparation per line, so finishing can create one warehouse receipt per item
+        // instead of guessing how a single summed quantity splits across lines.
+        foreach (var line in _lines)
+            _preparations.Add(TransformationRequestPreparation.Create(
+                line.Id, preparedByUserId, line.RequiredQuantity));
 
         RaiseDomainEvent(new TransformationPrepared(TransformationChangeTypes.Prepared, occurredAt));
     }
@@ -89,5 +92,58 @@ public sealed class TransformationRequest : Entity
         _rejects.Add(TransformationRequestReject.Create(rejectReasonId, quantity));
 
         RaiseDomainEvent(new TransformationRejected(TransformationChangeTypes.Rejected, occurredAt));
+    }
+
+    public void Cancel(int? cancelledByUserId)
+
+    {
+        if (Status == TransformationStatuses.Cancelled)
+            return;
+
+        var occurredAt = DateTime.UtcNow;
+        Status = TransformationStatuses.Cancelled;
+        ModifiedAtUtc = occurredAt;
+        ModifiedByUserId = cancelledByUserId;
+
+        RaiseDomainEvent(new TransformationCancelled(TransformationChangeTypes.Cancelled, occurredAt));
+    }
+
+    public void Approve(int? approvedByUserId)
+    {
+        if (Status != TransformationStatuses.Requested)
+            throw new InvalidOperationException("Only a requested transformation request can be approved.");
+
+        var occurredAt = DateTime.UtcNow;
+        Status = TransformationStatuses.Approved;
+        ModifiedAtUtc = occurredAt;
+        ModifiedByUserId = approvedByUserId;
+
+        RaiseDomainEvent(new TransformationApproved(TransformationChangeTypes.Approved, occurredAt));
+    }
+
+    public void Finish(int? finishedByUserId)
+    {
+        if (Status == TransformationStatuses.Finished)
+            return;
+
+        if (Status != TransformationStatuses.Prepared)
+            throw new InvalidOperationException("Only a prepared transformation request can be finished.");
+
+        var occurredAt = DateTime.UtcNow;
+        Status = TransformationStatuses.Finished;
+        ModifiedAtUtc = occurredAt;
+        ModifiedByUserId = finishedByUserId;
+
+        var completedLines = _lines
+            .Select(line => new TransformationCompletedLine(
+                line.ItemId,
+                _preparations
+                    .Where(preparation => preparation.TransformationRequestLineId == line.Id)
+                    .Sum(preparation => preparation.QuantityNeeded)))
+            .Where(line => line.Quantity > 0)
+            .ToList();
+
+        RaiseDomainEvent(new TransformationCompleted(
+            TransformationChangeTypes.Finished, ProductionPlanId, WarehouseId, completedLines, occurredAt));
     }
 }

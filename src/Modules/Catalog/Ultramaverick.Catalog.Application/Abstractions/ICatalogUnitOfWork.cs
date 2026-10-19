@@ -19,6 +19,8 @@ public interface ICatalogUnitOfWork
     ILookupRepository<Location> Locations { get; }
     ILookupRepository<AccountTitle> AccountTitles { get; }
     ILookupRepository<ProductType> ProductTypes { get; }
+    ILookupRepository<TransactionType> TransactionTypes { get; }
+    ILookupRepository<SampleType> SampleTypes { get; }
 
     Task<int> SaveChangesAsync(CancellationToken ct);
 }
