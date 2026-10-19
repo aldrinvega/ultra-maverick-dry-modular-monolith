@@ -16,6 +16,9 @@ public sealed class UomRepository : IUomRepository
     public Task<Uom?> GetByCodeAsync(string code, CancellationToken ct)
         => _context.Uoms.AsNoTracking().FirstOrDefaultAsync(u => u.Code == code, ct);
 
+    public Task<Uom?> GetByDescriptionAsync(string description, CancellationToken ct)
+        => _context.Uoms.AsNoTracking().FirstOrDefaultAsync(u => u.Description == description, ct);
+
     public async Task<IReadOnlyList<Uom>> ListAsync(
         string? search, bool? isActive, int skip, int take, CancellationToken ct)
         => await BuildQuery(search, isActive).OrderBy(u => u.Id).Skip(skip).Take(take).ToListAsync(ct);

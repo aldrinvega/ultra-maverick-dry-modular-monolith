@@ -22,7 +22,8 @@ namespace Ultramaverick.Api.Controllers
 
         public QcReceiptsController(IMediator mediator) => _mediator = mediator;
 
-        [HttpGet("GetQcReceiptsWithPagination")]        public async Task<ActionResult<PagedResult<QcReceiptDto>>> GetAll(
+        [HttpGet("GetQcReceiptsWithPagination")]
+        public async Task<ActionResult<PagedResult<QcReceiptDto>>> GetAll(
             [FromQuery] int page = 1, [FromQuery] int pageSize = 20,
             [FromQuery] string? search = null, CancellationToken ct = default)
             => Ok(await _mediator.Send(new GetQcReceiptsQuery(page, pageSize, search), ct));
