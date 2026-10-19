@@ -8,5 +8,7 @@ public static class TransformationStatuses
     public const string Approved = nameof(Approved);
     public const string Prepared = nameof(Prepared);
     public const string Cancelled = nameof(Cancelled);
+    public const string Finished = nameof(Finished);
 }
+
 

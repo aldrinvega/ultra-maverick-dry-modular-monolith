@@ -117,4 +117,21 @@ public sealed class TransformationRequest : Entity
 
         RaiseDomainEvent(new TransformationApproved(TransformationChangeTypes.Approved, occurredAt));
     }
+
+    public void Finish(int? finishedByUserId)
+    {
+        if (Status == TransformationStatuses.Finished)
+            return;
+
+        if (Status != TransformationStatuses.Prepared)
+            throw new InvalidOperationException("Only a prepared transformation request can be finished.");
+
+        var occurredAt = DateTime.UtcNow;
+        Status = TransformationStatuses.Finished;
+        ModifiedAtUtc = occurredAt;
+        ModifiedByUserId = finishedByUserId;
+
+        RaiseDomainEvent(new TransformationCompleted(
+            TransformationChangeTypes.Finished, ProductionPlanId, WarehouseId, occurredAt));
+    }
 }

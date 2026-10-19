@@ -9,7 +9,9 @@ public static class TransformationChangeTypes
     public const string Prepared = nameof(Prepared);
     public const string Rejected = nameof(Rejected);
     public const string Cancelled = nameof(Cancelled);
+    public const string Finished = nameof(Finished);
 }
+
 
 
 
