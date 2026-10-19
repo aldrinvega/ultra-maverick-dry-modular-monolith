@@ -247,6 +247,9 @@ namespace Ultramaverick.Manufacturing.Persistence.Migrations
                     b.Property<int>("TransformationRequestId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("TransformationRequestLineId")
+                        .HasColumnType("int");
+
                     b.Property<string>("WeighingScale")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");

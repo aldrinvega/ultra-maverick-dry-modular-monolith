@@ -65,13 +65,16 @@ public sealed class TransformationRequest : Entity
     public void Prepare(int preparedByUserId)
     {
         var occurredAt = DateTime.UtcNow;
-        var quantityNeeded = _lines.Sum(line => line.RequiredQuantity);
 
         Status = TransformationStatuses.Prepared;
         ModifiedAtUtc = occurredAt;
         ModifiedByUserId = preparedByUserId;
 
-        _preparations.Add(TransformationRequestPreparation.Create(preparedByUserId, quantityNeeded));
+        // One preparation per line, so finishing can create one warehouse receipt per item
+        // instead of guessing how a single summed quantity splits across lines.
+        foreach (var line in _lines)
+            _preparations.Add(TransformationRequestPreparation.Create(
+                line.Id, preparedByUserId, line.RequiredQuantity));
 
         RaiseDomainEvent(new TransformationPrepared(TransformationChangeTypes.Prepared, occurredAt));
     }

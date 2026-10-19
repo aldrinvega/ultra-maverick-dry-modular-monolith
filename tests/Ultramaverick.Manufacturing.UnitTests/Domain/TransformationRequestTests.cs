@@ -49,9 +49,9 @@ public class TransformationRequestTests
 
         Assert.Equal(TransformationStatuses.Prepared, request.Status);
 
-        var preparation = Assert.Single(request.Preparations);
-        Assert.Equal(7, preparation.PreparedByUserId);
-        Assert.Equal(7.5m, preparation.QuantityNeeded);
+        Assert.Equal(2, request.Preparations.Count);
+        Assert.All(request.Preparations, p => Assert.Equal(7, p.PreparedByUserId));
+        Assert.Equal(7.5m, request.Preparations.Sum(p => p.QuantityNeeded));
 
         var raised = Assert.IsType<TransformationPrepared>(Assert.Single(request.DomainEvents));
         Assert.Equal(TransformationChangeTypes.Prepared, raised.ChangeType);
