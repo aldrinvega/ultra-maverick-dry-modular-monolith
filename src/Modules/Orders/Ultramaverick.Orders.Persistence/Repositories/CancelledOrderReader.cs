@@ -16,7 +16,9 @@ public sealed class CancelledOrderReader : ICancelledOrderReader
         => await Projected(_context.CancelledOrders
                 .AsNoTracking()
                 .Where(x => x.CustomerId == customerId)
-                .OrderByDescending(x => x.CancelledAtUtc))
+                .OrderByDescending(x => x.CancelledAtUtc)
+                .ThenByDescending(x => x.Id)
+                .Take(1000))
             .ToListAsync(ct);
 
     public async Task<PagedResult<CancelledOrderDto>> GetPagedAsync(int page, int pageSize, CancellationToken ct)
@@ -24,7 +26,9 @@ public sealed class CancelledOrderReader : ICancelledOrderReader
         var source = _context.CancelledOrders.AsNoTracking();
         var totalCount = await source.CountAsync(ct);
 
-        var items = await Projected(source.OrderByDescending(x => x.CancelledAtUtc))
+        var items = await Projected(source
+                .OrderByDescending(x => x.CancelledAtUtc)
+                .ThenByDescending(x => x.Id))
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(ct);

@@ -48,6 +48,24 @@ JOIN [dbo].[LegacyIdMap] cm ON cm.[TableName] = 'QcChecklists' AND cm.[LegacyId]
 JOIN [dbo].[LegacyIdMap] qm ON qm.[TableName] = 'ChecklistQuestions' AND qm.[LegacyId] = s.[ChecklistQuestionId]
 WHERE NOT EXISTS (SELECT 1 FROM [Quality].[ChecklistOpenFieldAnswers] t WHERE t.[LegacyId] = s.[Id]);
 
+IF OBJECT_ID(N'[dbo].[ChecklistDimensionQuarantine]', N'U') IS NULL
+BEGIN
+    CREATE TABLE [dbo].[ChecklistDimensionQuarantine]
+    (
+        [LegacyId] int NOT NULL PRIMARY KEY,
+        [Standard] nvarchar(200) NULL,
+        [Actual] nvarchar(200) NULL,
+        [Reason] nvarchar(200) NOT NULL
+    );
+END;
+
+INSERT INTO [dbo].[ChecklistDimensionQuarantine] ([LegacyId], [Standard], [Actual], [Reason])
+SELECT s.[Id], s.[Standard], s.[Actual], 'Non-numeric dimension value'
+FROM [$(LegacyDb)].[dbo].[QChecklistProductDimensions] s
+WHERE ((s.[Standard] IS NOT NULL AND TRY_CAST(s.[Standard] AS decimal(18,4)) IS NULL)
+    OR (s.[Actual] IS NOT NULL AND TRY_CAST(s.[Actual] AS decimal(18,4)) IS NULL))
+  AND NOT EXISTS (SELECT 1 FROM [dbo].[ChecklistDimensionQuarantine] q WHERE q.[LegacyId] = s.[Id]);
+
 INSERT INTO [Quality].[ChecklistProductDimensions] ([LegacyId], [ChecklistId], [QuestionId], [StandardValue], [ActualValue], [IsActive], [CreatedAtUtc])
 SELECT s.[Id], cm.[NewId], qm.[NewId], TRY_CAST(s.[Standard] AS decimal(18,4)), TRY_CAST(s.[Actual] AS decimal(18,4)), 1, SYSUTCDATETIME()
 FROM [$(LegacyDb)].[dbo].[QChecklistProductDimensions] s

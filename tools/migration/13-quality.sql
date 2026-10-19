@@ -15,6 +15,22 @@ END;
 DECLARE @unknownItemId int = (SELECT [Id] FROM [Catalog].[Items] WHERE [ItemCode] = 'ITEM-LEGACY-UNKNOWN');
 DECLARE @fallbackUomId  int = (SELECT TOP 1 [Id] FROM [Catalog].[Uoms] ORDER BY [Id]);
 
+IF OBJECT_ID(N'[dbo].[QcExpectedDeliveryQuarantine]', N'U') IS NULL
+BEGIN
+    CREATE TABLE [dbo].[QcExpectedDeliveryQuarantine]
+    (
+        [LegacyId] int NOT NULL PRIMARY KEY,
+        [RawValue] decimal(18,4) NULL,
+        [Reason] nvarchar(200) NOT NULL
+    );
+END;
+
+INSERT INTO [dbo].[QcExpectedDeliveryQuarantine] ([LegacyId], [RawValue], [Reason])
+SELECT q.[Id], q.[Expected_Delivery], 'Ambiguous legacy numeric date encoding; not converted'
+FROM [$(LegacyDb)].[dbo].[QC_Receiving] q
+WHERE q.[Expected_Delivery] IS NOT NULL
+  AND NOT EXISTS (SELECT 1 FROM [dbo].[QcExpectedDeliveryQuarantine] x WHERE x.[LegacyId] = q.[Id]);
+
 INSERT INTO [Quality].[QcReceipts]
     ([LegacyId], [PurchaseOrderId], [PurchaseOrderLineId], [ItemId], [UomId], [ProductTypeId], [BatchNo],
      [ManufacturingDate], [ExpectedDeliveryDate], [ExpiryDate], [ActualDelivered], [TotalReject], [IsNearlyExpire],

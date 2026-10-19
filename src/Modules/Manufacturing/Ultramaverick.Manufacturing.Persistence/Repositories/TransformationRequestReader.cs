@@ -23,7 +23,7 @@ public sealed class TransformationRequestReader : ITransformationRequestReader
 
         var items = await source
             .OrderByDescending(x => x.Id)
-            .Skip((page - 1) * pageSize)
+            .Skip(Offset(page, pageSize))
             .Take(pageSize)
             .Select(x => new TransformationRequestSummaryDto(
                 x.Id, x.ProductionPlanId, x.WarehouseId, x.Status, x.IsActive,
@@ -31,6 +31,12 @@ public sealed class TransformationRequestReader : ITransformationRequestReader
             .ToListAsync(ct);
 
         return new PagedResult<TransformationRequestSummaryDto>(items, page, pageSize, totalCount);
+    }
+
+    private static int Offset(int page, int pageSize)
+    {
+        var offset = (long)(page - 1) * pageSize;
+        return offset > int.MaxValue ? int.MaxValue : (int)Math.Max(0, offset);
     }
 
     public async Task<TransformationRequestDetailDto?> GetByIdAsync(int id, CancellationToken ct)

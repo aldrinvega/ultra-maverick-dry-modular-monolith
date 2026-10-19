@@ -9,14 +9,19 @@ SET XACT_ABORT ON;
 BEGIN TRANSACTION;
 
 INSERT INTO [Reporting].[InventoryPositions] ([WarehouseId], [ItemId], [UomId], [LotNo], [Quantity], [UpdatedAtUtc])
-SELECT r.[WarehouseId],
-       r.[ItemId],
-       MIN(r.[UomId]),
-       ISNULL(NULLIF(LTRIM(RTRIM(r.[LotNo])), ''), ''),
-       SUM(r.[Quantity]),
-       SYSUTCDATETIME()
-FROM [Warehouse].[WarehouseReceipts] r
-GROUP BY r.[WarehouseId], r.[ItemId], ISNULL(NULLIF(LTRIM(RTRIM(r.[LotNo])), ''), '');
+SELECT b.[WarehouseId],
+       b.[ItemId],
+       b.[UomId],
+       ISNULL(b.[LotNo], ''),
+       b.[OnHand],
+       b.[UpdatedAtUtc]
+FROM [Warehouse].[InventoryBalances] b
+WHERE NOT EXISTS (
+    SELECT 1 FROM [Reporting].[InventoryPositions] p
+    WHERE p.[WarehouseId] = b.[WarehouseId]
+      AND p.[ItemId] = b.[ItemId]
+      AND p.[LotNo] = ISNULL(b.[LotNo], '')
+);
 
 INSERT INTO [Reporting].[OrderFulfillment] ([OrderNumber], [CustomerId], [Status], [OccurredAtUtc], [UpdatedAtUtc])
 SELECT o.[OrderNumber], o.[CustomerId],

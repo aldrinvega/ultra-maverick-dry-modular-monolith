@@ -14,7 +14,13 @@ WHERE NOT EXISTS (
 
 INSERT INTO [Warehouse].[InventoryMovements]
     ([WarehouseId], [ItemId], [UomId], [LotNo], [Delta], [Source], [SourceDocumentId], [OccurredAtUtc])
-SELECT i.[WarehouseId], l.[ItemId], l.[UomId], NULL,
+SELECT i.[WarehouseId], l.[ItemId], l.[UomId],
+       (SELECT TOP 1 NULLIF(r.[LotNo], '')
+        FROM [Warehouse].[WarehouseReceipts] r
+        WHERE r.[WarehouseId] = i.[WarehouseId]
+          AND r.[ItemId] = l.[ItemId]
+          AND r.[IsActive] = 1
+        ORDER BY r.[ReceivedAtUtc], r.[Id]),
        -l.[Quantity], 'MiscellaneousIssue', l.[Id], i.[IssuedAtUtc]
 FROM [Warehouse].[MiscellaneousIssueLines] l
 JOIN [Warehouse].[MiscellaneousIssues] i ON i.[Id] = l.[MiscellaneousIssueId]

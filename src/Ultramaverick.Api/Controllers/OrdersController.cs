@@ -58,8 +58,9 @@ namespace Ultramaverick.Api.Controllers
 
         [HttpGet("GetMoveOrders")]
         public async Task<IActionResult> GetMoveOrders(
-            [FromQuery] int page, [FromQuery] int pageSize, CancellationToken ct)
-            => (await _mediator.Send(new GetMoveOrdersQuery(page, pageSize), ct)).ToOk();
+            [FromQuery] int page, [FromQuery] int pageSize,
+            [FromQuery] string? status, CancellationToken ct)
+            => (await _mediator.Send(new GetMoveOrdersQuery(page, pageSize, status), ct)).ToOk();
 
         [HttpGet("GetTransactedMoveOrders")]
         public async Task<IActionResult> GetTransactedMoveOrders(

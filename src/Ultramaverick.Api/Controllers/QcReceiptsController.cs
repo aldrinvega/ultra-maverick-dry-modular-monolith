@@ -36,7 +36,7 @@ namespace Ultramaverick.Api.Controllers
 
             return result.Succeeded
                 ? Ok(result.Value)
-                : BadRequest(new ApiResponse(400, result.Error));
+                : NotFound(new ApiResponse(404, result.Error));
         }
 
         [HttpGet("GetChecklistQuestionsByType/{checklistTypeId}")]

@@ -35,14 +35,13 @@ loss.
    WITH REPLACE, RECOVERY;
    ```
 
-4. **Point the application at the legacy database** and start it. Reads must still work because the
-   legacy schema is untouched.
+4. **Restore the pre-ETL target snapshot** (or drop and re-provision the target) and point the new
+   API back at that snapshot. Start the legacy application against `ElixirDepotDry`.
 
 5. **Acceptance**
-   - API starts with `ConnectionStrings:Default` aimed at `ElixirDepotDry`.
-   - `GET /health` returns 200.
-   - A read endpoint (for example `GET /api/Reports/InventoryPosition`) responds, even if projections
-     are empty on the legacy database.
+   - API starts with `ConnectionStrings:Default` aimed at the restored target snapshot.
+   - `GET /health` returns 200 and a module read responds.
+   - The legacy application starts against `ElixirDepotDry` and a read works.
    - Restore of the snapshot restores the post-migration row counts (see `90-gates.sql`).
 
 6. **Record** the wall-clock time of steps 2-3 as the recovery time objective for the cutover runbook.
@@ -56,7 +55,7 @@ Executed against `UltraMaverickDry_Migrated` after the full load:
 | Snapshot to `target_post_migration.bak` | succeeded |
 | Drop target database | succeeded |
 | Restore from snapshot | succeeded |
-| `90-gates.sql` after restore | **all 28 gates pass** |
+| `90-gates.sql` after restore | **all 47 gates pass** |
 | Spot-check counts after restore | Orders 16,203 · OrderLines 90,082 · ChecklistAnswers 83,765 · InventoryPositions 1,530 · OrderFulfillment 16,203 |
 
 Measured recovery time objective: **0.8 seconds** (backup + drop + restore on local SQL Express).

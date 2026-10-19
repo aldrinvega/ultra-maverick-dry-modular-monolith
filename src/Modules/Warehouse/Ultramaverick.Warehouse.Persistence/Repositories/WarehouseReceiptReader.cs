@@ -26,12 +26,20 @@ public sealed class WarehouseReceiptReader : IWarehouseReceiptReader
 
         var totalCount = await source.CountAsync(ct);
 
-        var items = await Projected(source.OrderBy(x => x.ExpiryDate))
-            .Skip((page - 1) * pageSize)
+        var items = await Projected(source
+                .OrderBy(x => x.ExpiryDate)
+                .ThenBy(x => x.Id))
+            .Skip(Offset(page, pageSize))
             .Take(pageSize)
             .ToListAsync(ct);
 
         return new PagedResult<WarehouseReceiptDetailDto>(items, page, pageSize, totalCount);
+    }
+
+    private static int Offset(int page, int pageSize)
+    {
+        var offset = (long)(page - 1) * pageSize;
+        return offset > int.MaxValue ? int.MaxValue : (int)Math.Max(0, offset);
     }
 
     private static IQueryable<WarehouseReceiptDetailDto> Projected(

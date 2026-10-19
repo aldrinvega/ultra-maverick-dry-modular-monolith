@@ -35,7 +35,10 @@ namespace Ultramaverick.Api.Controllers
 
         [HttpGet("GetWarehouseReceiptById/{id}")]
         public async Task<IActionResult> GetWarehouseReceiptById(int id, CancellationToken ct)
-            => (await _mediator.Send(new GetWarehouseReceiptByIdQuery(id), ct)).ToOk();
+        {
+            var result = await _mediator.Send(new GetWarehouseReceiptByIdQuery(id), ct);
+            return result.Succeeded ? Ok(result.Value) : NotFound(new ApiResponse(404, result.Error));
+        }
 
         [HttpGet("GetMiscellaneousReceiptsWithPagination")]
         public async Task<ActionResult<PagedResult<MiscellaneousReceiptDto>>> GetMiscellaneousReceipts(

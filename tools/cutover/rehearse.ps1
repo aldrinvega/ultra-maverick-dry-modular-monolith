@@ -275,7 +275,7 @@ UPDATE [Quality].[OutboxMessages] SET [PublishedAtUtc] = NULL WHERE [AggregateTy
         $report += "- Matches warm baseline: $($replay.MatchesBaseline)"
         $report += "- Idempotent on redelivery: $($replay.Idempotent)"
         $report += ''
-        $report += 'The warm backfill is a shortcut, not a projection. Replaying QcReceiptCompleted also creates Warehouse receipts for QC-completed lots that legacy WarehouseReceived never marked received; that is why the replay stock can exceed the warm backfill. The replay state is authoritative for cutover.'
+        $report += 'The warm backfill reads Warehouse.InventoryBalances; the replay projects StockReceived only. The replay proves the projection path and idempotency, not a full on-hand rebuild: Warehouse.InventoryBalances remains authoritative for stock.'
     }
     $report += ''
     $report += '## Verdict'

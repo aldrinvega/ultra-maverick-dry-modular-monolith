@@ -330,7 +330,7 @@ exits 0.
 ### Legacy data migration
 
 The 2024-07-04 `ElixirDepotDry` backup was restored and migrated into the per-module schemas by
-`tools/migration` (see that folder's README). Verified row parity, zero orphan rows and 28 passing
+`tools/migration` (see that folder's README). Verified row parity, zero orphan rows and 47 passing
 reconciliation gates:
 
 - Identity 36 users, Catalog 1,220 items and 485 customers

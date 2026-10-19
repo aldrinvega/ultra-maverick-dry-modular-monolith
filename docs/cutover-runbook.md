@@ -40,9 +40,9 @@ The script performs, in order:
 | First drain | 132.2 s |
 | Second drain (same EventIds) | 99.1 s |
 | Idempotent on redelivery | yes |
-| Inventory baseline → replay | 1,530 rows / 30,450,211 → 1,556 rows / 32,237,007 |
+| Inventory baseline → replay | 1,530 rows / 30,442,813 → 1,556 rows / 32,237,007 |
 
-The inventory delta is the 191 QC-completed lots explained below. The full output is in `tools/cutover/rehearsal-report.md`.
+The baseline reads `Warehouse.InventoryBalances` (receipts minus miscellaneous issues); the replay projects `StockReceived` only. The delta is the 191 QC-completed lots plus the issue/move exclusion explained below. The full output is in `tools/cutover/rehearsal-report.md`.
 
 ## Production cutover
 
@@ -67,7 +67,7 @@ The database-only rehearsal measured a 0.8 s recovery time. The application rest
 
 ## Known cutover delta
 
-`QcReceiptCompleted` is a real cross-module event: replaying it creates Warehouse receipts for completed QC lots that the legacy `WareHouseReceive` flag left null. The replay therefore projects more stock than the warm backfill, which only copies `WarehouseReceived`. The replay state is authoritative after cutover; the legacy flag is not carried forward. Review the affected lots with the warehouse team before the production run.
+`QcReceiptCompleted` is a real cross-module event: replaying it creates Warehouse receipts for completed QC lots that the legacy `WareHouseReceive` flag left null. The Reporting inventory projection also consumes `StockReceived` only, while the warm backfill reads `Warehouse.InventoryBalances` (receipts minus issues). The replay therefore proves the projection path and idempotency, not a full on-hand rebuild: `Warehouse.InventoryBalances` remains authoritative for stock. Review the affected lots with the warehouse team before the production run.
 
 ## Forced password change
 

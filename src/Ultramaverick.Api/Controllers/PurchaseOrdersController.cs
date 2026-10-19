@@ -34,7 +34,10 @@ namespace Ultramaverick.Api.Controllers
 
         [HttpGet("GetPurchaseOrderById/{id}")]
         public async Task<IActionResult> GetById(int id, CancellationToken ct)
-            => (await _mediator.Send(new GetPurchaseOrderByIdQuery(id), ct)).ToOk();
+        {
+            var result = await _mediator.Send(new GetPurchaseOrderByIdQuery(id), ct);
+            return result.Succeeded ? Ok(result.Value) : NotFound(new ApiResponse(404, result.Error));
+        }
     }
 
     /// <summary>

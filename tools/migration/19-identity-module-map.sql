@@ -35,7 +35,9 @@ JOIN @canonical c ON c.[Name] = CASE
     WHEN legacy.[Name] LIKE '/setup/%' THEN 'Catalog'
     END
 JOIN [Identity].[Modules] m ON m.[Name] = c.[Name]
-WHERE NOT EXISTS (
+WHERE ISNULL(rm.[IsActive], 0) = 1
+  AND ISNULL(legacy.[IsActive], 0) = 1
+  AND NOT EXISTS (
     SELECT 1 FROM [Identity].[RoleModules] x
     WHERE x.[RoleId] = rm.[RoleId] AND x.[ModuleId] = m.[Id]);
 

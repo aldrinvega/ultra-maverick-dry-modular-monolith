@@ -59,7 +59,7 @@ public sealed record GetOrdersQuery(int? CustomerId, string? Status, int Page, i
 public sealed record GetOrderByIdQuery(int OrderId)
     : IRequest<Result<OrderDetailDto>>;
 
-public sealed record GetMoveOrdersQuery(int Page, int PageSize)
+public sealed record GetMoveOrdersQuery(int Page, int PageSize, string? Status)
     : IRequest<Result<PagedResult<MoveOrderDto>>>;
 
 public sealed record GetTransactedMoveOrdersQuery(int Page, int PageSize)
@@ -117,6 +117,7 @@ public sealed class GetMoveOrdersQueryHandler
         var paged = await _reader.GetMoveOrdersPagedAsync(
             GetOrdersQueryHandler.Clamp(request.Page),
             GetOrdersQueryHandler.ClampSize(request.PageSize),
+            request.Status,
             ct);
 
         return Result<PagedResult<MoveOrderDto>>.Success(paged);

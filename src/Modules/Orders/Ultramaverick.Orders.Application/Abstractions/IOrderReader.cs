@@ -10,7 +10,7 @@ public interface IOrderReader
 
     Task<OrderDetailDto?> GetByIdAsync(int orderId, CancellationToken ct);
 
-    Task<PagedResult<MoveOrderDto>> GetMoveOrdersPagedAsync(int page, int pageSize, CancellationToken ct);
+    Task<PagedResult<MoveOrderDto>> GetMoveOrdersPagedAsync(int page, int pageSize, string? status, CancellationToken ct);
 
     Task<PagedResult<TransactedMoveOrderDto>> GetTransactedPagedAsync(int page, int pageSize, CancellationToken ct);
 }

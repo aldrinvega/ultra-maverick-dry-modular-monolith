@@ -32,9 +32,9 @@ $scripts = @(
     '14b-warehouse-misc.sql',
     '15-orders.sql',
     '15b-orders-detail.sql',
-    '16-warm-reporting.sql',
     '17-catalog-gaps.sql',
     '18-warehouse-balances.sql',
+    '16-warm-reporting.sql',
     '19-identity-module-map.sql',
     '20-password-change-required.sql',
     '90-gates.sql'

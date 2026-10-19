@@ -126,7 +126,7 @@ Each gate returns zero rows on success and aborts the run otherwise.
 | Orphan check | no line row lacking a header; no transactional row with an unmapped scalar reference |
 | Actor check | every non-null legacy actor name either resolves to a user or is recorded as unresolved |
 | Empty modules | Manufacturing and Laboratory target counts are zero |
-| Inventory derivation | derived on-hand matches receipts minus issues/moves for every item/warehouse pair |
+| Inventory derivation | derived on-hand matches `Warehouse.InventoryBalances` (receipts minus miscellaneous issues; historical move orders are not applied because the legacy write workflow is retired) |
 
 ## Rollback
 
@@ -160,6 +160,9 @@ tools/migration/
   99-run-all.ps1             orchestrator with abort-on-gate-failure
   rollback-rehearsal.md      rollback procedure and recorded result
 ```
+
+Run order note: `17-catalog-gaps.sql` and `18-warehouse-balances.sql` execute before
+`16-warm-reporting.sql` so the Reporting inventory projection reads the rebuilt balances.
 
 ## Retired legacy tables
 

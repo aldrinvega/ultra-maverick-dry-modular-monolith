@@ -30,10 +30,11 @@ internal sealed class FakeOrderReader : IOrderReader
         => Task.FromResult(Detail);
 
     public Task<PagedResult<MoveOrderDto>> GetMoveOrdersPagedAsync(
-        int page, int pageSize, CancellationToken ct)
+        int page, int pageSize, string? status, CancellationToken ct)
     {
         LastPage = page;
         LastPageSize = pageSize;
+        LastStatus = status;
         return Task.FromResult(new PagedResult<MoveOrderDto>(Array.Empty<MoveOrderDto>(), page, pageSize, 0));
     }
 

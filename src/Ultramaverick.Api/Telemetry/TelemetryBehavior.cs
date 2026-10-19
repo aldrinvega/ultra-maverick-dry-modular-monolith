@@ -38,7 +38,7 @@ namespace Ultramaverick.Api.Telemetry
             }
             catch (Exception ex)
             {
-                activity?.SetStatus(ActivityStatusCode.Error, ex.Message);
+                activity?.SetStatus(ActivityStatusCode.Error, ex.GetType().Name);
                 throw;
             }
         }
