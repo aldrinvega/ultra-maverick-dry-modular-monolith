@@ -134,7 +134,16 @@ public sealed class TransformationRequest : Entity
         ModifiedAtUtc = occurredAt;
         ModifiedByUserId = finishedByUserId;
 
+        var completedLines = _lines
+            .Select(line => new TransformationCompletedLine(
+                line.ItemId,
+                _preparations
+                    .Where(preparation => preparation.TransformationRequestLineId == line.Id)
+                    .Sum(preparation => preparation.QuantityNeeded)))
+            .Where(line => line.Quantity > 0)
+            .ToList();
+
         RaiseDomainEvent(new TransformationCompleted(
-            TransformationChangeTypes.Finished, ProductionPlanId, WarehouseId, occurredAt));
+            TransformationChangeTypes.Finished, ProductionPlanId, WarehouseId, completedLines, occurredAt));
     }
 }
