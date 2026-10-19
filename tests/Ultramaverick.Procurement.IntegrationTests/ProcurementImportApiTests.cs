@@ -36,6 +36,9 @@ public sealed class ProcurementImportApiTests : IClassFixture<DatabaseFixture>, 
         "Ordered", "Delivered", "Billed", "UOM", "Unit Price", "Vendor Name"
     };
 
+    private static readonly SemaphoreSlim SeedGate = new(1, 1);
+    private static bool _seeded;
+
     private readonly DatabaseFixture _fixture;
     private WebApplicationFactory<Program> _factory = null!;
     private HttpClient _client = null!;
@@ -44,21 +47,7 @@ public sealed class ProcurementImportApiTests : IClassFixture<DatabaseFixture>, 
 
     public async Task InitializeAsync()
     {
-        await using (var catalog = _fixture.CreateCatalogContext())
-        {
-            var uom = Uom.Create("KG", "Kilogram", null);
-            var category = ItemCategory.Create("Raw Materials", null);
-            catalog.Uoms.Add(uom);
-            catalog.ItemCategories.Add(category);
-            await catalog.SaveChangesAsync();
-
-            catalog.Items.Add(Item.Create(
-                ItemCode, "Imported Item", category.Id, uom.Id, bufferLevel: null,
-                isExpirable: false, createdByUserId: null));
-            catalog.Suppliers.Add(Supplier.Create(
-                $"SUP{Guid.NewGuid():N}"[..10], SupplierName, address: null, createdByUserId: null));
-            await catalog.SaveChangesAsync();
-        }
+        await EnsureSeededAsync();
 
         _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
@@ -79,6 +68,40 @@ public sealed class ProcurementImportApiTests : IClassFixture<DatabaseFixture>, 
         await _factory.DisposeAsync();
     }
 
+    private async Task EnsureSeededAsync()
+    {
+        if (_seeded)
+            return;
+
+        await SeedGate.WaitAsync();
+        try
+        {
+            if (_seeded)
+                return;
+
+            await using var catalog = _fixture.CreateCatalogContext();
+
+            var uom = Uom.Create("KG", "Kilogram", null);
+            var category = ItemCategory.Create("Raw Materials", null);
+            catalog.Uoms.Add(uom);
+            catalog.ItemCategories.Add(category);
+            await catalog.SaveChangesAsync();
+
+            catalog.Items.Add(Item.Create(
+                ItemCode, "Imported Item", category.Id, uom.Id, bufferLevel: null,
+                isExpirable: false, createdByUserId: null));
+            catalog.Suppliers.Add(Supplier.Create(
+                $"SUP{Guid.NewGuid():N}"[..10], SupplierName, address: null, createdByUserId: null));
+            await catalog.SaveChangesAsync();
+
+            _seeded = true;
+        }
+        finally
+        {
+            SeedGate.Release();
+        }
+    }
+
     [Fact]
     public async Task A_healthy_workbook_is_imported_and_a_re_upload_is_skipped()
     {
@@ -90,7 +113,7 @@ public sealed class ProcurementImportApiTests : IClassFixture<DatabaseFixture>, 
 
         var firstReport = await first.Content.ReadFromJsonAsync<ImportReport>();
         Assert.NotNull(firstReport);
-        Assert.Equal(1, firstReport.Imported);
+        Assert.Equal(1, firstReport!.Imported);
         Assert.Equal(0, firstReport.Skipped);
         Assert.Empty(firstReport.Failed);
 
@@ -99,7 +122,7 @@ public sealed class ProcurementImportApiTests : IClassFixture<DatabaseFixture>, 
 
         var secondReport = await second.Content.ReadFromJsonAsync<ImportReport>();
         Assert.NotNull(secondReport);
-        Assert.Equal(0, secondReport.Imported);
+        Assert.Equal(0, secondReport!.Imported);
         Assert.Equal(1, secondReport.Skipped);
         Assert.Empty(secondReport.Failed);
     }
@@ -116,7 +139,7 @@ public sealed class ProcurementImportApiTests : IClassFixture<DatabaseFixture>, 
 
         var report = await response.Content.ReadFromJsonAsync<ImportReport>();
         Assert.NotNull(report);
-        Assert.Equal(0, report.Imported);
+        Assert.Equal(0, report!.Imported);
         Assert.Single(report.Failed);
 
         await using var context = _fixture.CreateContext();
