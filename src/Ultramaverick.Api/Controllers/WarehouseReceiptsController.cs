@@ -50,6 +50,11 @@ namespace Ultramaverick.Api.Controllers
             [FromQuery] int days = 30, [FromQuery] int page = 1, [FromQuery] int pageSize = 20,
             CancellationToken ct = default)
             => Ok(await _mediator.Send(new GetExpiringReceiptsQuery(days, page, pageSize), ct));
+        [HttpGet("GetInventoryMovementReport")]
+        public async Task<ActionResult<IReadOnlyList<InventoryMovementRowDto>>> GetInventoryMovementReport(
+            [FromQuery] DateTime? fromUtc = null, [FromQuery] DateTime? toUtc = null,
+            CancellationToken ct = default)
+            => Ok(await _mediator.Send(new GetInventoryMovementReportQuery(fromUtc, toUtc), ct));
         [HttpGet("GetInventoryBalance")]
         public async Task<ActionResult<IReadOnlyList<InventoryBalanceDto>>> GetInventoryBalance(
             [FromQuery] int? warehouseId = null, [FromQuery] int? itemId = null, CancellationToken ct = default)
@@ -71,5 +76,6 @@ namespace Ultramaverick.Api.Controllers
             => (await _mediator.Send(cmd, ct)).ToNoContent();
     }
 }
+
 
 
