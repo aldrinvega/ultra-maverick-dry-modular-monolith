@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
@@ -10,4 +10,9 @@
     <ProjectReference Include="..\..\Quality\Ultramaverick.Quality.Contracts\Ultramaverick.Quality.Contracts.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Manufacturing\Ultramaverick.Manufacturing.Contracts\Ultramaverick.Manufacturing.Contracts.csproj" />
+  </ItemGroup>
+
 </Project>
+

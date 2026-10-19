@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Ultramaverick.SharedKernel.Outbox;
 using Ultramaverick.Warehouse.Application.Abstractions;
@@ -20,8 +20,10 @@ namespace Ultramaverick.Warehouse.Infrastructure
 
             // Consume Quality's QcReceiptCompleted through the shared dispatcher.
             services.AddScoped<IIntegrationEventHandler, QcReceiptCompletedBridge>();
+            services.AddScoped<IIntegrationEventHandler, TransformationCompletedBridge>();
 
             return services;
         }
     }
 }
+

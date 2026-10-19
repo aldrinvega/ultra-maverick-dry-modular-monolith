@@ -15,16 +15,17 @@ public class DependencyInjectionTests : IClassFixture<DatabaseFixture>
     public DependencyInjectionTests(DatabaseFixture fixture) => _fixture = fixture;
 
     [Fact]
-    public void Warehouse_registers_exactly_one_QcReceiptCompleted_handler()
+    public void Warehouse_registers_a_handler_for_each_event_it_consumes()
     {
         using var scope = _fixture.CreateScope();
 
-        var handlers = scope.ServiceProvider.GetServices<IIntegrationEventHandler>()
+        var eventTypes = scope.ServiceProvider.GetServices<IIntegrationEventHandler>()
             .Where(h => h.GetType().FullName!.Contains(".Warehouse."))
-            .ToList();
+            .Select(h => h.EventType)
+            .OrderBy(t => t)
+            .ToArray();
 
-        var handler = Assert.Single(handlers);
-        Assert.Equal("QcReceiptCompleted", handler.EventType);
+        Assert.Equal(new[] { "QcReceiptCompleted", "TransformationCompleted" }, eventTypes);
     }
 
     [Fact]
