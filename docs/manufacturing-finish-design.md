@@ -58,3 +58,28 @@ would create a duplicate receipt with no unique constraint to stop it.
   `Requested` request throws; cancelling a finished request throws.
 - Integration: publish a `TransformationCompleted` outbox record and assert exactly one `WarehouseReceipts`
   row exists; republish the same `EventId` and assert the count is unchanged.
+
+## Implementation finding (blocker)
+
+Attempting the Warehouse consumer surfaced a modelling gap that the original design did not anticipate.
+
+`WarehouseReceipt.Create` requires, per receipt: `warehouseId`, `itemId`, `uomId`, `quantity`, plus optional lot and dates.
+
+What the domain actually records today:
+
+- `TransformationRequestLine` holds `ItemId` and `RequiredQuantity` — the plan, not what was consumed.
+- `TransformationRequestPreparation` holds a single `QuantityNeeded` per preparation, which the aggregate sets to the **sum of all line required quantities**.
+
+So there is **no per-item consumed quantity** anywhere in the Manufacturing model. A finished request therefore cannot produce a correct receipt: we would have to guess which item each prepared quantity belongs to, or emit one receipt per line using planned rather than actual quantities. Both would write financially wrong stock.
+
+### Consequence
+
+The `TransformationCompleted` payload (ChangeType, ProductionPlanId, WarehouseId, OccurredAtUtc) is correct in shape but **insufficient in content**. Finishing currently raises the event, but no consumer can responsibly create a receipt from it.
+
+### Required work before the consumer can exist
+
+1. **Extend the preparation model** so a preparation records which line it belongs to and how much of that line was actually prepared — i.e. `TransformationRequestPreparation` gains `TransformationRequestLineId` and the aggregate stops collapsing quantities into one sum. That is a domain change plus a migration.
+2. **Extend the contract** with `TransformationCompletedLine(int ItemId, int UomId, decimal PreparedQuantity)`, populated from those per-line preparations.
+3. Only then add the Warehouse bridge and the guarded handler, one receipt per completed line.
+
+Until step 1 lands, the finish endpoint must be treated as incomplete: it transitions state and emits an event, but it does not — and must not pretend to — create warehouse stock.
