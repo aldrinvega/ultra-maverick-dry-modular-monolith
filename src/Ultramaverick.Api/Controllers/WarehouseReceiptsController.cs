@@ -65,6 +65,12 @@ namespace Ultramaverick.Api.Controllers
         public async Task<ActionResult<IReadOnlyList<WarehouseSummaryDto>>> GetWarehouses(
             [FromQuery] bool? isActive = null, CancellationToken ct = default)
             => Ok(await _mediator.Send(new GetWarehousesQuery(isActive), ct));
+        [HttpGet("GetWarehouseById/{id}")]
+        public async Task<ActionResult<WarehouseSummaryDto>> GetWarehouseById(int id, CancellationToken ct)
+        {
+            var warehouse = await _mediator.Send(new GetWarehouseByIdQuery(id), ct);
+            return warehouse is null ? NotFound() : Ok(warehouse);
+        }
         [HttpPost("AddWarehouse")]
         public async Task<IActionResult> AddWarehouse(
             [FromBody] CreateWarehouseCommand cmd, CancellationToken ct)
@@ -81,6 +87,8 @@ namespace Ultramaverick.Api.Controllers
             => (await _mediator.Send(cmd, ct)).ToNoContent();
     }
 }
+
+
 
 
 
