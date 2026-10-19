@@ -1,10 +1,11 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ultramaverick.Api.Authorization;
 using Ultramaverick.Api.Errors;
 using Ultramaverick.Quality.Application.Commands.QcReceipts;
 using Ultramaverick.Quality.Application.Models;
+using Ultramaverick.Quality.Application.Queries.Checklists;
 using Ultramaverick.Quality.Application.Queries.QcReceipts;
 
 namespace Ultramaverick.Api.Controllers
@@ -38,6 +39,12 @@ namespace Ultramaverick.Api.Controllers
                 : BadRequest(new ApiResponse(400, result.Error));
         }
 
+        [HttpGet("GetChecklistQuestionsByType/{checklistTypeId}")]
+        public async Task<IActionResult> GetChecklistQuestionsByType(int checklistTypeId, CancellationToken ct)
+        {
+            var result = await _mediator.Send(new GetChecklistQuestionsByTypeQuery(checklistTypeId), ct);
+            return result.Succeeded ? Ok(result.Value) : BadRequest(new ApiResponse(400, result.Error));
+        }
         [HttpPut("Reject/{id:int}")]
         public async Task<IActionResult> Reject(
             int id, [FromBody] RejectQcReceiptCommand cmd, CancellationToken ct)
@@ -61,3 +68,4 @@ namespace Ultramaverick.Api.Controllers
                 : new BadRequestObjectResult(new ApiResponse(400, result.Error));
     }
 }
+

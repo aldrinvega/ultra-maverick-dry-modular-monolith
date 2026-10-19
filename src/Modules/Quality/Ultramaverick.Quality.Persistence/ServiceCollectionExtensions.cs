@@ -21,6 +21,7 @@ namespace Ultramaverick.Quality.Persistence
             services.AddScoped<IQualityUnitOfWork, QualityUnitOfWork>();
             services.AddScoped<IPurchaseOrderLineLookup, PurchaseOrderLineLookup>();
             services.AddScoped<IQcReceiptReader, QcReceiptReader>();
+            services.AddScoped<IChecklistQuestionReader, ChecklistQuestionReader>();
 
             services.AddScoped<IOutboxStore, QualityOutboxStore>();
             services.AddScoped<IProcessedEventStore, QualityProcessedEventStore>();
@@ -29,4 +30,5 @@ namespace Ultramaverick.Quality.Persistence
         }
     }
 }
+
 
