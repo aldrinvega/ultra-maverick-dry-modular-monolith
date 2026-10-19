@@ -23,6 +23,16 @@ namespace Ultramaverick.Api.Controllers
             [FromBody] AuthenticateRequest request, CancellationToken ct)
             => (await _mediator.Send(new AuthenticateCommand(request.UserName, request.Password), ct)).ToOk();
 
+        public sealed record ChangePasswordRequest(string CurrentPassword, string NewPassword);
+
+        [Authorize]
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword(
+            [FromBody] ChangePasswordRequest request, CancellationToken ct)
+            => (await _mediator.Send(
+                    new ChangePasswordCommand(request.CurrentPassword, request.NewPassword), ct))
+                .ToOkOrUnauthorized();
+
         [AllowAnonymous]
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh(

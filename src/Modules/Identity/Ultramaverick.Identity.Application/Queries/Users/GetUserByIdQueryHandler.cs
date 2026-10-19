@@ -26,7 +26,8 @@ namespace Ultramaverick.Identity.Application.Queries.Users
                 role?.Name ?? string.Empty,
                 user.DepartmentId,
                 department?.Name ?? string.Empty,
-                user.IsActive));
+                user.IsActive,
+                user.MustChangePassword));
         }
     }
 }

@@ -4,6 +4,13 @@ Backend rewrite of the Ultramaverick Dry system: a barcode-driven inventory plat
 
 This repository contains the new implementation. The original solution and the planning documents live in the `Ultramaverick-Dry` repository.
 
+## Migration status
+
+- Functional parity is measured per action, not per controller: `powershell -File tools/parity/measure-parity.ps1 -FailOnOpen` writes `docs/action-parity.md` and `docs/action-rulings.md` and fails on any unruled action or missing port target.
+- Cutover is rehearsed from a clean staging database with `powershell -File tools/cutover/rehearse.ps1`; see `docs/cutover-runbook.md`.
+- Retired legacy workflows and the reasoning are recorded in `docs/retirement-decisions.md`.
+- Every migrated user has an unusable sentinel hash and must change the password on first sign-in.
+
 ## Architecture
 
 A single deployable API with one SQL Server database, divided into bounded contexts that each own their tables and code.

@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -13,18 +14,25 @@ namespace Ultramaverick.Identity.Infrastructure.BackgroundServices;
 /// </summary>
 public sealed class OutboxPublisherService : BackgroundService
 {
-    private const int BatchSize = 50;
-    private static readonly TimeSpan PollInterval = TimeSpan.FromSeconds(5);
+    private const int DefaultBatchSize = 50;
+    private static readonly TimeSpan DefaultPollInterval = TimeSpan.FromSeconds(5);
 
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<OutboxPublisherService> _logger;
+    private readonly int _batchSize;
+    private readonly TimeSpan _pollInterval;
 
     public OutboxPublisherService(
         IServiceScopeFactory scopeFactory,
-        ILogger<OutboxPublisherService> logger)
+        ILogger<OutboxPublisherService> logger,
+        IConfiguration? configuration = null)
     {
         _scopeFactory = scopeFactory;
         _logger = logger;
+        _batchSize = configuration?.GetValue("Outbox:BatchSize", DefaultBatchSize) ?? DefaultBatchSize;
+        _pollInterval = TimeSpan.FromSeconds(
+            configuration?.GetValue("Outbox:PollSeconds", DefaultPollInterval.TotalSeconds)
+            ?? DefaultPollInterval.TotalSeconds);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -46,7 +54,7 @@ public sealed class OutboxPublisherService : BackgroundService
 
             try
             {
-                await Task.Delay(PollInterval, stoppingToken);
+                await Task.Delay(_pollInterval, stoppingToken);
             }
             catch (OperationCanceledException)
             {
@@ -61,20 +69,24 @@ public sealed class OutboxPublisherService : BackgroundService
     /// </summary>
     public async Task RunOnceAsync(CancellationToken ct)
     {
-        using var scope = _scopeFactory.CreateScope();
+        using var storeScope = _scopeFactory.CreateScope();
 
-        var stores = scope.ServiceProvider.GetServices<IOutboxStore>();
-        var dispatcher = scope.ServiceProvider.GetRequiredService<IEventDispatcher>();
+        var stores = storeScope.ServiceProvider.GetServices<IOutboxStore>();
 
         foreach (var store in stores)
         {
             // A fault in one store must not starve the stores registered after it.
             try
             {
-                var pending = await store.GetPendingAsync(BatchSize, ct);
+                var pending = await store.GetPendingAsync(_batchSize, ct);
 
                 foreach (var record in pending)
                 {
+                    // A failed projection can leave its DbContext tracking detached entities.
+                    // Isolating each event keeps one poison row from failing the rest of the batch.
+                    using var eventScope = _scopeFactory.CreateScope();
+                    var dispatcher = eventScope.ServiceProvider.GetRequiredService<IEventDispatcher>();
+
                     try
                     {
                         await dispatcher.DispatchAsync(record, ct);

@@ -148,6 +148,7 @@ tools/migration/
   14-warehouse.sql
   15-orders.sql
   16-warm-reporting.sql
+  20-password-change-required.sql  flag sentinel-hashed users
   90-gates.sql               reconciliation gates
   99-run-all.ps1             orchestrator with abort-on-gate-failure
 ```

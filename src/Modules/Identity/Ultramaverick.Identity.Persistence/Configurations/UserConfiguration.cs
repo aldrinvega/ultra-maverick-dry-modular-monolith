@@ -30,6 +30,7 @@ namespace Ultramaverick.Identity.Persistence.Configurations
             builder.Property(u => u.RoleId).IsRequired();
             builder.Property(u => u.DepartmentId).IsRequired();
             builder.Property(u => u.IsActive).IsRequired();
+            builder.Property(u => u.MustChangePassword).IsRequired().HasDefaultValue(false);
             builder.Property(u => u.CreatedAtUtc).IsRequired();
             builder.Property<byte[]>("RowVersion").IsRowVersion();
 

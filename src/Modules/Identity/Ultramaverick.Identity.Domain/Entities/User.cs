@@ -14,6 +14,7 @@ namespace Ultramaverick.Identity.Domain.Entities
         public int RoleId { get; private set; }
         public int DepartmentId { get; private set; }
         public bool IsActive { get; private set; }
+        public bool MustChangePassword { get; private set; }
         public DateTime CreatedAtUtc { get; private set; } = DateTime.UtcNow;
         public int? CreatedByUserId { get; private set; }
         public DateTime? ModifiedAtUtc { get; private set; }
@@ -56,10 +57,21 @@ namespace Ultramaverick.Identity.Domain.Entities
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(newPassword?.Value);
             Password = newPassword;
+            MustChangePassword = false;
             ModifiedAtUtc = DateTime.UtcNow;
             ModifiedByUserId = modifiedByUserId;
 
             RaiseDomainEvent(new UserChanged(UserChangeTypes.PasswordChanged, DateTime.UtcNow));
+        }
+
+        /// <summary>
+        /// Sets a temporary password and requires the user to replace it at next sign-in.
+        /// Used for migrated accounts and administrator resets.
+        /// </summary>
+        public void ResetPassword(PasswordHash newPassword, int modifiedByUserId)
+        {
+            ChangePassword(newPassword, modifiedByUserId);
+            MustChangePassword = true;
         }
 
         public void UpdateProfile(string fullName, string userName, int roleId, int departmentId, int modifiedByUserId)

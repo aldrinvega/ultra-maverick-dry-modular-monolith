@@ -51,8 +51,8 @@ FROM [Identity].[Modules] t
 WHERE t.[LegacyId] IS NOT NULL
   AND NOT EXISTS (SELECT 1 FROM [dbo].[LegacyIdMap] m WHERE m.[TableName] = 'Modules' AND m.[LegacyId] = t.[LegacyId]);
 
-INSERT INTO [Identity].[Users] ([LegacyId], [FullName], [UserName], [PasswordHash], [RoleId], [DepartmentId], [IsActive], [CreatedAtUtc])
-SELECT s.[Id], s.[FullName], s.[UserName], @passwordSentinel, r.[NewId], d.[NewId], s.[IsActive], ISNULL(s.[DateAdded], SYSUTCDATETIME())
+INSERT INTO [Identity].[Users] ([LegacyId], [FullName], [UserName], [PasswordHash], [RoleId], [DepartmentId], [IsActive], [MustChangePassword], [CreatedAtUtc])
+SELECT s.[Id], s.[FullName], s.[UserName], @passwordSentinel, r.[NewId], d.[NewId], s.[IsActive], 1, ISNULL(s.[DateAdded], SYSUTCDATETIME())
 FROM [$(LegacyDb)].[dbo].[Users] s
 JOIN [dbo].[LegacyIdMap] r ON r.[TableName] = 'Roles' AND r.[LegacyId] = s.[UserRoleId]
 JOIN [dbo].[LegacyIdMap] d ON d.[TableName] = 'Departments' AND d.[LegacyId] = s.[DepartmentId]

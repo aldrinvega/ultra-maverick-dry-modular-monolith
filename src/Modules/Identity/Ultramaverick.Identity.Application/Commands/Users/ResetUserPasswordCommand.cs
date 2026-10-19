@@ -43,7 +43,7 @@ namespace Ultramaverick.Identity.Application.Commands.Users
             if (_currentUser.UserId is not { } actorId)
                 return Result.Failure("Current user is not authenticated.");
 
-            user.ChangePassword(PasswordHash.FromEncoded(_hasher.Hash(request.NewPassword)), actorId);
+            user.ResetPassword(PasswordHash.FromEncoded(_hasher.Hash(request.NewPassword)), actorId);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Result.Success();

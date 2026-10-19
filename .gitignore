@@ -31,6 +31,10 @@ coverage*.xml
 # Logs
 *.log
 
+# Local agent and generated parity artifacts
+.omo/
+tools/parity/last-run.json
+
 # OS
 Thumbs.db
 ehthumbs.db

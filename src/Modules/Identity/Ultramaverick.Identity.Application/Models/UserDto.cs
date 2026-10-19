@@ -8,5 +8,6 @@
         string RoleName,
         int DepartmentId,
         string DepartmentName,
-        bool IsActive);
+        bool IsActive,
+        bool MustChangePassword);
 }

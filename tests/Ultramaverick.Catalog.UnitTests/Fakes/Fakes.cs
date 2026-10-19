@@ -128,6 +128,8 @@ internal sealed class FakeLookupRepository<T> : ILookupRepository<T> where T : c
         _name = name;
     }
 
+    public IReadOnlyList<T> All => _items;
+
     public void Seed(T entity)
     {
         FakeIdentity.Assign(entity);
@@ -183,6 +185,8 @@ internal sealed class FakeCatalogUnitOfWork : ICatalogUnitOfWork
     public ILookupRepository<Location> Locations => throw new NotSupportedException();
     public ILookupRepository<AccountTitle> AccountTitles => throw new NotSupportedException();
     public ILookupRepository<ProductType> ProductTypes => throw new NotSupportedException();
+    public ILookupRepository<TransactionType> TransactionTypes => throw new NotSupportedException();
+    public ILookupRepository<SampleType> SampleTypes => throw new NotSupportedException();
     public ISupplierRepository Suppliers => throw new NotSupportedException();
     public IFarmRepository Farms => throw new NotSupportedException();
     public ICustomerRepository Customers => throw new NotSupportedException();

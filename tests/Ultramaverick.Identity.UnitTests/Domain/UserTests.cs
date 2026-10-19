@@ -75,6 +75,18 @@ public class UserTests
     }
 
     [Fact]
+    public void ResetPassword_requires_a_change_and_ChangePassword_clears_it()
+    {
+        var user = User.Create("Jane", "jdoe", Hash(), 1, 1, null);
+
+        user.ResetPassword(PasswordHash.FromEncoded("PBKDF2;SHA256;210000;CCCC;DDDD"), 9);
+        Assert.True(user.MustChangePassword);
+
+        user.ChangePassword(PasswordHash.FromEncoded("PBKDF2;SHA256;210000;EEEE;FFFF"), 9);
+        Assert.False(user.MustChangePassword);
+    }
+
+    [Fact]
     public void ChangePassword_rejects_blank_hash()
     {
         var user = User.Create("Jane", "jdoe", Hash(), 1, 1, null);

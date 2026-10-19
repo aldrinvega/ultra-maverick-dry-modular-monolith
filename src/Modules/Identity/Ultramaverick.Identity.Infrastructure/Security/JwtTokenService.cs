@@ -13,6 +13,7 @@ namespace Ultramaverick.Identity.Infrastructure.Security
     public sealed class JwtTokenService : ITokenService
     {
         public const string ModuleClaimType = "modules";
+        public const string MustChangePasswordClaimType = "must_change_password";
 
         private readonly JwtOptions _options;
         private readonly JwtSecurityTokenHandler _handler = new();
@@ -35,6 +36,11 @@ namespace Ultramaverick.Identity.Infrastructure.Security
                 new(ClaimTypes.Name, user.FullName),
                 new(ClaimTypes.Role, user.RoleId.ToString())
             };
+
+            if (user.MustChangePassword)
+            {
+                claims.Add(new Claim(MustChangePasswordClaimType, "true"));
+            }
 
             foreach (var module in moduleNames.Distinct(StringComparer.OrdinalIgnoreCase))
             {

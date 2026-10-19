@@ -8,4 +8,5 @@ public sealed record AuthenticateResponse(
     string RoleName,
     string AccessToken,
     DateTime AccessTokenExpiresAtUtc,
-    string RefreshToken);
+    string RefreshToken,
+    bool MustChangePassword);

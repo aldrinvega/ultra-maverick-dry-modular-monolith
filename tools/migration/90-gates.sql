@@ -89,7 +89,7 @@ INSERT INTO @gate ([Gate], [SourceCount], [TargetCount]) VALUES
     (SELECT COUNT(*) FROM [Orders].[Orders]),
     (SELECT COUNT(*) FROM [Reporting].[OrderFulfillment])),
 ('Reporting.QcStatus',
-    (SELECT COUNT(*) FROM [Quality].[QcReceipts]),
+    (SELECT COUNT(*) FROM [Quality].[QcReceipts] WHERE [Status] = 'Completed'),
     (SELECT COUNT(*) FROM [Reporting].[QcStatus]));
 
 SELECT [Gate], [SourceCount], [TargetCount]

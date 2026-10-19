@@ -29,7 +29,7 @@ $modules = @(
 
 Write-Host "Provisioning '$TargetDb' on '$Server'."
 
-& $sqlcmd -S $Server -d master -b -Q "IF DB_ID(N'$TargetDb') IS NULL CREATE DATABASE [$TargetDb];"
+& $sqlcmd -S $Server -d master -b -I -Q "IF DB_ID(N'$TargetDb') IS NULL CREATE DATABASE [$TargetDb];"
 if ($LASTEXITCODE -ne 0) { throw "Could not create database $TargetDb." }
 
 foreach ($module in $modules) {
@@ -43,7 +43,7 @@ foreach ($module in $modules) {
     if ($LASTEXITCODE -ne 0) { throw "Migration failed for module $($module.Name)." }
 }
 
-& $sqlcmd -S $Server -d $TargetDb -b -i (Join-Path $PSScriptRoot '01-legacy-id-map.sql')
+& $sqlcmd -S $Server -d $TargetDb -b -I -i (Join-Path $PSScriptRoot '01-legacy-id-map.sql')
 if ($LASTEXITCODE -ne 0) { throw 'Could not create dbo.LegacyIdMap.' }
 
 Write-Host "Provisioning complete."

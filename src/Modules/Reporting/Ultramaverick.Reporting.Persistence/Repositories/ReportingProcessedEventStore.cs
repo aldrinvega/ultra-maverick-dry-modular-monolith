@@ -20,5 +20,12 @@ public sealed class ReportingProcessedEventStore : IProcessedEventStore
             .AnyAsync(p => p.EventId == eventId && p.ProjectionName == projection, ct);
 
     public async Task MarkProcessedAsync(Guid eventId, string projection, CancellationToken ct)
-        => await _context.ProcessedEvents.AddAsync(ProcessedEvent.Create(eventId, projection), ct);
+    {
+        var alreadyTracked = _context.ProcessedEvents.Local
+            .Any(p => p.EventId == eventId && p.ProjectionName == projection);
+
+        if (alreadyTracked) return;
+
+        await _context.ProcessedEvents.AddAsync(ProcessedEvent.Create(eventId, projection), ct);
+    }
 }
