@@ -330,7 +330,7 @@ exits 0.
 ### Legacy data migration
 
 The 2024-07-04 `ElixirDepotDry` backup was restored and migrated into the per-module schemas by
-`tools/migration` (see that folder's README). Verified row parity, zero orphan rows and 29 passing
+`tools/migration` (see that folder's README). Verified row parity, zero orphan rows and 28 passing
 reconciliation gates:
 
 - Identity 36 users, Catalog 1,220 items and 485 customers
@@ -342,8 +342,10 @@ reconciliation gates:
 
 Rollback was rehearsed (backup, drop, restore) with the gates re-passing afterwards.
 
-### Outstanding
+### Final status — 2026-10-19
 
-Endpoint parity is the remaining gap: the legacy API exposes roughly 464 actions while the new API
-exposes 118. Cross-cutting items still open are DB-error to HTTP status mapping, health checks and
-telemetry, API versioning, and a Manufacturing contracts project.
+Endpoint parity is now measured per action: 459 legacy controller actions, 40 ported, 238 replaced,
+181 retired with written reasons, 0 unruled (`docs/action-parity.md`, `docs/action-rulings.md`).
+The cross-cutting items listed above are complete. The staging cutover rehearsal passes: 9/9 modules
+served, 0.7 s cold start, 39,676 replay events, and a stable second pass; see
+`docs/cutover-runbook.md`. Migrated users must change their password on first sign-in.

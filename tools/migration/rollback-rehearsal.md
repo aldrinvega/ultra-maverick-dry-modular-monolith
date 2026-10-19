@@ -56,7 +56,7 @@ Executed against `UltraMaverickDry_Migrated` after the full load:
 | Snapshot to `target_post_migration.bak` | succeeded |
 | Drop target database | succeeded |
 | Restore from snapshot | succeeded |
-| `90-gates.sql` after restore | **all 29 gates pass** |
+| `90-gates.sql` after restore | **all 28 gates pass** |
 | Spot-check counts after restore | Orders 16,203 · OrderLines 90,082 · ChecklistAnswers 83,765 · InventoryPositions 1,530 · OrderFulfillment 16,203 |
 
 Measured recovery time objective: **0.8 seconds** (backup + drop + restore on local SQL Express).
