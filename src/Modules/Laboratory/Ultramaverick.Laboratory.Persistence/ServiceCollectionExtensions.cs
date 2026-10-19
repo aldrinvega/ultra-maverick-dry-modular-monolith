@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Ultramaverick.Laboratory.Application.Abstractions;
@@ -18,6 +18,7 @@ namespace Ultramaverick.Laboratory.Persistence
             services.AddDbContext<LaboratoryDbContext>(options => options.UseSqlServer(connectionString));
 
             services.AddScoped<ILaboratoryUnitOfWork, LaboratoryUnitOfWork>();
+            services.AddScoped<ILabTestRequestReader, LabTestRequestReader>();
 
             services.AddScoped<IOutboxStore, LaboratoryOutboxStore>();
             services.AddScoped<IProcessedEventStore, LaboratoryProcessedEventStore>();
@@ -26,3 +27,4 @@ namespace Ultramaverick.Laboratory.Persistence
         }
     }
 }
+
