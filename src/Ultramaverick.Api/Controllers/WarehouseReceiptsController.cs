@@ -71,6 +71,14 @@ namespace Ultramaverick.Api.Controllers
             var warehouse = await _mediator.Send(new GetWarehouseByIdQuery(id), ct);
             return warehouse is null ? NotFound() : Ok(warehouse);
         }
+        [HttpPut("SetWarehouseActive/{id}")]
+        public async Task<IActionResult> SetWarehouseActive(
+            int id, [FromBody] SetWarehouseActiveBody body, CancellationToken ct)
+            => await _mediator.Send(new SetWarehouseActiveCommand(id, body.IsActive), ct)
+                ? NoContent()
+                : NotFound();
+
+        public sealed record SetWarehouseActiveBody(bool IsActive);
         [HttpPost("AddWarehouse")]
         public async Task<IActionResult> AddWarehouse(
             [FromBody] CreateWarehouseCommand cmd, CancellationToken ct)
@@ -87,6 +95,7 @@ namespace Ultramaverick.Api.Controllers
             => (await _mediator.Send(cmd, ct)).ToNoContent();
     }
 }
+
 
 
 
