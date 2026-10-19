@@ -45,6 +45,12 @@ namespace Ultramaverick.Api.Controllers
             var result = await _mediator.Send(cmd, ct);
             return result.Succeeded ? NoContent() : BadRequest(new ApiResponse(400, result.Error));
         }
+        [HttpPut("Cancel/{id}")]
+        public async Task<IActionResult> Cancel(int id, CancellationToken ct)
+        {
+            var result = await _mediator.Send(new CancelTransformationRequestCommand(id), ct);
+            return result.Succeeded ? NoContent() : BadRequest(new ApiResponse(400, result.Error));
+        }
         [HttpPost("AddTransformationRequest")]
         public async Task<IActionResult> AddTransformationRequest(
             [FromBody] CreateTransformationRequestCommand cmd, CancellationToken ct)
@@ -55,5 +61,6 @@ namespace Ultramaverick.Api.Controllers
             => (await _mediator.Send(new PrepareTransformationRequestCommand(id), ct)).ToNoContent();
     }
 }
+
 
 

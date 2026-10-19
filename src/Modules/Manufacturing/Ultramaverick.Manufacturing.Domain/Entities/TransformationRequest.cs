@@ -90,5 +90,18 @@ public sealed class TransformationRequest : Entity
 
         RaiseDomainEvent(new TransformationRejected(TransformationChangeTypes.Rejected, occurredAt));
     }
+
+    public void Cancel(int? cancelledByUserId)
+    {
+        if (Status == TransformationStatuses.Cancelled)
+            return;
+
+        var occurredAt = DateTime.UtcNow;
+        Status = TransformationStatuses.Cancelled;
+        ModifiedAtUtc = occurredAt;
+        ModifiedByUserId = cancelledByUserId;
+
+        RaiseDomainEvent(new TransformationCancelled(TransformationChangeTypes.Cancelled, occurredAt));
+    }
 }
 

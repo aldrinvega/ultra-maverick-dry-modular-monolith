@@ -6,4 +6,5 @@ public static class TransformationStatuses
 {
     public const string Requested = nameof(Requested);
     public const string Prepared = nameof(Prepared);
+    public const string Cancelled = nameof(Cancelled);
 }
