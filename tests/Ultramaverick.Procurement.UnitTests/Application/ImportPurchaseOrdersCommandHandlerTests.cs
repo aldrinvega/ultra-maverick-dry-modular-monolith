@@ -2,6 +2,7 @@ using Ultramaverick.Procurement.Application.Abstractions;
 using Ultramaverick.Procurement.Application.Commands.PurchaseOrders;
 using Ultramaverick.Procurement.Application.Import;
 using Ultramaverick.Procurement.Application.Models;
+using Ultramaverick.Procurement.Domain.Entities;
 using Ultramaverick.Procurement.UnitTests.Fakes;
 using Ultramaverick.Procurement.UnitTests.Import;
 
@@ -131,5 +132,42 @@ public class ImportPurchaseOrdersCommandHandlerTests
         var failure = Assert.Single(result.Value!.Failed);
         Assert.Contains("Delivered", failure.Reason, StringComparison.Ordinal);
         Assert.Equal(0, uow.SaveCount);
+    }
+
+    [Fact]
+    public async Task A_repeated_item_for_the_same_po_is_rejected_before_any_save()
+    {
+        var (handler, uow) = Build(
+            Row(2, "PO-1", "ITEM-1"),
+            Row(3, "PO-1", "ITEM-1"));
+
+        var result = await Import(handler);
+
+        var failure = Assert.Single(result.Value!.Failed);
+        Assert.Equal(3, failure.RowNumber);
+        Assert.Contains("ITEM-1", failure.Reason, StringComparison.Ordinal);
+        Assert.Equal(0, result.Value.Imported);
+        Assert.Equal(0, uow.SaveCount);
+        Assert.Empty(uow.PurchaseOrdersRepo.All);
+    }
+
+    [Fact]
+    public async Task An_existing_po_is_skipped_without_blocking_new_pos_in_the_same_workbook()
+    {
+        var (handler, uow) = Build(
+            Row(2, "PO-1"),
+            Row(3, "PO-2"));
+
+        uow.PurchaseOrdersRepo.Seed(PurchaseOrder.Create(
+            "PO-1", "PR-1", null, null, supplierId: 1, importBatchId: null, createdByUserId: 7));
+
+        var result = await Import(handler);
+
+        var report = result.Value!;
+        Assert.Equal(1, report.Imported);
+        Assert.Equal(1, report.Skipped);
+        Assert.Empty(report.Failed);
+        Assert.Equal(1, uow.SaveCount);
+        Assert.Contains(uow.PurchaseOrdersRepo.All, po => po.PoNumber == "PO-2");
     }
 }
