@@ -9,6 +9,7 @@ using Ultramaverick.Warehouse.Application.Commands.Warehouses;
 using Ultramaverick.Warehouse.Application.Models;
 using Ultramaverick.Warehouse.Application.Queries.Expiring;
 using Ultramaverick.Warehouse.Application.Queries.Inventory;
+using Ultramaverick.Warehouse.Application.Queries.Warehouses;
 using Ultramaverick.Warehouse.Application.Queries.Miscellaneous;
 using Ultramaverick.Warehouse.Application.Queries.WarehouseReceipts;
 
@@ -60,6 +61,10 @@ namespace Ultramaverick.Api.Controllers
             [FromQuery] int? warehouseId = null, [FromQuery] int? itemId = null, CancellationToken ct = default)
             => Ok(await _mediator.Send(new GetInventoryBalanceQuery(warehouseId, itemId), ct));
 
+        [HttpGet("GetWarehouses")]
+        public async Task<ActionResult<IReadOnlyList<WarehouseSummaryDto>>> GetWarehouses(
+            [FromQuery] bool? isActive = null, CancellationToken ct = default)
+            => Ok(await _mediator.Send(new GetWarehousesQuery(isActive), ct));
         [HttpPost("AddWarehouse")]
         public async Task<IActionResult> AddWarehouse(
             [FromBody] CreateWarehouseCommand cmd, CancellationToken ct)
@@ -76,6 +81,7 @@ namespace Ultramaverick.Api.Controllers
             => (await _mediator.Send(cmd, ct)).ToNoContent();
     }
 }
+
 
 
 
