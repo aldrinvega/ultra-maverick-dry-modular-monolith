@@ -92,6 +92,7 @@ public sealed class TransformationRequest : Entity
     }
 
     public void Cancel(int? cancelledByUserId)
+
     {
         if (Status == TransformationStatuses.Cancelled)
             return;
@@ -103,5 +104,17 @@ public sealed class TransformationRequest : Entity
 
         RaiseDomainEvent(new TransformationCancelled(TransformationChangeTypes.Cancelled, occurredAt));
     }
-}
 
+    public void Approve(int? approvedByUserId)
+    {
+        if (Status != TransformationStatuses.Requested)
+            throw new InvalidOperationException("Only a requested transformation request can be approved.");
+
+        var occurredAt = DateTime.UtcNow;
+        Status = TransformationStatuses.Approved;
+        ModifiedAtUtc = occurredAt;
+        ModifiedByUserId = approvedByUserId;
+
+        RaiseDomainEvent(new TransformationApproved(TransformationChangeTypes.Approved, occurredAt));
+    }
+}

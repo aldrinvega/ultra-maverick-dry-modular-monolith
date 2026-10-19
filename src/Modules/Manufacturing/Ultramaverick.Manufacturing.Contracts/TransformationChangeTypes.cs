@@ -5,9 +5,11 @@
 public static class TransformationChangeTypes
 {
     public const string Created = nameof(Created);
+    public const string Approved = nameof(Approved);
     public const string Prepared = nameof(Prepared);
     public const string Rejected = nameof(Rejected);
     public const string Cancelled = nameof(Cancelled);
 }
+
 
 
